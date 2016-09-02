@@ -21,4 +21,12 @@
 
     <name>Arquillian Pact Provider API</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>au.com.dius</groupId>
+            <artifactId>pact-jvm-model</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
 </project>

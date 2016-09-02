@@ -55,10 +55,18 @@
         <version.junit>4.11</version.junit>
         <version.mockito>1.10.19</version.mockito>
         <version.assertj>2.4.1</version.assertj>
+        <version.pact>3.5.0-beta.1</version.pact>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${version.arquillian_core}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian.core</groupId>
                 <artifactId>arquillian-core-impl-base</artifactId>
@@ -68,6 +76,16 @@
                 <groupId>org.jboss.arquillian.config</groupId>
                 <artifactId>arquillian-config-api</artifactId>
                 <version>${version.arquillian_core}</version>
+            </dependency>
+            <dependency>
+                <groupId>au.com.dius</groupId>
+                <artifactId>pact-jvm-model</artifactId>
+                <version>${version.pact}</version>
+            </dependency>
+            <dependency>
+                <groupId>au.com.dius</groupId>
+                <artifactId>pact-jvm-provider-junit_2.11</artifactId>
+                <version>${version.pact}</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian.core</groupId>
@@ -94,6 +112,11 @@
                 <artifactId>assertj-core</artifactId>
                 <version>${version.assertj}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.pact</groupId>
+                <artifactId>arquillian-pact-provider-api</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
