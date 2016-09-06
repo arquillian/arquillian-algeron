@@ -11,7 +11,7 @@ import java.lang.annotation.Annotation;
 /**
  * Class that enrich a test with the list of current pact.
  */
-public class PactsResourceProvider implements ResourceProvider {
+public class PactResourceProvider implements ResourceProvider {
 
     @Inject
     Instance<Pact> pactInstance;

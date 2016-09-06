@@ -54,8 +54,11 @@
         <version.arquillian_core>1.1.11.Final</version.arquillian_core>
         <version.junit>4.11</version.junit>
         <version.mockito>1.10.19</version.mockito>
-        <version.assertj>2.4.1</version.assertj>
+        <version.assertj>3.5.2</version.assertj>
         <version.pact>3.5.0-beta.1</version.pact>
+        <!-- Requirement from pact -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <dependencyManagement>

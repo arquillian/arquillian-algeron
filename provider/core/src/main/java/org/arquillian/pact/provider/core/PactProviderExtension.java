@@ -6,7 +6,7 @@ import org.jboss.arquillian.test.spi.enricher.resource.ResourceProvider;
 public class PactProviderExtension implements LoadableExtension {
     @Override
     public void register(ExtensionBuilder builder) {
-        builder.service(ResourceProvider.class, PactsResourceProvider.class)
+        builder.service(ResourceProvider.class, PactResourceProvider.class)
                 .observer(PactsReader.class)
                 .observer(InteractionRunner.class);
     }
