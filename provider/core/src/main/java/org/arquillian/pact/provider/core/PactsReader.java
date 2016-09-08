@@ -35,7 +35,11 @@ public class PactsReader {
     InstanceProducer<Pacts> pactsInstanceProducer;
 
     public void readPacts(@Observes BeforeClass test) {
+        List<Pact> pacts = getPacts(test);
+        pactsInstanceProducer.set(new Pacts(pacts));
+    }
 
+    protected List<Pact> getPacts(@Observes BeforeClass test) {
         final TestClass testClass = test.getTestClass();
 
         final Provider providerInfo = testClass.getAnnotation(Provider.class);
@@ -56,9 +60,7 @@ public class PactsReader {
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
-
-        pactsInstanceProducer.set(new Pacts(pacts));
-
+        return pacts;
     }
 
     protected PactLoader getPactSource(final TestClass testClass) {

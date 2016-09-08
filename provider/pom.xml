@@ -24,6 +24,7 @@
     <modules>
       <module>api</module>
       <module>core</module>
+      <module>spi</module>
     </modules>
 
     <dependencies>
