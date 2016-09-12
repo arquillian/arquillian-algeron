@@ -14,7 +14,7 @@ import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.test.spi.TestClass;
-import org.jboss.arquillian.test.spi.annotation.TestScoped;
+import org.jboss.arquillian.test.spi.annotation.SuiteScoped;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ import java.util.List;
 public class PactsReader {
 
     @Inject
-    @TestScoped
+    @SuiteScoped
     InstanceProducer<Pacts> pactsInstanceProducer;
 
     public void readPacts(@Observes BeforeClass test) {

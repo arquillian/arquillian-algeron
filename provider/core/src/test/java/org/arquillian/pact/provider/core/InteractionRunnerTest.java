@@ -8,6 +8,8 @@ import au.com.dius.pact.provider.junit.loader.PactFolder;
 import au.com.dius.pact.provider.junit.target.Target;
 import au.com.dius.pact.provider.junit.target.TestTarget;
 import org.arquillian.pact.provider.api.Pacts;
+import org.arquillian.pact.provider.spi.CurrentConsumer;
+import org.arquillian.pact.provider.spi.CurrentInteraction;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.spi.EventContext;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -64,7 +66,7 @@ public class InteractionRunnerTest {
     }
 
     @org.junit.Test
-    public void should_throw_exception_when_no_arquillian_resources() {
+    public void should_throw_exception_when_no_resources() {
         when(test.getTestClass()).thenReturn(new TestClass(PactProviderWithNoArqResources.class));
         PactProviderWithNoArqResources pactDefinition = new PactProviderWithNoArqResources();
         when(test.getTestInstance()).thenReturn(pactDefinition);
@@ -76,7 +78,7 @@ public class InteractionRunnerTest {
             interactionRunner.executePacts(eventContext);
             fail("Exception should be thrown");
         } catch(IllegalArgumentException e) {
-            assertThat(e).hasMessage("Only one field annotated with org.jboss.arquillian.test.api.ArquillianResource of type au.com.dius.pact.model.RequestResponseInteraction should be present * Only one field annotated with org.jboss.arquillian.test.api.ArquillianResource of type au.com.dius.pact.model.Consumer should be present");
+            assertThat(e).hasMessage("Only one field annotated with org.arquillian.pact.provider.spi.CurrentInteraction of type au.com.dius.pact.model.RequestResponseInteraction should be present * Only one field annotated with org.arquillian.pact.provider.spi.CurrentConsumer of type au.com.dius.pact.model.Consumer should be present");
         }
 
     }
@@ -103,10 +105,10 @@ public class InteractionRunnerTest {
     @PactFolder("pacts")
     public static class PactProviderWithNoTarget {
 
-        @ArquillianResource
+        @CurrentConsumer
         Consumer consumer;
 
-        @ArquillianResource
+        @CurrentInteraction
         RequestResponseInteraction interaction;
 
     }
@@ -124,10 +126,10 @@ public class InteractionRunnerTest {
     @PactFolder("pacts")
     public static class PactProvider {
 
-        @ArquillianResource
+        @CurrentConsumer
         Consumer consumer;
 
-        @ArquillianResource
+        @CurrentInteraction
         RequestResponseInteraction interaction;
 
         @TestTarget

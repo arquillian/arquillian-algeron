@@ -12,11 +12,13 @@ import au.com.dius.pact.provider.junit.target.TestTarget;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.HttpRequest;
 import org.arquillian.pact.provider.api.Pacts;
+import org.arquillian.pact.provider.spi.ArquillianTestClassAwareTarget;
+import org.arquillian.pact.provider.spi.CurrentConsumer;
+import org.arquillian.pact.provider.spi.CurrentInteraction;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.spi.EventContext;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.arquillian.test.spi.event.suite.Test;
 
@@ -48,11 +50,10 @@ public class InteractionRunner {
 
         final List<Throwable> errors = new ArrayList<>();
         validatePublicVoidNoArgMethods(testClass, State.class, errors);
-        validateTestTarget(testClass, errors);
         validateTargetRequestFilters(testClass, errors);
 
-        Field interactionField = validateAndGetArquillianResourceField(testClass, RequestResponseInteraction.class, errors);
-        Field consumerField = validateAndGetArquillianResourceField(testClass, Consumer.class, errors);
+        Field interactionField = validateAndGetResourceField(testClass, RequestResponseInteraction.class, CurrentInteraction.class, errors);
+        Field consumerField = validateAndGetResourceField(testClass, Consumer.class, CurrentConsumer.class, errors);
 
         if (errors.size() != 0) {
             String errorMessage = errors.stream()
@@ -85,6 +86,11 @@ public class InteractionRunner {
                 Target target = getTarget(testClass, testInstance);
                 if (target instanceof TestClassAwareTarget) {
                     logger.log(Level.SEVERE, String.format("Targets implementing %s are not supported in Arquillian extension", TestClassAwareTarget.class.getName()));
+                }
+
+                if (target instanceof ArquillianTestClassAwareTarget) {
+                    ArquillianTestClassAwareTarget arquillianTestClassAwareTarget = (ArquillianTestClassAwareTarget) target;
+                    arquillianTestClassAwareTarget.setTestClass(testClass, testInstance);
                 }
 
                 // Inject current interaction to test
@@ -154,21 +160,8 @@ public class InteractionRunner {
         }
     }
 
-    protected void validateTestTarget(final TestClass testClass, List<Throwable> errors) {
-        List<Field> annotatedFields = getFieldsWithAnnotation(testClass.getJavaClass(), TestTarget.class);
-        if (annotatedFields.size() != 1) {
-            String moreThanOneTestTargetError = String.format("Test class should have exactly one field annotated with %s", TestTarget.class.getName());
-            logger.log(Level.SEVERE, moreThanOneTestTargetError);
-            errors.add(new IllegalArgumentException(moreThanOneTestTargetError));
-        } else if (!Target.class.isAssignableFrom(annotatedFields.get(0).getType())) {
-            String implementationInterface = String.format("Field annotated with %s should implement %s interface", TestTarget.class.getName(), Target.class.getName());
-            logger.log(Level.SEVERE, implementationInterface);
-            errors.add(new IllegalArgumentException(implementationInterface));
-        }
-    }
-
-    private Field validateAndGetArquillianResourceField(TestClass testClass, Class<?> fieldType, List<Throwable> errors) {
-        final List<Field> fieldsWithArquillianResource = getFieldsWithAnnotation(testClass.getJavaClass(), ArquillianResource.class);
+    private Field validateAndGetResourceField(TestClass testClass, Class<?> fieldType, Class<? extends Annotation> annotation, List<Throwable> errors) {
+        final List<Field> fieldsWithArquillianResource = getFieldsWithAnnotation(testClass.getJavaClass(), annotation);
 
         List<Field> rri = fieldsWithArquillianResource
                 .stream()
@@ -177,7 +170,7 @@ public class InteractionRunner {
                 ).collect(Collectors.toList());
 
         if (rri.size() != 1) {
-            String rriError = String.format("Only one field annotated with %s of type %s should be present", ArquillianResource.class.getName(),fieldType.getName());
+            String rriError = String.format("Only one field annotated with %s of type %s should be present", annotation.getName(),fieldType.getName());
             logger.log(Level.SEVERE, rriError);
             errors.add(new IllegalArgumentException(rriError));
         } else {

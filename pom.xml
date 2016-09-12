@@ -126,6 +126,11 @@
                 <artifactId>arquillian-pact-provider-spi</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.arquillian.pact</groupId>
+                <artifactId>arquillian-pact-provider-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
