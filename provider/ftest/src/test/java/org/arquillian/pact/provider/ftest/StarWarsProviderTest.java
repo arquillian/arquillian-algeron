@@ -5,7 +5,7 @@ import au.com.dius.pact.model.RequestResponseInteraction;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRule;
 import org.arquillian.pact.provider.core.loader.PactFolder;
-import org.arquillian.pact.provider.core.target.Target;
+import org.arquillian.pact.provider.core.httptarget.Target;
 import org.arquillian.pact.provider.spi.CurrentConsumer;
 import org.arquillian.pact.provider.spi.CurrentInteraction;
 import org.arquillian.pact.provider.spi.Provider;

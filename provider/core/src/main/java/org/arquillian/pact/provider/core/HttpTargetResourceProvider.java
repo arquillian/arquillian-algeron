@@ -1,6 +1,6 @@
 package org.arquillian.pact.provider.core;
 
-import org.arquillian.pact.provider.core.target.Target;
+import org.arquillian.pact.provider.core.httptarget.Target;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.test.api.ArquillianResource;

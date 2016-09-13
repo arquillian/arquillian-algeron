@@ -1,7 +1,7 @@
 package org.arquillian.pact.provider.core;
 
-import org.arquillian.pact.provider.core.target.HttpTarget;
-import org.arquillian.pact.provider.core.target.Target;
+import org.arquillian.pact.provider.core.httptarget.HttpTarget;
+import org.arquillian.pact.provider.core.httptarget.Target;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.api.annotation.Inject;

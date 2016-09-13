@@ -7,7 +7,7 @@ import au.com.dius.pact.model.RequestResponsePact;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.HttpRequest;
 import org.arquillian.pact.provider.api.Pacts;
-import org.arquillian.pact.provider.core.target.Target;
+import org.arquillian.pact.provider.core.httptarget.Target;
 import org.arquillian.pact.provider.spi.ArquillianTestClassAwareTarget;
 import org.arquillian.pact.provider.spi.CurrentConsumer;
 import org.arquillian.pact.provider.spi.CurrentInteraction;

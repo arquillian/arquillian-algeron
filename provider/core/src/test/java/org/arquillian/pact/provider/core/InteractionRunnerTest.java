@@ -5,7 +5,7 @@ import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.RequestResponseInteraction;
 import org.arquillian.pact.provider.api.Pacts;
 import org.arquillian.pact.provider.core.loader.PactFolder;
-import org.arquillian.pact.provider.core.target.Target;
+import org.arquillian.pact.provider.core.httptarget.Target;
 import org.arquillian.pact.provider.spi.CurrentConsumer;
 import org.arquillian.pact.provider.spi.CurrentInteraction;
 import org.arquillian.pact.provider.spi.Provider;
