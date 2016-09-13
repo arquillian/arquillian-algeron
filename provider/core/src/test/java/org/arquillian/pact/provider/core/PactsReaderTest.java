@@ -2,9 +2,9 @@ package org.arquillian.pact.provider.core;
 
 import au.com.dius.pact.model.Consumer;
 import au.com.dius.pact.model.Pact;
-import au.com.dius.pact.provider.junit.Provider;
-import au.com.dius.pact.provider.junit.loader.PactFolder;
 import org.arquillian.pact.provider.api.Pacts;
+import org.arquillian.pact.provider.core.loader.PactFolder;
+import org.arquillian.pact.provider.spi.Provider;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 import org.junit.Test;

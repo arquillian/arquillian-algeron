@@ -59,6 +59,9 @@
         <!-- Requirement from pact -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <version.guava-retrying>2.0.0</version.guava-retrying>
+        <version.httpclient>4.5.2</version.httpclient>
+        <version.minimal-json>0.9.4</version.minimal-json>
     </properties>
 
     <dependencyManagement>
@@ -87,7 +90,7 @@
             </dependency>
             <dependency>
                 <groupId>au.com.dius</groupId>
-                <artifactId>pact-jvm-provider-junit_2.11</artifactId>
+                <artifactId>pact-jvm-provider_2.11</artifactId>
                 <version>${version.pact}</version>
             </dependency>
             <dependency>
@@ -130,6 +133,26 @@
                 <groupId>org.arquillian.pact</groupId>
                 <artifactId>arquillian-pact-provider-core</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.rholder</groupId>
+                <artifactId>guava-retrying</artifactId>
+                <version>${version.guava-retrying}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${version.httpclient}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>fluent-hc</artifactId>
+                <version>${version.httpclient}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.eclipsesource.minimal-json</groupId>
+                <artifactId>minimal-json</artifactId>
+                <version>${version.minimal-json}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

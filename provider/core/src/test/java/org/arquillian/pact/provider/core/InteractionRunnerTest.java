@@ -3,16 +3,15 @@ package org.arquillian.pact.provider.core;
 import au.com.dius.pact.model.Consumer;
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.RequestResponseInteraction;
-import au.com.dius.pact.provider.junit.Provider;
-import au.com.dius.pact.provider.junit.loader.PactFolder;
-import au.com.dius.pact.provider.junit.target.Target;
-import au.com.dius.pact.provider.junit.target.TestTarget;
 import org.arquillian.pact.provider.api.Pacts;
+import org.arquillian.pact.provider.core.loader.PactFolder;
+import org.arquillian.pact.provider.core.target.Target;
 import org.arquillian.pact.provider.spi.CurrentConsumer;
 import org.arquillian.pact.provider.spi.CurrentInteraction;
+import org.arquillian.pact.provider.spi.Provider;
+import org.arquillian.pact.provider.spi.TestTarget;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.spi.EventContext;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 import org.jboss.arquillian.test.spi.event.suite.Test;
@@ -96,7 +95,7 @@ public class InteractionRunnerTest {
             interactionRunner.executePacts(eventContext);
             fail("Exception should be thrown");
         } catch(IllegalArgumentException e) {
-            assertThat(e).hasMessage("Test class should have exactly one field annotated with au.com.dius.pact.provider.junit.target.TestTarget");
+            assertThat(e).hasMessage("Test should have one field annotated with org.arquillian.pact.provider.spi.TestTarget");
         }
 
     }

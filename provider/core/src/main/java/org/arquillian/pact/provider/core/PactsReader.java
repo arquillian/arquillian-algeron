@@ -4,11 +4,11 @@ package org.arquillian.pact.provider.core;
 import static java.util.stream.Collectors.toList;
 
 import au.com.dius.pact.model.Pact;
-import au.com.dius.pact.provider.junit.Consumer;
-import au.com.dius.pact.provider.junit.Provider;
-import au.com.dius.pact.provider.junit.loader.PactLoader;
-import au.com.dius.pact.provider.junit.loader.PactSource;
 import org.arquillian.pact.provider.api.Pacts;
+import org.arquillian.pact.provider.spi.Consumer;
+import org.arquillian.pact.provider.spi.Provider;
+import org.arquillian.pact.provider.spi.loader.PactLoader;
+import org.arquillian.pact.provider.spi.loader.PactSource;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.api.annotation.Inject;

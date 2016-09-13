@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to inject the current consumer object
+ * Annotation to mark a test method as a request filter. The method must receive a single HttpRequest parameter
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER})
-public @interface CurrentConsumer {
+@Target({ElementType.METHOD})
+public @interface TargetRequestFilter {
 }

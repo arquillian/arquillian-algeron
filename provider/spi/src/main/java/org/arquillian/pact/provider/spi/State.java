@@ -1,14 +1,20 @@
 package org.arquillian.pact.provider.spi;
 
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to inject the current consumer object
+ * Used to mark methods that should be run on state change
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER})
-public @interface CurrentConsumer {
+@Target({ElementType.METHOD})
+public @interface State {
+
+    /**
+     * @return list of state names
+     */
+    String[] value();
 }

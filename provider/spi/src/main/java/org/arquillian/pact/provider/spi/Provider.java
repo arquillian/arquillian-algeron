@@ -6,9 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to inject the current consumer object
+ * Annotation to set provider in test
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER})
-public @interface CurrentConsumer {
+@Target({ElementType.TYPE})
+public @interface Provider {
+
+    /**
+     * @return provider name for pact test running
+     */
+    String value();
 }

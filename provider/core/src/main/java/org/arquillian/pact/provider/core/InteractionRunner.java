@@ -4,17 +4,16 @@ import au.com.dius.pact.model.Consumer;
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.RequestResponseInteraction;
 import au.com.dius.pact.model.RequestResponsePact;
-import au.com.dius.pact.provider.junit.State;
-import au.com.dius.pact.provider.junit.TargetRequestFilter;
-import au.com.dius.pact.provider.junit.target.Target;
-import au.com.dius.pact.provider.junit.target.TestClassAwareTarget;
-import au.com.dius.pact.provider.junit.target.TestTarget;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.HttpRequest;
 import org.arquillian.pact.provider.api.Pacts;
+import org.arquillian.pact.provider.core.target.Target;
 import org.arquillian.pact.provider.spi.ArquillianTestClassAwareTarget;
 import org.arquillian.pact.provider.spi.CurrentConsumer;
 import org.arquillian.pact.provider.spi.CurrentInteraction;
+import org.arquillian.pact.provider.spi.State;
+import org.arquillian.pact.provider.spi.TargetRequestFilter;
+import org.arquillian.pact.provider.spi.TestTarget;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
@@ -51,6 +50,7 @@ public class InteractionRunner {
         final List<Throwable> errors = new ArrayList<>();
         validatePublicVoidNoArgMethods(testClass, State.class, errors);
         validateTargetRequestFilters(testClass, errors);
+        validateTestTarget(testClass, errors);
 
         Field interactionField = validateAndGetResourceField(testClass, RequestResponseInteraction.class, CurrentInteraction.class, errors);
         Field consumerField = validateAndGetResourceField(testClass, Consumer.class, CurrentConsumer.class, errors);
@@ -84,9 +84,6 @@ public class InteractionRunner {
                 executeStateChanges(interaction, testClass, testInstance);
 
                 Target target = getTarget(testClass, testInstance);
-                if (target instanceof TestClassAwareTarget) {
-                    logger.log(Level.SEVERE, String.format("Targets implementing %s are not supported in Arquillian extension", TestClassAwareTarget.class.getName()));
-                }
 
                 if (target instanceof ArquillianTestClassAwareTarget) {
                     ArquillianTestClassAwareTarget arquillianTestClassAwareTarget = (ArquillianTestClassAwareTarget) target;
@@ -142,6 +139,19 @@ public class InteractionRunner {
                 logger.log(Level.SEVERE, httpRequestError);
                 errors.add(new IllegalArgumentException(httpRequestError));
             }
+        }
+    }
+
+    protected void validateTestTarget(TestClass testClass, final List<Throwable> errors) {
+        final List<Field> fieldsWithAnnotation = getFieldsWithAnnotation(testClass.getJavaClass(), TestTarget.class);
+        if (fieldsWithAnnotation.size() != 1) {
+            final String testTargetError = String.format("Test should have one field annotated with %s", TestTarget.class.getName());
+            logger.log(Level.SEVERE, testTargetError);
+            errors.add(new IllegalArgumentException(testTargetError));
+        } else if (!Target.class.isAssignableFrom(fieldsWithAnnotation.get(0).getType())) {
+            final String testTargetError = String.format("Field annotated with %s should implement%s", TestTarget.class.getName(), Target.class.getName());
+            logger.log(Level.SEVERE, testTargetError);
+            errors.add(new IllegalArgumentException(testTargetError));
         }
     }
 
