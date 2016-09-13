@@ -7,6 +7,9 @@ public class PactProviderExtension implements LoadableExtension {
     @Override
     public void register(ExtensionBuilder builder) {
         builder.observer(PactsReader.class)
-                .observer(InteractionRunner.class);
+                .observer(InteractionRunner.class)
+                .observer(PactProviderConfigurator.class)
+                .observer(HttpTargetCreator.class)
+                .service(ResourceProvider.class, HttpTargetResourceProvider.class);
     }
 }

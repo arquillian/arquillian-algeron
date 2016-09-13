@@ -9,9 +9,9 @@ import org.arquillian.pact.provider.core.target.Target;
 import org.arquillian.pact.provider.spi.CurrentConsumer;
 import org.arquillian.pact.provider.spi.CurrentInteraction;
 import org.arquillian.pact.provider.spi.Provider;
-import org.arquillian.pact.provider.spi.TestTarget;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.spi.EventContext;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 import org.jboss.arquillian.test.spi.event.suite.Test;
@@ -35,6 +35,9 @@ public class InteractionRunnerTest {
     @Mock
     private Test test;
 
+    @Mock
+    private Target target;
+
     private Instance<Pacts> pactsInstance;
 
     @Before
@@ -55,6 +58,7 @@ public class InteractionRunnerTest {
 
         InteractionRunner interactionRunner = new InteractionRunner();
         interactionRunner.pactsInstance = pactsInstance;
+        interactionRunner.targetInstance = () -> target;
         interactionRunner.executePacts(eventContext);
 
         assertThat(pactDefinition.consumer).isEqualTo(new Consumer("planets_consumer"));
@@ -72,6 +76,7 @@ public class InteractionRunnerTest {
 
         InteractionRunner interactionRunner = new InteractionRunner();
         interactionRunner.pactsInstance = pactsInstance;
+        interactionRunner.targetInstance = () -> target;
 
         try {
             interactionRunner.executePacts(eventContext);
@@ -90,12 +95,13 @@ public class InteractionRunnerTest {
 
         InteractionRunner interactionRunner = new InteractionRunner();
         interactionRunner.pactsInstance = pactsInstance;
+        interactionRunner.targetInstance = () -> target;
 
         try {
             interactionRunner.executePacts(eventContext);
             fail("Exception should be thrown");
         } catch(IllegalArgumentException e) {
-            assertThat(e).hasMessage("Test should have one field annotated with org.arquillian.pact.provider.spi.TestTarget");
+            assertThat(e).hasMessage("Field annotated with org.jboss.arquillian.test.api.ArquillianResource should implement org.arquillian.pact.provider.core.target.Target and didn't found any");
         }
 
     }
@@ -116,7 +122,7 @@ public class InteractionRunnerTest {
     @PactFolder("pacts")
     public static class PactProviderWithNoArqResources {
 
-        @TestTarget
+        @ArquillianResource
         Target target;
 
     }
@@ -131,7 +137,7 @@ public class InteractionRunnerTest {
         @CurrentInteraction
         RequestResponseInteraction interaction;
 
-        @TestTarget
+        @ArquillianResource
         Target target;
 
     }

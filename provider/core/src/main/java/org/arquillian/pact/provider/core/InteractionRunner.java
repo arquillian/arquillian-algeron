@@ -13,11 +13,11 @@ import org.arquillian.pact.provider.spi.CurrentConsumer;
 import org.arquillian.pact.provider.spi.CurrentInteraction;
 import org.arquillian.pact.provider.spi.State;
 import org.arquillian.pact.provider.spi.TargetRequestFilter;
-import org.arquillian.pact.provider.spi.TestTarget;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.spi.EventContext;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.arquillian.test.spi.event.suite.Test;
 
@@ -43,6 +43,10 @@ public class InteractionRunner {
 
     @Inject
     Instance<Pacts> pactsInstance;
+
+    @Inject
+    Instance<Target> targetInstance;
+
 
     public void executePacts(@Observes EventContext<Test> test) {
         TestClass testClass = test.getEvent().getTestClass();
@@ -83,7 +87,7 @@ public class InteractionRunner {
             for (final RequestResponseInteraction interaction : requestResponsePact.getInteractions()) {
                 executeStateChanges(interaction, testClass, testInstance);
 
-                Target target = getTarget(testClass, testInstance);
+                Target target = targetInstance.get();
 
                 if (target instanceof ArquillianTestClassAwareTarget) {
                     ArquillianTestClassAwareTarget arquillianTestClassAwareTarget = (ArquillianTestClassAwareTarget) target;
@@ -109,18 +113,6 @@ public class InteractionRunner {
         }
     }
 
-    private Target getTarget(TestClass testClass, Object testInstance) {
-        Field fieldTarget = getFieldsWithAnnotation(testClass.getJavaClass(), TestTarget.class).get(0);
-        Target target;
-        try {
-            fieldTarget.setAccessible(true);
-            target = (Target) fieldTarget.get(testInstance);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
-        return target;
-    }
-
     protected void validateTargetRequestFilters(final TestClass testClass, final List<Throwable> errors) {
         Method[] methods = testClass.getMethods(TargetRequestFilter.class);
         for (Method method : methods) {
@@ -143,13 +135,16 @@ public class InteractionRunner {
     }
 
     protected void validateTestTarget(TestClass testClass, final List<Throwable> errors) {
-        final List<Field> fieldsWithAnnotation = getFieldsWithAnnotation(testClass.getJavaClass(), TestTarget.class);
-        if (fieldsWithAnnotation.size() != 1) {
-            final String testTargetError = String.format("Test should have one field annotated with %s", TestTarget.class.getName());
+        final List<Field> fieldsWithAnnotation = getFieldsWithAnnotation(testClass.getJavaClass(), ArquillianResource.class)
+                .stream()
+                .filter(f -> Target.class.isAssignableFrom(f.getType()))
+                .collect(Collectors.toList());
+        if (fieldsWithAnnotation.size() > 1) {
+            final String testTargetError = String.format("Test should have one field annotated with %s of type %s", ArquillianResource.class.getName(), Target.class.getName());
             logger.log(Level.SEVERE, testTargetError);
             errors.add(new IllegalArgumentException(testTargetError));
-        } else if (!Target.class.isAssignableFrom(fieldsWithAnnotation.get(0).getType())) {
-            final String testTargetError = String.format("Field annotated with %s should implement%s", TestTarget.class.getName(), Target.class.getName());
+        } else if (fieldsWithAnnotation.size() == 0) {
+            final String testTargetError = String.format("Field annotated with %s should implement %s and didn't found any", ArquillianResource.class.getName(), Target.class.getName());
             logger.log(Level.SEVERE, testTargetError);
             errors.add(new IllegalArgumentException(testTargetError));
         }

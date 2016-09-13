@@ -5,13 +5,12 @@ import au.com.dius.pact.model.RequestResponseInteraction;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRule;
 import org.arquillian.pact.provider.core.loader.PactFolder;
-import org.arquillian.pact.provider.core.target.HttpTarget;
 import org.arquillian.pact.provider.core.target.Target;
 import org.arquillian.pact.provider.spi.CurrentConsumer;
 import org.arquillian.pact.provider.spi.CurrentInteraction;
 import org.arquillian.pact.provider.spi.Provider;
-import org.arquillian.pact.provider.spi.TestTarget;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -35,8 +34,8 @@ public class StarWarsProviderTest {
     @CurrentInteraction
     RequestResponseInteraction interaction;
 
-    @TestTarget
-    Target target = new HttpTarget(8332);
+    @ArquillianResource
+    Target target;
 
     @BeforeClass
     public static void recordServerInteractions() {

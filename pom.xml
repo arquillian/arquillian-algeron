@@ -79,11 +79,6 @@
                 <version>${version.arquillian_core}</version>
             </dependency>
             <dependency>
-                <groupId>org.jboss.arquillian.config</groupId>
-                <artifactId>arquillian-config-api</artifactId>
-                <version>${version.arquillian_core}</version>
-            </dependency>
-            <dependency>
                 <groupId>au.com.dius</groupId>
                 <artifactId>pact-jvm-model</artifactId>
                 <version>${version.pact}</version>
