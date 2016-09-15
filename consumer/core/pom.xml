@@ -17,7 +17,6 @@
 
     <!-- Artifact Configuration -->
     <artifactId>arquillian-pact-consumer-core</artifactId>
-    <packaging>pom</packaging>
 
     <name>Arquillian Pact Consumer Core</name>
 
@@ -26,21 +25,27 @@
             <groupId>org.jboss.arquillian.core</groupId>
             <artifactId>arquillian-core-spi</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.jboss.arquillian.config</groupId>
+            <artifactId>arquillian-config-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.test</groupId>
             <artifactId>arquillian-test-spi</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-test-impl-base</artifactId> <!-- required to inherit logic of OperatesOnDeploymentAwareProvider -->
+            <groupId>org.arquillian.pact</groupId>
+            <artifactId>arquillian-pact-consumer-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>au.com.dius</groupId>
+            <artifactId>pact-jvm-consumer_2.11</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-test-spi</artifactId> <!-- required to for container integration, but not standalone -->
-            <scope>provided</scope>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

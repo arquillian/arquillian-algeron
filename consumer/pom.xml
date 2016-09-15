@@ -22,8 +22,10 @@
     <name>Arquillian Pact Consumer Parent</name>
 
     <modules>
-      <module>api</module>
-      <module>core</module>
+        <module>api</module>
+        <module>core</module>
+        <module>spi</module>
+        <module>ftest</module>
     </modules>
 
 </project>

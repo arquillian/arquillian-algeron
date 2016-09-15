@@ -17,7 +17,6 @@
 
     <!-- Artifact Configuration -->
     <artifactId>arquillian-pact-provider-api</artifactId>
-    <packaging>pom</packaging>
 
     <name>Arquillian Pact Provider API</name>
 

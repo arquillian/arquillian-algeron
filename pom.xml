@@ -62,6 +62,7 @@
         <version.guava-retrying>2.0.0</version.guava-retrying>
         <version.httpclient>4.5.2</version.httpclient>
         <version.minimal-json>0.9.4</version.minimal-json>
+        <version.rest-assured>3.0.1</version.rest-assured>
     </properties>
 
     <dependencyManagement>
@@ -86,6 +87,11 @@
             <dependency>
                 <groupId>au.com.dius</groupId>
                 <artifactId>pact-jvm-provider_2.11</artifactId>
+                <version>${version.pact}</version>
+            </dependency>
+            <dependency>
+                <groupId>au.com.dius</groupId>
+                <artifactId>pact-jvm-consumer_2.11</artifactId>
                 <version>${version.pact}</version>
             </dependency>
             <dependency>
@@ -130,6 +136,16 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.arquillian.pact</groupId>
+                <artifactId>arquillian-pact-consumer-spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.pact</groupId>
+                <artifactId>arquillian-pact-consumer-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.github.rholder</groupId>
                 <artifactId>guava-retrying</artifactId>
                 <version>${version.guava-retrying}</version>
@@ -148,6 +164,12 @@
                 <groupId>com.eclipsesource.minimal-json</groupId>
                 <artifactId>minimal-json</artifactId>
                 <version>${version.minimal-json}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>rest-assured</artifactId>
+                <version>${version.rest-assured}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

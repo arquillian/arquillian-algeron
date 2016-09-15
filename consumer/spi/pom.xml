@@ -16,8 +16,9 @@
     </properties>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-pact-consumer-api</artifactId>
+    <artifactId>arquillian-pact-consumer-spi</artifactId>
 
-    <name>Arquillian Pact Consumer API</name>
+    <name>Arquillian Pact Consumer SPI</name>
 
 </project>
+

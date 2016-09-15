@@ -17,7 +17,6 @@
 
     <!-- Artifact Configuration -->
     <artifactId>arquillian-pact-provider-spi</artifactId>
-    <packaging>pom</packaging>
 
     <name>Arquillian Pact Provider SPI</name>
 
