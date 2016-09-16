@@ -3,6 +3,7 @@ package org.arquillian.pact.consumer.core;
 import au.com.dius.pact.model.PactSpecVersion;
 
 import java.util.Map;
+import java.util.Properties;
 
 public class PactConsumerConfiguration {
 
@@ -11,6 +12,7 @@ public class PactConsumerConfiguration {
     private static final String PACT_VERSION = "pactSpecVersion";
     private static final String HTTPS = "https";
     private static final String PROVIDER = "provider";
+    private static final String PACT_ARTIFACT_VERSION = "pactArtifactVersion";
 
 
     private String host = "localhost";
@@ -18,6 +20,16 @@ public class PactConsumerConfiguration {
     private PactSpecVersion pactSpecVersion = PactSpecVersion.V2;
     private boolean https = false;
     private String provider = null;
+    private String pactArtifactVersion = null;
+
+
+    public boolean isPactArtifactVersionSet() {
+        return pactArtifactVersion != null;
+    }
+
+    public String getPactArtifactVersion() {
+        return pactArtifactVersion;
+    }
 
     public boolean isProviderSet() {
         return this.provider != null;
@@ -43,6 +55,35 @@ public class PactConsumerConfiguration {
         return https;
     }
 
+    public Properties asProperties() {
+        Properties properties = new Properties();
+
+        properties.put(BIND_MOCK_HOST, getHost());
+        properties.put(MOCK_PORT, Integer.toString(getPort()));
+        properties.put(PACT_VERSION, Integer.toString(pactSpecVersionAsInt(getPactSpecVersion())));
+        properties.put(HTTPS, Boolean.toString(isHttps()));
+
+        if (isProviderSet()) {
+            properties.put(PROVIDER, getProvider());
+        }
+
+        if (isPactArtifactVersionSet()) {
+            properties.put(PACT_ARTIFACT_VERSION, getPactArtifactVersion());
+        }
+
+        return properties;
+    }
+
+    private int pactSpecVersionAsInt(PactSpecVersion pactSpecVersion) {
+        switch(pactSpecVersion) {
+            case V1:
+            case V1_1:
+                return 1;
+            case V2: return 2;
+            default: return 3;
+        }
+    }
+
     public static final PactConsumerConfiguration fromMap(Map<String, String> map) {
         PactConsumerConfiguration pactConsumerConfiguration = new PactConsumerConfiguration();
 
@@ -64,6 +105,10 @@ public class PactConsumerConfiguration {
 
         if (map.containsKey(PROVIDER)) {
             pactConsumerConfiguration.provider = map.get(PROVIDER);
+        }
+
+        if (map.containsKey(PACT_ARTIFACT_VERSION)) {
+            pactConsumerConfiguration.pactArtifactVersion = map.get(PACT_ARTIFACT_VERSION);
         }
 
         return pactConsumerConfiguration;
