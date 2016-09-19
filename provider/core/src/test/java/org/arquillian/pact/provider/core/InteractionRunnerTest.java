@@ -101,7 +101,7 @@ public class InteractionRunnerTest {
             interactionRunner.executePacts(eventContext);
             fail("Exception should be thrown");
         } catch(IllegalArgumentException e) {
-            assertThat(e).hasMessage("Field annotated with org.jboss.arquillian.test.api.ArquillianResource should implement org.arquillian.pact.provider.core.target.Target and didn't found any");
+            assertThat(e).hasMessage("Field annotated with org.jboss.arquillian.test.api.ArquillianResource should implement org.arquillian.pact.provider.core.httptarget.Target and didn't found any");
         }
 
     }
