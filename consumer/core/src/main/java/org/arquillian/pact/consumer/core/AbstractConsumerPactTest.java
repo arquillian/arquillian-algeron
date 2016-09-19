@@ -9,6 +9,7 @@ import au.com.dius.pact.consumer.VerificationResult;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.MockProviderConfig;
 import au.com.dius.pact.model.PactFragment;
+import org.arquillian.pact.consumer.core.client.container.ConsumerProviderPair;
 import org.arquillian.pact.consumer.spi.Pact;
 import org.arquillian.pact.consumer.spi.PactVerification;
 import org.jboss.arquillian.core.api.Instance;
@@ -31,19 +32,18 @@ public abstract class AbstractConsumerPactTest {
     @Inject
     protected Instance<MockProviderConfig> mockProviderConfigInstance;
 
-    protected void executeConsumerTest(EventContext<Test> testEventContext, TestClass testClass, PactVerification pactVerification) throws Throwable {
+    protected ConsumerProviderPair executeConsumerTest(EventContext<Test> testEventContext, TestClass testClass, PactVerification pactVerification) throws Throwable {
         String currentProvider = getProvider(testClass, pactVerification);
 
         // Start of execution
 
-        final Object testInstance = testEventContext.getEvent().getTestInstance();
-        PactFragment pactFragment = getPactFragment(testClass, currentProvider, testInstance, pactVerification);
-
-        VerificationResult result = runPactTest(testEventContext, pactFragment);
-        validateResult(result, pactVerification);
+        return executePactFragment(testEventContext, currentProvider, pactVerification);
     }
 
-    private PactFragment getPactFragment(TestClass testClass, String currentProvider, Object testInstance, PactVerification pactVerification) {
+    private ConsumerProviderPair executePactFragment(EventContext<Test> testEventContext, String currentProvider, PactVerification pactVerification) throws Throwable {
+        final Object testInstance = testEventContext.getEvent().getTestInstance();
+        final TestClass testClass = testEventContext.getEvent().getTestClass();
+
         Optional<Method> possiblePactMethod = findPactMethod(currentProvider, testClass, pactVerification);
         if (!possiblePactMethod.isPresent()) {
             throw new UnsupportedOperationException("Could not find method with @Pact for the provider " + currentProvider);
@@ -59,7 +59,11 @@ public abstract class AbstractConsumerPactTest {
         } catch (Exception e) {
             throw new RuntimeException("Failed to invoke pact method", e);
         }
-        return pactFragment;
+
+        VerificationResult result = runPactTest(testEventContext, pactFragment);
+        validateResult(result, pactVerification);
+
+        return new ConsumerProviderPair(pact.consumer(), currentProvider);
     }
 
     private VerificationResult runPactTest(EventContext<Test> base, PactFragment pactFragment) {
