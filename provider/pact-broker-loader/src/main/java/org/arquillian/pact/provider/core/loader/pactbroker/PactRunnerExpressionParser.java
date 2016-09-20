@@ -1,4 +1,4 @@
-package org.arquillian.pact.provider.core.loader;
+package org.arquillian.pact.provider.core.loader.pactbroker;
 
 
 import java.util.StringJoiner;

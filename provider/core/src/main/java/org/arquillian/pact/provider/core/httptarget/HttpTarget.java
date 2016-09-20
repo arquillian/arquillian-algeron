@@ -8,11 +8,12 @@ import au.com.dius.pact.provider.reporters.ReporterManager;
 import au.com.dius.pact.provider.reporters.VerifierReporter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpRequest;
+import org.arquillian.pact.provider.api.SystemPropertyResolver;
 import org.arquillian.pact.provider.spi.ArquillianTestClassAwareTarget;
 import org.arquillian.pact.provider.spi.Provider;
 import org.arquillian.pact.provider.spi.TargetRequestFilter;
 import org.arquillian.pact.provider.spi.VerificationReports;
-import org.arquillian.pact.provider.core.loader.SystemPropertyResolver;
+
 import org.jboss.arquillian.test.spi.TestClass;
 
 import java.io.File;
@@ -27,11 +28,11 @@ import java.util.stream.Collectors;
 
 public class HttpTarget implements Target, ArquillianTestClassAwareTarget {
 
-    private final String path;
-    private final String host;
-    private final int port;
-    private final String protocol;
-    private final boolean insecure;
+    private String path;
+    private String host;
+    private int port;
+    private String protocol;
+    private boolean insecure;
 
     private final SystemPropertyResolver systemPropertyResolver = new SystemPropertyResolver();
 
@@ -109,6 +110,16 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget {
                 url.getPath() == null ? "/" : url.getPath(),
                 insecure);
 
+    }
+
+    @Override
+    public void testInteraction(URL url, String consumer, RequestResponseInteraction interaction) {
+        this.protocol = url.getProtocol() == null ? "http" : url.getProtocol();
+        this.host = url.getHost();
+        this.port = url.getPort() == -1 ? 8080 : url.getPort();
+        this.path = url.getPath() == null ? "/" : url.getPath();
+
+        this.testInteraction(consumer, interaction);
     }
 
     @Override

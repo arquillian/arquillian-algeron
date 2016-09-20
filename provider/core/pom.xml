@@ -31,24 +31,8 @@
             <artifactId>arquillian-config-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.rholder</groupId>
-            <artifactId>guava-retrying</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>fluent-hc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.arquillian.pact</groupId>
             <artifactId>arquillian-pact-provider-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.eclipsesource.minimal-json</groupId>
-            <artifactId>minimal-json</artifactId>
         </dependency>
         <dependency>
             <groupId>au.com.dius</groupId>

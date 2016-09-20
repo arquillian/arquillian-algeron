@@ -1,4 +1,4 @@
-package org.arquillian.pact.provider.core.loader;
+package org.arquillian.pact.provider.core.loader.pactbroker;
 
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.PactReader;
@@ -11,18 +11,17 @@ import com.github.rholder.retry.Retryer;
 import com.github.rholder.retry.RetryerBuilder;
 import com.github.rholder.retry.StopStrategies;
 import com.github.rholder.retry.WaitStrategies;
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.utils.URIBuilder;
 import org.arquillian.pact.provider.spi.loader.PactLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
@@ -33,16 +32,17 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
 
-import static org.arquillian.pact.provider.core.loader.PactRunnerExpressionParser.parseExpressions;
 import static java.util.stream.Collectors.toList;
 
 /**
  * Out-of-the-box implementation of {@link org.arquillian.pact.provider.spi.loader.PactLoader} that downloads pacts from Pact broker
  */
 public class PactBrokerLoader implements PactLoader {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PactBrokerLoader.class);
+    private static final Logger LOGGER = Logger.getLogger(PactBrokerLoader.class.getName());
     private static final String PACT_URL_PATTERN = "/pacts/provider/{0}/latest";
     private static final String PACT_URL_PATTERN_WITH_TAG = "/pacts/provider/{0}/latest/{1}";
 
@@ -83,12 +83,12 @@ public class PactBrokerLoader implements PactLoader {
     }
 
     private List<Pact> loadPactsForProvider(final String providerName, final String tag) throws IOException {
-        LOGGER.debug("Loading pacts from pact broker for provider " + providerName + " and tag " + tag);
+        LOGGER.log(Level.FINER, String.format("Loading pacts from pact broker for provider %s and tag %s ", providerName, tag));
         final HttpResponse httpResponse;
         try {
-            URIBuilder uriBuilder = new URIBuilder().setScheme(parseExpressions(pactBrokerProtocol))
-                    .setHost(parseExpressions(pactBrokerHost))
-                    .setPort(Integer.parseInt(parseExpressions(pactBrokerPort)));
+            URIBuilder uriBuilder = new URIBuilder().setScheme(PactRunnerExpressionParser.parseExpressions(pactBrokerProtocol))
+                    .setHost(PactRunnerExpressionParser.parseExpressions(pactBrokerHost))
+                    .setPort(Integer.parseInt(PactRunnerExpressionParser.parseExpressions(pactBrokerPort)));
             if (tag.equals("latest")) {
                 uriBuilder.setPath(MessageFormat.format(PACT_URL_PATTERN, providerName));
             } else {
@@ -108,14 +108,14 @@ public class PactBrokerLoader implements PactLoader {
 
         final int statusCode = httpResponse.getStatusLine().getStatusCode();
         if (statusCode == 404) {
-            LOGGER.warn("There are no pacts found for the service '" + providerName + "' and tag '" + tag + "'");
+            LOGGER.log(Level.WARNING, String.format("There are no pacts found for the service %s and tag %s", providerName, tag));
             return Collections.emptyList();
         }
 
         final InputStream content = httpResponse.getEntity().getContent();
         if (statusCode / 100 != 2) {
             throw new RuntimeException("Pact broker responded with status: " + statusCode +
-                    "\n payload: '" + IOUtils.toString(content) + "'");
+                    "\n payload: '" + asStringPreservingNewLines(content) + "'");
         }
 
         final JsonValue parse = Json.parse(new InputStreamReader(content));
@@ -142,5 +142,23 @@ public class PactBrokerLoader implements PactLoader {
 
     public void setHttpResponseCallable(Callable<HttpResponse> httpResponseCallable) {
         this.httpResponseCallable = httpResponseCallable;
+    }
+
+    private static String asStringPreservingNewLines(InputStream response) {
+        StringWriter logwriter = new StringWriter();
+
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response));
+
+            String line = null;
+            while ((line = bufferedReader.readLine()) != null) {
+                logwriter.write(line);
+                logwriter.write(System.lineSeparator());
+            }
+
+            return logwriter.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

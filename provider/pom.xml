@@ -26,6 +26,8 @@
       <module>core</module>
       <module>spi</module>
       <module>ftest</module>
+      <module>ftest-incontainer</module>
+      <module>pact-broker-loader</module>
     </modules>
 
     <dependencies>

@@ -1,4 +1,4 @@
-package org.arquillian.pact.provider.core.loader;
+package org.arquillian.pact.provider.core.loader.pactbroker;
 
 import org.arquillian.pact.provider.spi.loader.PactSource;
 
