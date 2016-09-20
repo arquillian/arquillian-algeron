@@ -3,6 +3,7 @@ package org.arquillian.pact.consumer.ftest;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.PactFragment;
 import io.restassured.RestAssured;
+import io.restassured.response.ValidatableResponse;
 import org.arquillian.pact.consumer.spi.Pact;
 import org.arquillian.pact.consumer.spi.PactVerification;
 import org.jboss.arquillian.junit.Arquillian;
@@ -21,7 +22,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 @RunWith(Arquillian.class)
 public class ConsumerTest {
 
-    @Pact(provider="test_provider", consumer="test_consumer")
+    @Pact(provider = "test_provider", consumer = "test_consumer")
     public PactFragment createFragment(PactDslWithProvider builder) {
 
         Map<String, String> header = new HashMap<>();
@@ -31,25 +32,19 @@ public class ConsumerTest {
                 .given("test state")
                 .uponReceiving("ConsumerTest test interaction")
                 .path("/")
-                  .method("GET")
+                .method("GET")
                 .willRespondWith()
-                  .status(200)
-                  .headers(header)
-                  .body("{\"responsetest\": true, \"name\": \"harry\"}")
-              .toFragment();
+                .status(200)
+                .headers(header)
+                .body("{\"responsetest\": true, \"name\": \"harry\"}")
+                .toFragment();
     }
 
     @Test
     @PactVerification("test_provider")
     public void runTest() throws IOException {
-            //Instead of creating a REST gateway, RestAssured is used to simplify code.
-
-            // Default port of mocking server is 9090
-            RestAssured.port = 9090;
-            get().then()
-                    .assertThat()
-                    .body("name", equalTo("harry"));
-            assertThat(new File("target/pacts/test_consumer-test_provider.json")).exists();
+        new ConsumerClient().get().body("name", equalTo("harry"));
+        assertThat(new File("target/pacts/test_consumer-test_provider.json")).exists();
     }
 
 }
