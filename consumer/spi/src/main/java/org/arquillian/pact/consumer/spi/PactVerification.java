@@ -21,7 +21,8 @@ public @interface PactVerification {
     String value();
 
     /**
-     * Method to call to get the pact fragment. Defaults to empty string which results in using the first one found
+     * Method to call to get the pact fragment. Defaults to empty string which results in using the first one found.
+     * This should be filled with the name of the method annotated with `@Pact` that want to be executed.
      */
     String fragment() default "";
 }

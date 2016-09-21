@@ -1,0 +1,491 @@
+= Arquillian Pact
+
+== What is Pact?
+
+In microservices architecture you typically have one or more services that make remote calls to one or more services to get information from them.
+
+For example you might have one service called _BeerService_ that returns information of a beer.
+But this service needs to call another service _CommentsService_ which returns the comments that users has done for given beer.
+After _BeerService_ receives all the comments for that beer, everything is packed and sent to the client.
+
+So as you can see there is a communication between both services where one needs to know what and how to send data such as name of fields, type of data or status code (_CommentsService_) and another one that needs to know how to interpret what is received (_BeerService_).
+
+It seems obvious that it must exist some kind of agreement between them so they can understand each other correctly in all of their communications.
+
+https://docs.pact.io/[Pact] is a framework that provides support for Consumer Driven Contracts testing.
+Pact is implemented in several languages such as Ruby, JVM, .NET, JavaScript, Go and Swift
+
+=== Consumer Driven Contracts
+
+A *Contract* is a collection of agreements between a client ( or Consumer which in previous example is _BeerService_) and an API (or Provider which in previous example is _CommentsService_) that describes the interactions that can take place between them.
+
+In summary *Consumer Driven Contracts* is a pattern that drives the development of the Provider from its Consumers point of view.
+This means that consumer describes what and how he wants to receive the information, describing in form of contract and then provider implements its service following that contract.
+When the client validates that can consume what it is been defined in the contract and provider validates that what he produces meets the contract, then you can be sure that contract expectations are met and they will be able to communicate each other.
+
+Also notice that thanks of these tests, if anyone changes the client or the server side to not meet the contract, you'll detect before it is deployed to production.
+
+You can read more about Consumer-Driven contracts at http://martinfowler.com/articles/consumerDrivenContracts.html or at book https://www.manning.com/books/testing-java-microservices[Testing Java Microservices] chapter 6.
+
+=== How Pact works?
+
+Obviously any Contract test is composed by two faces, one for the consumer and another one for the provider and a contract file that is sent from consumer to provider.
+Let's see the steps to write contract tests using Pact.
+
+. Consumer expectations are set up on a mock server.
+In this way consumer doesn't need to know how to deploy a provider (since it might not be trivial to do it, and probably at the end you'll end up writing end-to-end tests instead of contract tests).
+So consumer tests its client/gateway code to communicate against a mock server.
+. When consumer tests are run, mocked requests and responses are written into a "pact" file, which in fact it is the contract that has been defined in consumer part.
+. The "pact" file are sent to provider project to be replayed against the provider service.
+Then real responses from provider are checked against the expected responses defined in contract.
+. If consumer is able to produce a "pact" file and provider meets all the expectations, then you can say that contract is verified by both parties and will be able to communicate.
+
+These steps can be summarized in next diagram:
+
+image::http://www.pact.io/media/pact_two_parts.png[]
+
+== Arquillian Pact
+
+https://github.com/DiUS/pact-jvm[Pact-JVM] is an implementation for JVM languages of Pact.
+
+Arquillian Pact is the integration of all Arquillian philosophy/extensions into Consumer Driven Contracts approach using Pact-JVM.
+
+=== Arquillian Pact Consumer
+
+First thing to do is develop the *Consumer* part of the test.
+Consumer part of Consumer-Driven Contract defines the contract that as consumer understands as well as validates that as a client he can consume it.
+
+==== Arquillian Pact Consumer In Container
+
+Arquillian has two modes of working *In Container* (which means having a `@Deployment` method) and Arquillian takes care of managing lifecycle of the server and deploy the archive, or *Standalone* (no `@Deployment` method) where Arquillian assumes that everything is already deployed.
+
+Let's see how to write the consumer part in In Container mode.
+
+First thing to do is add typical Arquillian dependencies such as Arquillian bom and the dependency of the container you want to use.
+Nothing new here:
+
+[[arqdeps]]
+[source, xml]
+.pom.xml
+----
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-bom</artifactId>
+            <version>${version.arquillian_core}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+<dependencies>
+    <dependency>
+        <groupId>org.jboss.arquillian.junit</groupId>
+        <artifactId>arquillian-junit-container</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.arquillian.container</groupId>
+        <artifactId>arquillian-container-chameleon</artifactId> <!-- 1 -->
+        <version>1.0.0.Alpha7</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+----
+<1> Notice that I am using Chameleon generic container, you can read more at http://www.lordofthejars.com/2016/09/arquillian-chameleon-for-sake-of.html
+
+Then you need to add `arquillian-pact-consumer` dependency as well as `pact-jvm-consumer` dependency:
+
+[source, xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>org.arquillian.pact</groupId>
+        <artifactId>arquillian-pact-consumer-core</artifactId>
+        <version>${version.arquillian_pact}</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>au.com.dius</groupId>
+        <artifactId>pact-jvm-consumer_2.11</artifactId>
+        <scope>test</scope>
+        <version>3.5.0-beta.1</version> <!-- 1 -->
+    </dependency>
+</dependencies>
+----
+<1> Arquillian Pact has been tested with latest version, but it should work with any 3.X version.
+
+After dependencies you can write the test that defines the contract:
+
+
+[[incontainer]]
+[source, java]
+.ClientGatewayTest.java
+----
+@RunWith(Arquillian.class) // <1>
+public class ClientGatewayTest {
+
+    @Deployment // <2>
+    public static JavaArchive createDeployment() {
+        return ShrinkWrap.create(JavaArchive.class).addClasses(ClientGateway.class);
+    }
+
+    @Pact(provider="test_provider", consumer="test_consumer") // <3>
+    public PactFragment createFragment(PactDslWithProvider builder) {
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+
+        return builder
+                .given("test state")
+                .uponReceiving("ConsumerTest test interaction")
+                .path("/")
+                .method("GET")
+                .willRespondWith()
+                .status(200)
+                .headers(header)
+                .body("{\"responsetest\": true, \"name\": \"harry\"}")
+                .toFragment(); // <4>
+    }
+
+    @EJB // <5>
+    ClientGateway clientGateway;
+
+    @Test
+    @PactVerification("test_provider") // <6>
+    public void should_return_message() throws IOException {
+        assertThat(clientGateway.getMessage(), is("{\"responsetest\": true, \"name\": \"harry\"}")); // <7>
+    }
+}
+----
+<1> Arquillian Runner
+<2> Defines what you want to deploy to defined container. In this case an EJB that acts as gateway to another service
+<3> To define the contract you need to configure expectations of mock server. This is done by annotating a method with `@Pact` annotation and setting the provider and consumer name
+<4> A Pact method returns a fragment of the contract which might be the complete contract or not
+<5> Typical Arquillian enrichment
+<6> Defines which provider is validated when this test method is executed.
+<7> Asserts that the gateway can read the kind of messages sent by provider. Notice that now it is pretty simple, but in real test you'll test for example that message is correctly bound to an object.
+
+After this test is executed, contract is placed at `target/pacts` directory.
+Then you can send contract to provider side.
+
+Notice that contract and/or mock responses are defined using Pact DSL.
+You can read more about this DSL at https://github.com/DiUS/pact-jvm/tree/master/pact-jvm-consumer-junit#using-the-pact-dsl-directly.
+
+Important things to retain from consumer part:
+
+* It is an Arquillian test so you can use anything that Arquillian provides.
+* Methods annotated with `@Pact` defines a fragment of the contract that at same time is used by mock server for providing responses.
+* In case of using several methods annotated with `@Pact` annotation, you need to use `fragment` attribute `@PactVerification(.. fragment="methodName")`to set which fragment is under test for each `@Test` method.
+
+You can see the full example at: https://github.com/arquillian/arquillian-pact/tree/master/consumer/ftest-incontainer
+
+==== Arquillian Pact Consumer Standalone
+
+*Standalone* mode (no `@Deployment` method), Arquillian assumes that everything is already deployed.
+
+The only difference between previous example is that you only need `arquillian-junit-standalone` instead of `arquilian-junit-container` and don't need to define any container adapter.
+Obviously no `@Deployment` method is required:
+
+[source, java]
+.ConsumerTest.java
+----
+@RunWith(Arquillian.class)
+public class ConsumerTest {
+
+    @Pact(provider = "test_provider", consumer = "test_consumer")
+    public PactFragment createFragment(PactDslWithProvider builder) {
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+
+        return builder
+                .given("test state")
+                .uponReceiving("ConsumerTest test interaction")
+                .path("/")
+                .method("GET")
+                .willRespondWith()
+                .status(200)
+                .headers(header)
+                .body("{\"responsetest\": true, \"name\": \"harry\"}")
+                .toFragment();
+    }
+
+    @Test
+    @PactVerification("test_provider")
+    public void runTest() throws IOException {
+        new ConsumerClient().get().body("name", equalTo("harry"));
+        assertThat(new File("target/pacts/test_consumer-test_provider.json")).exists();
+    }
+
+}
+----
+
+Code is pretty similar as <<incontainer, previous test>> but now the consumer client/gateway object is instantiated as plain java object instead of container managed.
+
+You can see the full example at: https://github.com/arquillian/arquillian-pact/tree/master/consumer/ftest
+
+==== Arquillian Pact Consumer Configuration
+
+Arquillian Pact Consumer can be configured using Arquillian configuration mechanism (`arquillian.xml` file or system properties).
+
+[source, xml]
+.arquillian.xml
+----
+<?xml version="1.0"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://jboss.org/schema/arquillian"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian
+    http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <extension qualifier="pact-consumer">
+        <property name="pactSpecVersion">1</property>
+    </extension>
+
+</arquillian>
+----
+
+The attributes are:
+
+|===
+| Attribute Name | Description | Default Value
+
+|host
+|Bind host for mock server
+|localhost
+
+|port
+|Listening port for mock server
+|9090
+
+|pactSpecVesion
+|Pact specification version as integer
+|2
+
+|https
+|If mock server should start using https instead of http
+|false
+
+|provider
+|If you want to set provider globally
+|
+
+|pactArtifactVersion
+|By default Arquillian Pact packages pact dependencies in incontainer tests. To get the version of artifacts to package, checks the current pact version of classpath.
+ If you want to use another one rather the one defined in your classpath, you can set it here the version.
+|
+
+|===
+
+=== Arquillian Pact Provider
+
+The next thing you need to do is sent the contract (aka "pact" file) to *Provider* project and validate that provider produces the expected responses to defined requests.
+This is done by replaying all requests defined in contract against real provider and validating that the response is the expected one.
+
+==== Loaders
+
+One real important thing in provider tests is where contract files are located and how the test should load it.
+To specify this, Arquillian Provider provides some class annotations, but of course you can implement your own as well:
+
+From URL:: `@PactUrl(urls = {"http://build.server/zoo_app-animal_service.json"} )`
+From PactBroker:: `@PactBroker(host="${pactbroker.hostname:localhost}", port = "80")`
+Notice that in this case system properties with defaults are supported. Also you need to add `org.arquillian.pact:arquillian-pact-provider-pact-broker-loader:${version} dependency.
+From Folder:: `@PactFolder("subfolder/in/resource/directory")`
+
+It's possible to use a custom Pact source.
+For this, implement interface `org.arquillian.pact.provider.spi.loader.PactLoader` and annotate the test class with `@PactSource(MyOwnPactLoader.class)`.
+
+NOTE: class `MyOwnPactLoader` must have a default empty constructor or a constructor with one argument of class Class which at runtime will be the test class so you can get custom annotations of test class.
+
+You can see an example at https://github.com/arquillian/arquillian-pact/blob/master/provider/core/src/main/java/org/arquillian/pact/provider/core/loader/PactUrlLoader.java
+
+==== Arquillian Pact Provider In Container
+
+Again you can write provider's part using in container or standalone mode.
+In this section, an in container mode example is developed.
+
+Apart from adding Arquillian bom dependencies as mentioned in <<arqdeps, consumer part>>, you need to add arquillian pact dependencies:
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+    <groupId>org.arquillian.pact</groupId>
+    <artifactId>arquillian-pact-provider-core</artifactId>
+    <scope>test</scope>
+    <version>${version.arquillian_pact}</version>
+</dependency>
+<dependency>
+    <groupId>au.com.dius</groupId>
+    <artifactId>pact-jvm-provider_2.11</artifactId>
+    <scope>test</scope>
+    <version>3.5.0-beta.1</version> <!-- 1 -->
+</dependency>
+----
+<1> Arquillian Pact has been tested with latest version, but it should work with any 3.X version.
+
+After dependencies you can write the test that replies all contracts against provider:
+
+[[provincon]]
+[source, java]
+.MyServiceProviderTest.java
+----
+@RunWith(Arquillian.class)
+@Provider("test_provider") // <1>
+@PactFolder("pacts") // <2>
+public class MyServiceProviderTest {
+
+    @Deployment(testable = false) // <3>
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class).addClass(MyService.class);
+    }
+
+    @CurrentConsumer // <4>
+    Consumer consumer;
+
+    @CurrentInteraction // <5>
+    RequestResponseInteraction interaction;
+
+    @ArquillianResource // <6>
+    URL webapp;
+
+    @ArquillianResource // <7>
+    Target target;
+
+    @Test
+    public void should_provide_valid_answers() {
+        target.testInteraction(webapp,  // <8>
+                                consumer.getName(),
+                               interaction);
+    }
+
+}
+----
+<1> Sets the name of provider used in this test
+<2> Configures where to get pact files
+<3> Deploys provider application to app server
+<4> Arquillian Pact injects consumer contract under test. One provider can serve different consumers, and must meet all their expectations
+<5> Current request
+<6> Arquillian injection of URL where application is deployed
+<7> A target is a class that makes all requests to provider. In case of Arquillian Pact by default it uses an Http Client target
+<8> Makes the request to provider and validates that the response is the expected one
+
+When running this test Arquillian Pact Provider will do next things:
+
+. Deploy provider to chosen application server, as any other Arquillian test.
+. Read all contract files present in classpath folder `pacts` which the provider is `test_provider`. Of course there can be more than one since a provider might serve several consumers.
+. For each contract, it will extract each of the request/response pair
+. For each request/response it sends the request specified in contract to provider and validate the response against expectations defined in contract.
+
+So as you can see the `should_provide_valid_answers` might be run several times depending on the number of consumers that depends on provider and the number of requests/responses defined.
+But this is something that it is managed automatically by Arquillian Pact.
+
+You can see full example at: https://github.com/arquillian/arquillian-pact/tree/master/provider/ftest-incontainer
+
+==== Arquillian Pact Provider Standalone
+
+The only difference between previous example is that you only need `arquillian-junit-standalone` instead of `arquilian-junit-container` and don't need to define any container adapter.
+Obviously no `@Deployment` method is required:
+
+[source, java]
+.StarWarsProviderTest
+----
+
+@RunWith(Arquillian.class)
+@Provider("planets_provider")
+@PactFolder("pacts")
+public class StarWarsProviderTest {
+
+    @ClassRule // <1>
+    public static final ClientDriverRule embeddedService = new ClientDriverRule(8332);
+
+    @CurrentConsumer
+    Consumer consumer;
+
+    @CurrentInteraction
+    RequestResponseInteraction interaction;
+
+    @ArquillianResource
+    Target target;
+
+    @BeforeClass // <2>
+    public static void recordServerInteractions() {
+        embeddedService.addExpectation(
+                onRequestTo("/rest/planet/orbital/average")
+                    .withMethod(ClientDriverRequest.Method.GET),
+                giveResponse("1298.3", "text/plain").withStatus(200));
+
+        embeddedService.addExpectation(
+                onRequestTo("/rest/planet/orbital/biggest")
+                        .withMethod(ClientDriverRequest.Method.GET),
+                giveResponseAsBytes(StarWarsProviderTest.class.getResourceAsStream("/server.json"), "application/json").withStatus(200));
+
+    }
+
+
+    @Test
+    public void validateProvider() {
+        target.testInteraction(consumer.getName(), interaction);
+    }
+
+}
+----
+<1> Stub server to not having to having to deploy an application
+<2> Expectations/Implementation of provider server
+
+You can see full example at: https://github.com/arquillian/arquillian-pact/tree/master/provider/ftest
+
+==== Arquillian Pact Consumer Configuration
+
+Arquillian Pact Provider can be configured using Arquillian configuration mechanism (`arquillian.xml` file or system properties).
+
+[source, xml]
+.arquillian.xml
+----
+<?xml version="1.0"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://jboss.org/schema/arquillian"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian
+    http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <extension qualifier="pact-provider">
+        <property name="port">8332</property>
+    </extension>
+
+</arquillian>
+----
+
+The attributes are:
+
+|===
+| Attribute Name | Description | Default Value
+
+|targetUrl
+|Url to used by `target` to connect to provider
+|
+
+|insecure
+|In case of https if test should skip https validations
+|false
+
+|protocol
+|protocol used to connect in case of not using `targetUrl` property
+|http
+
+|host
+|host used to connect in case of not using `targetUrl` property
+|localhost
+
+|port
+|port used to connect in case of not using `targetUrl` property
+|8080
+
+|path
+|path appended at the end of the host in case of not using `targetUrl` property
+|/
+|===
+
+Notice that in case of using incontainer tests you don't need to configure any of these parameters (except if _insecure_ is required) since you can use the URL injected by Arquillian.
+See this at <<provincon, provider in container>> example.
