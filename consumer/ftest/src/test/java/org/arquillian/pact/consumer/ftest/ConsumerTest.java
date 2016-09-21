@@ -44,7 +44,6 @@ public class ConsumerTest {
     @PactVerification("test_provider")
     public void runTest() throws IOException {
         new ConsumerClient().get().body("name", equalTo("harry"));
-        assertThat(new File("target/pacts/test_consumer-test_provider.json")).exists();
     }
 
 }
