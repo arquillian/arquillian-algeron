@@ -1,6 +1,8 @@
 package org.arquillian.pact.provider.core.loader.pactbroker;
 
 
+import org.arquillian.pact.provider.api.SystemPropertyResolver;
+
 import java.util.StringJoiner;
 
 public class PactRunnerExpressionParser {
