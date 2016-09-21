@@ -88,7 +88,7 @@ Nothing new here:
     </dependency>
     <dependency>
         <groupId>org.arquillian.container</groupId>
-        <artifactId>arquillian-container-chameleon</artifactId> <!-- 1 -->
+        <artifactId>arquillian-container-chameleon</artifactId> <!--1-->
         <version>1.0.0.Alpha7</version>
         <scope>test</scope>
     </dependency>
@@ -111,7 +111,7 @@ Then you need to add `arquillian-pact-consumer` dependency as well as `pact-jvm-
         <groupId>au.com.dius</groupId>
         <artifactId>pact-jvm-consumer_2.11</artifactId>
         <scope>test</scope>
-        <version>3.5.0-beta.1</version> <!-- 1 -->
+        <version>3.5.0-beta.1</version> <!--1-->
     </dependency>
 </dependencies>
 ----
@@ -321,7 +321,7 @@ Apart from adding Arquillian bom dependencies as mentioned in <<arqdeps, consume
     <groupId>au.com.dius</groupId>
     <artifactId>pact-jvm-provider_2.11</artifactId>
     <scope>test</scope>
-    <version>3.5.0-beta.1</version> <!-- 1 -->
+    <version>3.5.0-beta.1</version> <!--1-->
 </dependency>
 ----
 <1> Arquillian Pact has been tested with latest version, but it should work with any 3.X version.
