@@ -34,7 +34,7 @@ public class PactMavenDependencyLoaderTest {
 
     }
 
-    @PactMavenDependency
+    @PactMavenDependency(value = "org.superbiz:contract:[1.0,]")
     private static class MavenLoaderTest {}
 
 }

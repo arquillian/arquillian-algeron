@@ -291,8 +291,12 @@ To specify this, Arquillian Provider provides some class annotations, but of cou
 
 From URL:: `@PactUrl(urls = {"http://build.server/zoo_app-animal_service.json"} )`
 From PactBroker:: `@PactBroker(host="${pactbroker.hostname:localhost}", port = "80")`
-Notice that in this case system properties with defaults are supported. Also you need to add `org.arquillian.pact:arquillian-pact-provider-pact-broker-loader:${version} dependency.
+Notice that in this case system properties with defaults are supported. Also you need to add `org.arquillian.pact:arquillian-pact-provider-pact-broker-loader:${version}` dependency.
 From Folder:: `@PactFolder("subfolder/in/resource/directory")`
+You can use absolute or relative path. The loader first checks if resource is in classpath and if not checks directory. As with *PactBroker*, you can use system properties.
+From Maven:: `@PactMavenDependency(value = "org.superbiz:contract:[1.0,]")`. Also you need to add `org.arquillian.pact:arquillian-pact-provider-maven-loader:${version}` dependency.
+In case of specifying a range of versions, this loader will take always the highest one.
+You can use system properties to set values too.
 
 It's possible to use a custom Pact source.
 For this, implement interface `org.arquillian.pact.provider.spi.loader.PactLoader` and annotate the test class with `@PactSource(MyOwnPactLoader.class)`.
