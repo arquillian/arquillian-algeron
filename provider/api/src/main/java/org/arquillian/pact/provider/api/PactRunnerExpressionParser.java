@@ -1,7 +1,5 @@
-package org.arquillian.pact.provider.core.loader.pactbroker;
+package org.arquillian.pact.provider.api;
 
-
-import org.arquillian.pact.provider.api.SystemPropertyResolver;
 
 import java.util.StringJoiner;
 
