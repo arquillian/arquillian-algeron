@@ -2,6 +2,7 @@ package org.arquillian.pact.provider.core.loader;
 
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.PactReader;
+import org.arquillian.pact.provider.api.PactRunnerExpressionParser;
 import org.arquillian.pact.provider.spi.loader.PactLoader;
 
 import java.io.File;
@@ -9,7 +10,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Out-of-the-box implementation of {@link PactLoader}
@@ -42,26 +45,22 @@ public class PactFolderLoader implements PactLoader {
     public List<Pact> load(final String providerName) throws IOException {
         List<Pact> pacts = new ArrayList<Pact>();
         File pactFolder = resolvePath();
-        File[] files = pactFolder.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".json");
-            }
-        });
+
+        File[] files = pactFolder.listFiles((dir, name) -> name.endsWith(".json"));
         if (files != null) {
-            for (File file : files) {
-                Pact pact = PactReader.loadPact(file);
-                if (pact.getProvider().getName().equals(providerName)) {
-                    pacts.add(pact);
-                }
-            }
+            return Arrays.stream(files)
+                    .map(PactReader::loadPact)
+                    .filter(pact -> pact.getProvider().getName().equals(providerName))
+                    .collect(Collectors.toList());
         }
+
         return pacts;
     }
 
     private File resolvePath() {
-        File file = new File(path);
-        URL resourcePath = PactFolderLoader.class.getClassLoader().getResource(path);
+        final String pathname = PactRunnerExpressionParser.parseExpressions(path);
+        File file = new File(pathname);
+        URL resourcePath = PactFolderLoader.class.getClassLoader().getResource(pathname);
         if (resourcePath != null) {
             file = new File(resourcePath.getPath());
         }

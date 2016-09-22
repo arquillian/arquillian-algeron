@@ -15,6 +15,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.utils.URIBuilder;
+import org.arquillian.pact.provider.api.PactRunnerExpressionParser;
 import org.arquillian.pact.provider.spi.loader.PactLoader;
 
 import java.io.BufferedReader;

@@ -16,32 +16,28 @@
     </properties>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-pact-provider-core</artifactId>
+    <artifactId>arquillian-pact-provider-maven-loader</artifactId>
 
-    <name>Arquillian Pact Provider Core</name>
+    <name>Arquillian Pact Provider Maven Loader</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.arquillian.pact</groupId>
-            <artifactId>arquillian-pact-provider-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.config</groupId>
-            <artifactId>arquillian-config-api</artifactId>
+            <groupId>au.com.dius</groupId>
+            <artifactId>pact-jvm-model</artifactId>
         </dependency>
         <dependency>
             <groupId>org.arquillian.pact</groupId>
             <artifactId>arquillian-pact-provider-spi</artifactId>
         </dependency>
         <dependency>
-            <groupId>au.com.dius</groupId>
-            <artifactId>pact-jvm-provider_2.11</artifactId>
-            <scope>provided</scope>
+            <groupId>org.arquillian.pact</groupId>
+            <artifactId>arquillian-pact-provider-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>au.com.dius</groupId>
-            <artifactId>pact-jvm-model</artifactId>
-            <scope>provided</scope>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <version>${version.shrinkwrap.resolvers}</version>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -53,11 +49,7 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 </project>
+
