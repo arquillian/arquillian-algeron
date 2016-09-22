@@ -25,7 +25,7 @@ When the client validates that can consume what it is been defined in the contra
 
 Also notice that thanks of these tests, if anyone changes the client or the server side to not meet the contract, you'll detect before it is deployed to production.
 
-You can read more about Consumer-Driven contracts at http://martinfowler.com/articles/consumerDrivenContracts.html or at book https://www.manning.com/books/testing-java-microservices[Testing Java Microservices] chapter 6.
+You can read more about Consumer-Driven contracts http://martinfowler.com/articles/consumerDrivenContracts.html[here] or at book https://www.manning.com/books/testing-java-microservices[Testing Java Microservices] chapter 6.
 
 === How Pact works?
 
@@ -94,7 +94,7 @@ Nothing new here:
     </dependency>
 </dependencies>
 ----
-<1> Notice that I am using Chameleon generic container, you can read more at http://www.lordofthejars.com/2016/09/arquillian-chameleon-for-sake-of.html
+<1> Notice that I am using Chameleon generic container, you can read more http://www.lordofthejars.com/2016/09/arquillian-chameleon-for-sake-of.html[here].
 
 Then you need to add `arquillian-pact-consumer` dependency as well as `pact-jvm-consumer` dependency:
 
@@ -172,7 +172,7 @@ After this test is executed, contract is placed at `target/pacts` directory.
 Then you can send contract to provider side.
 
 Notice that contract and/or mock responses are defined using Pact DSL.
-You can read more about this DSL at https://github.com/DiUS/pact-jvm/tree/master/pact-jvm-consumer-junit#using-the-pact-dsl-directly.
+You can read more about this DSL at https://github.com/DiUS/pact-jvm/tree/master/pact-jvm-consumer-junit#using-the-pact-dsl-directly[Using the Pact DSL directly].
 
 Important things to retain from consumer part:
 
@@ -180,7 +180,7 @@ Important things to retain from consumer part:
 * Methods annotated with `@Pact` defines a fragment of the contract that at same time is used by mock server for providing responses.
 * In case of using several methods annotated with `@Pact` annotation, you need to use `fragment` attribute `@PactVerification(.. fragment="methodName")`to set which fragment is under test for each `@Test` method.
 
-You can see the full example at: https://github.com/arquillian/arquillian-pact/tree/master/consumer/ftest-incontainer
+You can see the full example at: https://github.com/arquillian/arquillian-pact/tree/master/consumer/ftest-incontainer[ftest-incontainer]
 
 ==== Arquillian Pact Consumer Standalone
 
@@ -225,7 +225,7 @@ public class ConsumerTest {
 
 Code is pretty similar as <<incontainer, previous test>> but now the consumer client/gateway object is instantiated as plain java object instead of container managed.
 
-You can see the full example at: https://github.com/arquillian/arquillian-pact/tree/master/consumer/ftest
+You can see the full example at: https://github.com/arquillian/arquillian-pact/tree/master/consumer/ftest[ftest]
 
 ==== Arquillian Pact Consumer Configuration
 
@@ -299,7 +299,7 @@ For this, implement interface `org.arquillian.pact.provider.spi.loader.PactLoade
 
 NOTE: class `MyOwnPactLoader` must have a default empty constructor or a constructor with one argument of class Class which at runtime will be the test class so you can get custom annotations of test class.
 
-You can see an example at https://github.com/arquillian/arquillian-pact/blob/master/provider/core/src/main/java/org/arquillian/pact/provider/core/loader/PactUrlLoader.java
+You can see an example at: https://github.com/arquillian/arquillian-pact/blob/master/provider/core/src/main/java/org/arquillian/pact/provider/core/loader/PactUrlLoader.java[PactUrlLoader] java class.
 
 ==== Arquillian Pact Provider In Container
 
@@ -382,7 +382,7 @@ When running this test Arquillian Pact Provider will do next things:
 So as you can see the `should_provide_valid_answers` might be run several times depending on the number of consumers that depends on provider and the number of requests/responses defined.
 But this is something that it is managed automatically by Arquillian Pact.
 
-You can see full example at: https://github.com/arquillian/arquillian-pact/tree/master/provider/ftest-incontainer
+You can see full example at: https://github.com/arquillian/arquillian-pact/tree/master/provider/ftest-incontainer[ftest-incontainer]
 
 ==== Arquillian Pact Provider Standalone
 
@@ -435,7 +435,7 @@ public class StarWarsProviderTest {
 <1> Stub server to not having to having to deploy an application
 <2> Expectations/Implementation of provider server
 
-You can see full example at: https://github.com/arquillian/arquillian-pact/tree/master/provider/ftest
+You can see full example at: https://github.com/arquillian/arquillian-pact/tree/master/provider/ftest[ftest]
 
 ==== Arquillian Pact Consumer Configuration
 
