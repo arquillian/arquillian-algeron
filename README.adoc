@@ -1,5 +1,7 @@
 = Arquillian Pact
 
+image:https://travis-ci.org/arquillian/arquillian-pact.svg?branch=master["Build Status", link="https://travis-ci.org/arquillian/arquillian-pact"]
+
 == What is Pact?
 
 In microservices architecture you typically have one or more services that make remote calls to one or more services to get information from them.
