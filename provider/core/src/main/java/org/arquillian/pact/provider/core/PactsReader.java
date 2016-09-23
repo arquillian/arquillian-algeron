@@ -39,7 +39,7 @@ public class PactsReader {
         pactsInstanceProducer.set(new Pacts(pacts));
     }
 
-    protected List<Pact> getPacts(@Observes BeforeClass test) {
+    protected List<Pact> getPacts(BeforeClass test) {
         final TestClass testClass = test.getTestClass();
 
         final Provider providerInfo = testClass.getAnnotation(Provider.class);

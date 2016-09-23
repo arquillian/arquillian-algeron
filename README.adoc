@@ -297,6 +297,8 @@ You can use absolute or relative path. The loader first checks if resource is in
 From Maven:: `@PactMavenDependency(value = "org.superbiz:contract:[1.0,]")`. Also you need to add `org.arquillian.pact:arquillian-pact-provider-maven-loader:${version}` dependency.
 In case of specifying a range of versions, this loader will take always the highest one.
 You can use system properties to set values too.
+From Git:: `@PactGit("https://github.com/lordofthejars/starwarspact.git")` Also you need to add `org.arquillian.pact:arquillian-pact-provider-git-loader:${version}` dependency.
+You can use system properties to set vales too. Inspect `@PactGit` annotation for all options that accept this loader such as authentication, use branch or tag or set a pact directory.
 
 It's possible to use a custom Pact source.
 For this, implement interface `org.arquillian.pact.provider.spi.loader.PactLoader` and annotate the test class with `@PactSource(MyOwnPactLoader.class)`.

@@ -64,6 +64,8 @@
         <version.httpclient>4.5.2</version.httpclient>
         <version.minimal-json>0.9.4</version.minimal-json>
         <version.rest-assured>3.0.1</version.rest-assured>
+        <version.jgit>4.5.0.201609210915-r</version.jgit>
+        <version.slf4j-api>1.7.21</version.slf4j-api>
     </properties>
 
     <dependencyManagement>
@@ -165,6 +167,16 @@
                 <groupId>com.eclipsesource.minimal-json</groupId>
                 <artifactId>minimal-json</artifactId>
                 <version>${version.minimal-json}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jgit</groupId>
+                <artifactId>org.eclipse.jgit</artifactId>
+                <version>${version.jgit}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${version.slf4j-api}</version>
             </dependency>
             <dependency>
                 <groupId>io.rest-assured</groupId>

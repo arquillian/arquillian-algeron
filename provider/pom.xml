@@ -29,6 +29,7 @@
       <module>ftest-incontainer</module>
       <module>pact-broker-loader</module>
       <module>maven-loader</module>
+      <module>git-loader</module>
     </modules>
 
     <dependencies>
