@@ -11,6 +11,7 @@ import org.arquillian.pact.provider.core.httptarget.Target;
 import org.arquillian.pact.provider.spi.ArquillianTestClassAwareTarget;
 import org.arquillian.pact.provider.spi.CurrentConsumer;
 import org.arquillian.pact.provider.spi.CurrentInteraction;
+import org.arquillian.pact.provider.spi.PactProviderExecutionAwareTarget;
 import org.arquillian.pact.provider.spi.State;
 import org.arquillian.pact.provider.spi.TargetRequestFilter;
 import org.jboss.arquillian.core.api.Instance;
@@ -83,7 +84,10 @@ public class InteractionRunner {
             RequestResponsePact requestResponsePact = (RequestResponsePact) pact;
 
             // Inject current consumer
-            setField(testInstance, consumerField, pact.getConsumer());
+            if (consumerField != null) {
+                setField(testInstance, consumerField, pact.getConsumer());
+            }
+
             for (final RequestResponseInteraction interaction : requestResponsePact.getInteractions()) {
                 executeStateChanges(interaction, testClass, testInstance);
 
@@ -94,8 +98,16 @@ public class InteractionRunner {
                     arquillianTestClassAwareTarget.setTestClass(testClass, testInstance);
                 }
 
+                if (target instanceof PactProviderExecutionAwareTarget) {
+                    PactProviderExecutionAwareTarget pactProviderExecutionAwareTarget = (PactProviderExecutionAwareTarget) target;
+                    pactProviderExecutionAwareTarget.setConsumer(pact.getConsumer());
+                    pactProviderExecutionAwareTarget.setRequestResponseInteraction(interaction);
+                }
+
                 // Inject current interaction to test
-                setField(testInstance, interactionField, interaction);
+                if (interactionField != null) {
+                    setField(testInstance, interactionField, interaction);
+                }
 
                 // run the test
                 test.proceed();
@@ -174,12 +186,14 @@ public class InteractionRunner {
                         field -> fieldType.isAssignableFrom(field.getType())
                 ).collect(Collectors.toList());
 
-        if (rri.size() != 1) {
-            String rriError = String.format("Only one field annotated with %s of type %s should be present", annotation.getName(),fieldType.getName());
+        if (rri.size() > 1) {
+            String rriError = String.format("Only one field annotated with %s of type %s should be present", annotation.getName(), fieldType.getName());
             logger.log(Level.SEVERE, rriError);
             errors.add(new IllegalArgumentException(rriError));
         } else {
-            return rri.get(0);
+            if (rri.size() == 1) {
+                return rri.get(0);
+            }
         }
 
         return null;
@@ -189,7 +203,7 @@ public class InteractionRunner {
     protected void executeStateChanges(final RequestResponseInteraction interaction, final TestClass testClass, final Object target) {
         if (interaction.getProviderState() != null && !interaction.getProviderState().isEmpty()) {
             final String state = interaction.getProviderState();
-            for (Method ann: testClass.getMethods(State.class)) {
+            for (Method ann : testClass.getMethods(State.class)) {
                 if (ArrayUtils.contains(ann.getAnnotation(State.class).value(), state)) {
                     try {
                         ann.invoke(target);
@@ -206,7 +220,7 @@ public class InteractionRunner {
 
 
     private List<Field> getFieldsWithAnnotation(final Class<?> source,
-                                                      final Class<? extends Annotation> annotationClass) {
+                                                final Class<? extends Annotation> annotationClass) {
         List<Field> declaredAccessableFields = AccessController
                 .doPrivileged(new PrivilegedAction<List<Field>>() {
                     public List<Field> run() {
@@ -228,6 +242,7 @@ public class InteractionRunner {
                 });
         return declaredAccessableFields;
     }
+
     private boolean isPublic(Method method) {
         return Modifier.isPublic(method.getModifiers());
     }

@@ -12,6 +12,18 @@ import java.net.URL;
 public interface Target {
 
     /**
+     *
+     * Run {@link au.com.dius.pact.model.RequestResponseInteraction} and perform response verification
+     * <p>
+     * Any exception will be caught by caller and reported as test failure
+     *
+     * Important: Implementators must implements {@link org.arquillian.pact.provider.spi.PactProviderExecutionAwareTarget}
+     *
+     * @param url where provider is deployed
+     */
+    void testInteraction(URL url);
+
+    /**
      * Run {@link au.com.dius.pact.model.RequestResponseInteraction} and perform response verification
      * <p>
      * Any exception will be caught by caller and reported as test failure
