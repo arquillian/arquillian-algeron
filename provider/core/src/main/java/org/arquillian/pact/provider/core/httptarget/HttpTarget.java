@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpRequest;
 import org.arquillian.pact.provider.api.SystemPropertyResolver;
 import org.arquillian.pact.provider.spi.ArquillianTestClassAwareTarget;
+import org.arquillian.pact.provider.spi.PactProviderExecutionAwareTarget;
 import org.arquillian.pact.provider.spi.Provider;
 import org.arquillian.pact.provider.spi.TargetRequestFilter;
 import org.arquillian.pact.provider.spi.VerificationReports;
@@ -26,7 +27,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class HttpTarget implements Target, ArquillianTestClassAwareTarget {
+public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactProviderExecutionAwareTarget {
 
     private String path;
     private String host;
@@ -38,6 +39,9 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget {
 
     private TestClass testClass;
     private Object testInstance;
+
+    private au.com.dius.pact.model.Consumer currentConsumer;
+    private RequestResponseInteraction currentRequestResponseInteraction;
 
     /**
      * @param host host of tested service
@@ -110,6 +114,25 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget {
                 url.getPath() == null ? "/" : url.getPath(),
                 insecure);
 
+    }
+
+    @Override
+    public void testInteraction(URL url) {
+        if (this.currentConsumer == null || this.currentRequestResponseInteraction == null) {
+            throw new IllegalArgumentException("Current Consumer or Current Request Response Interaction has not been set.");
+        }
+
+        try {
+            testInteraction(url, this.currentConsumer.getName(), this.currentRequestResponseInteraction);
+        } finally {
+            // Each run should provide a new pair of objects.
+            resetCurrentFields();
+        }
+    }
+
+    private void resetCurrentFields() {
+        this.currentConsumer = null;
+        this.currentRequestResponseInteraction = null;
     }
 
     @Override
@@ -297,5 +320,15 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget {
     public void setTestClass(TestClass testClass, Object testInstance) {
         this.testClass = testClass;
         this.testInstance = testInstance;
+    }
+
+    @Override
+    public void setConsumer(au.com.dius.pact.model.Consumer consumer) {
+        this.currentConsumer = consumer;
+    }
+
+    @Override
+    public void setRequestResponseInteraction(RequestResponseInteraction requestResponseInteraction) {
+        this.currentRequestResponseInteraction = requestResponseInteraction;
     }
 }

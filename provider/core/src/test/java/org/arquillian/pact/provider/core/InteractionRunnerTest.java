@@ -69,25 +69,6 @@ public class InteractionRunnerTest {
     }
 
     @org.junit.Test
-    public void should_throw_exception_when_no_resources() {
-        when(test.getTestClass()).thenReturn(new TestClass(PactProviderWithNoArqResources.class));
-        PactProviderWithNoArqResources pactDefinition = new PactProviderWithNoArqResources();
-        when(test.getTestInstance()).thenReturn(pactDefinition);
-
-        InteractionRunner interactionRunner = new InteractionRunner();
-        interactionRunner.pactsInstance = pactsInstance;
-        interactionRunner.targetInstance = () -> target;
-
-        try {
-            interactionRunner.executePacts(eventContext);
-            fail("Exception should be thrown");
-        } catch(IllegalArgumentException e) {
-            assertThat(e).hasMessage("Only one field annotated with org.arquillian.pact.provider.spi.CurrentInteraction of type au.com.dius.pact.model.RequestResponseInteraction should be present * Only one field annotated with org.arquillian.pact.provider.spi.CurrentConsumer of type au.com.dius.pact.model.Consumer should be present");
-        }
-
-    }
-
-    @org.junit.Test
     public void should_throw_exception_when_no_target() {
         when(test.getTestClass()).thenReturn(new TestClass(PactProviderWithNoTarget.class));
         PactProviderWithNoTarget pactDefinition = new PactProviderWithNoTarget();
@@ -115,15 +96,6 @@ public class InteractionRunnerTest {
 
         @CurrentInteraction
         RequestResponseInteraction interaction;
-
-    }
-
-    @Provider("planets_provider")
-    @PactFolder("pacts")
-    public static class PactProviderWithNoArqResources {
-
-        @ArquillianResource
-        Target target;
 
     }
 
