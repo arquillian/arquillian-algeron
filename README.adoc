@@ -55,7 +55,7 @@ Arquillian Pact is the integration of all Arquillian philosophy/extensions into 
 === Arquillian Pact Consumer
 
 First thing to do is develop the *Consumer* part of the test.
-Consumer part of Consumer-Driven Contract defines the contract that as consumer understands as well as validates that as a client he can consume it.
+Consumer part of Consumer-Driven Contract defines requirements from the consumer of the API which are then used to develop the client interaction with the API as well as to validate provider implementation.
 
 ==== Arquillian Pact Consumer In Container
 
