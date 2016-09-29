@@ -279,6 +279,9 @@ The attributes are:
  If you want to use another one rather the one defined in your classpath, you can set it here the version.
 |
 
+|pactReportDir
+|Directory where contracts are stored.
+|target/pacts
 |===
 
 === Arquillian Pact Provider
