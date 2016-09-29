@@ -13,6 +13,7 @@ public class PactConsumerConfiguration {
     private static final String HTTPS = "https";
     private static final String PROVIDER = "provider";
     private static final String PACT_ARTIFACT_VERSION = "pactArtifactVersion";
+    private static final String PACT_REPORT_DIR = "pactReportDir";
 
 
     private String host = "localhost";
@@ -21,7 +22,15 @@ public class PactConsumerConfiguration {
     private boolean https = false;
     private String provider = null;
     private String pactArtifactVersion = null;
+    private String pactReportDir = null;
 
+    public boolean isPactReportDirSet() {
+        return pactReportDir != null;
+    }
+
+    public String getPactReportDir() {
+        return pactReportDir;
+    }
 
     public boolean isPactArtifactVersionSet() {
         return pactArtifactVersion != null;
@@ -62,6 +71,10 @@ public class PactConsumerConfiguration {
         properties.put(MOCK_PORT, Integer.toString(getPort()));
         properties.put(PACT_VERSION, Integer.toString(pactSpecVersionAsInt(getPactSpecVersion())));
         properties.put(HTTPS, Boolean.toString(isHttps()));
+
+        if (isPactReportDirSet()) {
+            properties.put(PACT_REPORT_DIR, getPactReportDir());
+        }
 
         if (isProviderSet()) {
             properties.put(PROVIDER, getProvider());
@@ -109,6 +122,10 @@ public class PactConsumerConfiguration {
 
         if (map.containsKey(PACT_ARTIFACT_VERSION)) {
             pactConsumerConfiguration.pactArtifactVersion = map.get(PACT_ARTIFACT_VERSION);
+        }
+
+        if (map.containsKey(PACT_REPORT_DIR)) {
+            pactConsumerConfiguration.pactReportDir = map.get(PACT_REPORT_DIR);
         }
 
         return pactConsumerConfiguration;
