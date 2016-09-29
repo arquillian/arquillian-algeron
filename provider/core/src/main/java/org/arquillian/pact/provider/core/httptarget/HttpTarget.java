@@ -117,6 +117,20 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     }
 
     @Override
+    public void testInteraction() {
+        if (this.currentConsumer == null || this.currentRequestResponseInteraction == null) {
+            throw new IllegalArgumentException("Current Consumer or Current Request Response Interaction has not been set.");
+        }
+
+        try {
+            testInteraction(this.currentConsumer.getName(), this.currentRequestResponseInteraction);
+        } finally {
+            // Each run should provide a new pair of objects.
+            resetCurrentFields();
+        }
+    }
+
+    @Override
     public void testInteraction(URL url) {
         if (this.currentConsumer == null || this.currentRequestResponseInteraction == null) {
             throw new IllegalArgumentException("Current Consumer or Current Request Response Interaction has not been set.");

@@ -28,12 +28,6 @@ public class StarWarsProviderTest {
     @ClassRule
     public static final ClientDriverRule embeddedService = new ClientDriverRule(8332);
 
-    @CurrentConsumer
-    Consumer consumer;
-
-    @CurrentInteraction
-    RequestResponseInteraction interaction;
-
     @ArquillianResource
     Target target;
 
@@ -54,7 +48,7 @@ public class StarWarsProviderTest {
 
     @Test
     public void validateProvider() {
-        target.testInteraction(consumer.getName(), interaction);
+        target.testInteraction();
     }
 
 }

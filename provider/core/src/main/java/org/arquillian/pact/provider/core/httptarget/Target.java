@@ -1,6 +1,7 @@
 package org.arquillian.pact.provider.core.httptarget;
 
 import au.com.dius.pact.model.RequestResponseInteraction;
+import org.arquillian.pact.provider.core.PactProviderConfiguration;
 
 import java.net.URL;
 
@@ -11,10 +12,24 @@ import java.net.URL;
  */
 public interface Target {
 
+
     /**
      *
      * Run {@link au.com.dius.pact.model.RequestResponseInteraction} and perform response verification
-     * <p>
+     *
+     * Any exception will be caught by caller and reported as test failure
+     *
+     * Important: Implementators must implements {@link org.arquillian.pact.provider.spi.PactProviderExecutionAwareTarget}
+     *
+     * URL configuration is retrieved from {@link PactProviderConfiguration}
+     *
+     */
+    void testInteraction();
+
+    /**
+     *
+     * Run {@link au.com.dius.pact.model.RequestResponseInteraction} and perform response verification
+     *
      * Any exception will be caught by caller and reported as test failure
      *
      * Important: Implementators must implements {@link org.arquillian.pact.provider.spi.PactProviderExecutionAwareTarget}
