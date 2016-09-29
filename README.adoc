@@ -370,8 +370,6 @@ public class MyServiceProviderTest {
 <1> Sets the name of provider used in this test
 <2> Configures where to get pact files
 <3> Deploys provider application to app server
-<4> Arquillian Pact injects consumer contract under test. One provider can serve different consumers, and must meet all their expectations
-<5> Current request
 <4> Arquillian injection of URL where application is deployed
 <5> A target is a class that makes all requests to provider. In case of Arquillian Pact by default it uses an Http Client target
 <6> Makes the request to provider and validates that the response is the expected one
