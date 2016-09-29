@@ -280,8 +280,8 @@ The attributes are:
 |
 
 |pactReportDir
-|
-|
+|Directory where contracts are stored.
+|target/pacts
 |===
 
 === Arquillian Pact Provider
