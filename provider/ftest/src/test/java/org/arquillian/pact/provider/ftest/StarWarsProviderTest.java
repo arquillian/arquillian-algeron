@@ -1,13 +1,9 @@
 package org.arquillian.pact.provider.ftest;
 
-import au.com.dius.pact.model.Consumer;
-import au.com.dius.pact.model.RequestResponseInteraction;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRule;
-import org.arquillian.pact.provider.core.loader.PactFolder;
 import org.arquillian.pact.provider.core.httptarget.Target;
-import org.arquillian.pact.provider.spi.CurrentConsumer;
-import org.arquillian.pact.provider.spi.CurrentInteraction;
+import org.arquillian.pact.provider.core.loader.PactFolder;
 import org.arquillian.pact.provider.spi.Provider;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -16,9 +12,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static com.github.restdriver.clientdriver.RestClientDriver.giveResponse;
-import static com.github.restdriver.clientdriver.RestClientDriver.giveResponseAsBytes;
-import static com.github.restdriver.clientdriver.RestClientDriver.onRequestTo;
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
 
 @RunWith(Arquillian.class)
 @Provider("planets_provider")

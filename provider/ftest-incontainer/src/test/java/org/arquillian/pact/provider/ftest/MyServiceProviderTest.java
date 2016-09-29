@@ -1,11 +1,7 @@
 package org.arquillian.pact.provider.ftest;
 
-import au.com.dius.pact.model.Consumer;
-import au.com.dius.pact.model.RequestResponseInteraction;
 import org.arquillian.pact.provider.core.httptarget.Target;
 import org.arquillian.pact.provider.core.loader.PactFolder;
-import org.arquillian.pact.provider.spi.CurrentConsumer;
-import org.arquillian.pact.provider.spi.CurrentInteraction;
 import org.arquillian.pact.provider.spi.Provider;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
