@@ -27,12 +27,6 @@ public class MyServiceProviderTest {
         return ShrinkWrap.create(WebArchive.class).addClass(MyService.class);
     }
 
-    @CurrentConsumer
-    Consumer consumer;
-
-    @CurrentInteraction
-    RequestResponseInteraction interaction;
-
     @ArquillianResource
     URL webapp;
 
@@ -41,7 +35,7 @@ public class MyServiceProviderTest {
 
     @Test
     public void should_provide_valid_answers() {
-        target.testInteraction(webapp, consumer.getName(), interaction);
+        target.testInteraction(webapp);
     }
 
 }

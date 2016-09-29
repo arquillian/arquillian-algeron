@@ -353,23 +353,16 @@ public class MyServiceProviderTest {
         return ShrinkWrap.create(WebArchive.class).addClass(MyService.class);
     }
 
-    @CurrentConsumer // <4>
-    Consumer consumer;
-
-    @CurrentInteraction // <5>
-    RequestResponseInteraction interaction;
-
-    @ArquillianResource // <6>
+    @ArquillianResource // <4>
     URL webapp;
 
-    @ArquillianResource // <7>
+    @ArquillianResource // <5>
     Target target;
 
     @Test
     public void should_provide_valid_answers() {
-        target.testInteraction(webapp,  // <8>
-                                consumer.getName(),
-                               interaction);
+        target.testInteraction(webapp // <6>
+                                );
     }
 
 }
@@ -379,9 +372,9 @@ public class MyServiceProviderTest {
 <3> Deploys provider application to app server
 <4> Arquillian Pact injects consumer contract under test. One provider can serve different consumers, and must meet all their expectations
 <5> Current request
-<6> Arquillian injection of URL where application is deployed
-<7> A target is a class that makes all requests to provider. In case of Arquillian Pact by default it uses an Http Client target
-<8> Makes the request to provider and validates that the response is the expected one
+<4> Arquillian injection of URL where application is deployed
+<5> A target is a class that makes all requests to provider. In case of Arquillian Pact by default it uses an Http Client target
+<6> Makes the request to provider and validates that the response is the expected one
 
 When running this test Arquillian Pact Provider will do next things:
 
@@ -412,12 +405,6 @@ public class StarWarsProviderTest {
     @ClassRule // <1>
     public static final ClientDriverRule embeddedService = new ClientDriverRule(8332);
 
-    @CurrentConsumer
-    Consumer consumer;
-
-    @CurrentInteraction
-    RequestResponseInteraction interaction;
-
     @ArquillianResource
     Target target;
 
@@ -438,7 +425,7 @@ public class StarWarsProviderTest {
 
     @Test
     public void validateProvider() {
-        target.testInteraction(consumer.getName(), interaction);
+        target.testInteraction();
     }
 
 }
@@ -448,7 +435,20 @@ public class StarWarsProviderTest {
 
 You can see full example at: https://github.com/arquillian/arquillian-pact/tree/master/provider/ftest[ftest]
 
-==== Arquillian Pact Consumer Configuration
+==== Arquillian Pact Provider Enrichers
+
+You can enrich your test with current consumer and current request/response interaction by using `@CurrentConsumer` and `CurrentInteraction` annotations.
+
+[source, java]
+----
+@CurrentConsumer
+Consumer consumer;
+
+@CurrentInteraction
+RequestResponseInteraction interaction;
+----
+
+==== Arquillian Pact Provider Configuration
 
 Arquillian Pact Provider can be configured using Arquillian configuration mechanism (`arquillian.xml` file or system properties).
 
