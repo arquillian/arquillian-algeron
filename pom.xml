@@ -56,7 +56,7 @@
         <version.mockito>1.10.19</version.mockito>
         <version.assertj>3.5.2</version.assertj>
         <version.shrinkwrap.resolvers>2.2.4</version.shrinkwrap.resolvers>
-        <version.pact>3.5.0-beta.1</version.pact>
+        <version.pact>3.5.0-beta.2</version.pact>
         <!-- Requirement from pact to run-->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
