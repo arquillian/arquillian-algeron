@@ -18,7 +18,7 @@ public class PactConsumerConfiguration {
 
     private String host = "localhost";
     private int port = 9090;
-    private PactSpecVersion pactSpecVersion = PactSpecVersion.V2;
+    private PactSpecVersion pactSpecVersion = PactSpecVersion.V3;
     private boolean https = false;
     private String provider = null;
     private String pactArtifactVersion = null;

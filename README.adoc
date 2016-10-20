@@ -264,7 +264,7 @@ The attributes are:
 
 |pactSpecVesion
 |Pact specification version as integer
-|2
+|3
 
 |https
 |If mock server should start using https instead of http
