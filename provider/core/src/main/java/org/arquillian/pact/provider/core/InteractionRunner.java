@@ -131,7 +131,7 @@ public class InteractionRunner {
     protected void validateState(final TestClass testClass, final List<Throwable> errors) {
         Arrays.stream(testClass.getMethods(State.class)).forEach(method -> {
             validatePublicVoidMethods(method, errors);
-            if (method.getParameterCount() == 1 && !Map.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            if (isMethodWithSingleMapParameter(method)) {
                 final String mapError = String.format("Method %s should take only a single Map parameter", method.getName());
                 logger.log(Level.SEVERE, mapError);
                 errors.add(new IllegalArgumentException(mapError));
@@ -141,6 +141,10 @@ public class InteractionRunner {
                 errors.add(new IllegalArgumentException(multipleParametersError));
             }
         });
+    }
+
+    private boolean isMethodWithSingleMapParameter(Method method) {
+        return method.getParameterCount() == 1 && !Map.class.isAssignableFrom(method.getParameterTypes()[0]);
     }
 
     protected void validateTargetRequestFilters(final TestClass testClass, final List<Throwable> errors) {
@@ -235,9 +239,7 @@ public class InteractionRunner {
     private void executeMethod(Method method, Object target, Object... params) {
         try {
             method.invoke(target, params);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             throw new IllegalArgumentException(e);
         }
     }
