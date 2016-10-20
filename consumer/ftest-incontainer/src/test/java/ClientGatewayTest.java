@@ -32,8 +32,11 @@ public class ClientGatewayTest {
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
 
+        Map<String, Object> stateParams = new HashMap<>();
+        stateParams.put("name", "Alexandra");
+
         return builder
-                .given("test state")
+                .given("test state", stateParams)
                 .uponReceiving("ConsumerTest test interaction")
                 .path("/")
                 .method("GET")
