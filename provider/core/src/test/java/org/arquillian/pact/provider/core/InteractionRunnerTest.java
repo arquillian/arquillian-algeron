@@ -9,6 +9,7 @@ import org.arquillian.pact.provider.core.httptarget.Target;
 import org.arquillian.pact.provider.spi.CurrentConsumer;
 import org.arquillian.pact.provider.spi.CurrentInteraction;
 import org.arquillian.pact.provider.spi.Provider;
+import org.arquillian.pact.provider.spi.State;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.spi.EventContext;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -23,6 +24,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
@@ -78,13 +80,25 @@ public class InteractionRunnerTest {
         interactionRunner.pactsInstance = pactsInstance;
         interactionRunner.targetInstance = () -> target;
 
-        try {
-            interactionRunner.executePacts(eventContext);
-            fail("Exception should be thrown");
-        } catch(IllegalArgumentException e) {
-            assertThat(e).hasMessage("Field annotated with org.jboss.arquillian.test.api.ArquillianResource should implement org.arquillian.pact.provider.core.httptarget.Target and didn't found any");
-        }
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> interactionRunner.executePacts(eventContext))
+                .withMessage("Field annotated with org.jboss.arquillian.test.api.ArquillianResource should implement org.arquillian.pact.provider.core.httptarget.Target and didn't found any");
 
+    }
+
+    @org.junit.Test
+    public void should_throw_exception_when_state_param_is_not_empy_nor_map() {
+        when(test.getTestClass()).thenReturn(new TestClass(PactProviderWithWrongStateMethod.class));
+        PactProviderWithWrongStateMethod pactDefinition = new PactProviderWithWrongStateMethod();
+        when(test.getTestInstance()).thenReturn(pactDefinition);
+
+        final InteractionRunner interactionRunner = new InteractionRunner();
+        interactionRunner.pactsInstance = pactsInstance;
+        interactionRunner.targetInstance = () -> target;
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> interactionRunner.executePacts(eventContext))
+                .withMessage("Method stateMethod should take only a single Map parameter");
     }
 
     @Provider("planets_provider")
@@ -113,4 +127,25 @@ public class InteractionRunnerTest {
         Target target;
 
     }
+
+    @Provider("planets_provider")
+    @PactFolder("pacts")
+    public static class PactProviderWithWrongStateMethod {
+
+        @State("default")
+        public void stateMethod(String param) {
+
+        }
+
+        @CurrentConsumer
+        Consumer consumer;
+
+        @CurrentInteraction
+        RequestResponseInteraction interaction;
+
+        @ArquillianResource
+        Target target;
+
+    }
+
 }

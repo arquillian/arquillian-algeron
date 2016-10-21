@@ -2,6 +2,7 @@ package org.arquillian.pact.provider.core;
 
 import au.com.dius.pact.model.Consumer;
 import au.com.dius.pact.model.Pact;
+import au.com.dius.pact.model.ProviderState;
 import au.com.dius.pact.model.RequestResponseInteraction;
 import au.com.dius.pact.model.RequestResponsePact;
 import org.apache.commons.lang3.ArrayUtils;
@@ -30,7 +31,9 @@ import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -53,7 +56,7 @@ public class InteractionRunner {
         TestClass testClass = test.getEvent().getTestClass();
 
         final List<Throwable> errors = new ArrayList<>();
-        validatePublicVoidNoArgMethods(testClass, State.class, errors);
+        validateState(testClass, errors);
         validateTargetRequestFilters(testClass, errors);
         validateTestTarget(testClass, errors);
 
@@ -125,6 +128,25 @@ public class InteractionRunner {
         }
     }
 
+    protected void validateState(final TestClass testClass, final List<Throwable> errors) {
+        Arrays.stream(testClass.getMethods(State.class)).forEach(method -> {
+            validatePublicVoidMethods(method, errors);
+            if (methodDoesNotHaveSingleMapParameter(method)) {
+                final String mapError = String.format("Method %s should take only a single Map parameter", method.getName());
+                logger.log(Level.SEVERE, mapError);
+                errors.add(new IllegalArgumentException(mapError));
+            } else if (method.getParameterCount() > 1) {
+                final String multipleParametersError = String.format("Method %s should either take no parameters or a single Map parameter", method.getName());
+                logger.log(Level.SEVERE, multipleParametersError);
+                errors.add(new IllegalArgumentException(multipleParametersError));
+            }
+        });
+    }
+
+    private boolean methodDoesNotHaveSingleMapParameter(Method method) {
+        return method.getParameterCount() == 1 && !Map.class.isAssignableFrom(method.getParameterTypes()[0]);
+    }
+
     protected void validateTargetRequestFilters(final TestClass testClass, final List<Throwable> errors) {
         Method[] methods = testClass.getMethods(TargetRequestFilter.class);
         for (Method method : methods) {
@@ -162,18 +184,16 @@ public class InteractionRunner {
         }
     }
 
-    protected void validatePublicVoidNoArgMethods(final TestClass testClass, final Class<? extends Annotation> annotation, final List<Throwable> errors) {
-        Method[] methods = testClass.getMethods(annotation);
-        for (Method method : methods) {
-            if (!isPublic(method)) {
-                String publicError = String.format("Method %s annotated with %s should be public.", method.getName(), annotation.getName());
-                logger.log(Level.SEVERE, publicError);
-                errors.add(new IllegalArgumentException(publicError));
-            }
-            if (method.getParameterCount() != 0) {
-                String parametersError = String.format("Method %s annotated with %s should contain no parameters", method.getName(), annotation.getName());
-                logger.log(Level.SEVERE, parametersError);
-            }
+    protected void validatePublicVoidMethods(Method method, final List<Throwable> errors) {
+        if (!isPublic(method)) {
+            String publicError = String.format("Method %s should be public.", method.getName());
+            logger.log(Level.SEVERE, publicError);
+            errors.add(new IllegalArgumentException(publicError));
+        }
+        if (!returnsVoid(method)) {
+            String voidError = String.format("Method %s should return void");
+            logger.log(Level.SEVERE, voidError);
+            errors.add(new IllegalArgumentException(voidError));
         }
     }
 
@@ -201,23 +221,28 @@ public class InteractionRunner {
     }
 
     protected void executeStateChanges(final RequestResponseInteraction interaction, final TestClass testClass, final Object target) {
-        if (interaction.getProviderState() != null && !interaction.getProviderState().isEmpty()) {
-            final String state = interaction.getProviderState();
-            for (Method ann : testClass.getMethods(State.class)) {
-                if (ArrayUtils.contains(ann.getAnnotation(State.class).value(), state)) {
-                    try {
-                        ann.invoke(target);
-                    } catch (IllegalAccessException e) {
-                        throw new IllegalArgumentException(e);
-                    } catch (InvocationTargetException e) {
-                        throw new IllegalArgumentException(e);
-                    }
-                }
+        if (!interaction.getProviderStates().isEmpty()) {
+            for (final ProviderState state : interaction.getProviderStates()) {
+                Arrays.stream(testClass.getMethods(State.class))
+                        .filter(method -> ArrayUtils.contains(method.getAnnotation(State.class).value(), state.getName()))
+                        .forEach(method -> {
+                            if (method.getParameterCount() == 1) {
+                                executeMethod(method, target, state.getParams());
+                            } else {
+                                executeMethod(method, target);
+                            }
+                        });
             }
-
         }
     }
 
+    private void executeMethod(Method method, Object target, Object... params) {
+        try {
+            method.invoke(target, params);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     private List<Field> getFieldsWithAnnotation(final Class<?> source,
                                                 final Class<? extends Annotation> annotationClass) {
@@ -245,5 +270,9 @@ public class InteractionRunner {
 
     private boolean isPublic(Method method) {
         return Modifier.isPublic(method.getModifiers());
+    }
+
+    private boolean returnsVoid(Method method) {
+        return Void.TYPE.equals(method.getReturnType());
     }
 }

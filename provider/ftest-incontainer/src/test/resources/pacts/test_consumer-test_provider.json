@@ -22,12 +22,19 @@
                     "responsetest": true
                 }
             },
-            "providerState": "test state"
+            "providerStates": [
+                {
+                    "name": "test state",
+                    "params": {
+                        "name": "Alexandra"
+                    }
+                }
+            ]
         }
     ],
     "metadata": {
         "pact-specification": {
-            "version": "2.0.0"
+            "version": "3.0.0"
         },
         "pact-jvm": {
             "version": ""
