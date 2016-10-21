@@ -131,7 +131,7 @@ public class InteractionRunner {
     protected void validateState(final TestClass testClass, final List<Throwable> errors) {
         Arrays.stream(testClass.getMethods(State.class)).forEach(method -> {
             validatePublicVoidMethods(method, errors);
-            if (isMethodWithSingleMapParameter(method)) {
+            if (methodDoesNotHaveSingleMapParameter(method)) {
                 final String mapError = String.format("Method %s should take only a single Map parameter", method.getName());
                 logger.log(Level.SEVERE, mapError);
                 errors.add(new IllegalArgumentException(mapError));
@@ -143,7 +143,7 @@ public class InteractionRunner {
         });
     }
 
-    private boolean isMethodWithSingleMapParameter(Method method) {
+    private boolean methodDoesNotHaveSingleMapParameter(Method method) {
         return method.getParameterCount() == 1 && !Map.class.isAssignableFrom(method.getParameterTypes()[0]);
     }
 
