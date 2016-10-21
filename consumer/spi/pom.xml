@@ -20,5 +20,12 @@
 
     <name>Arquillian Pact Consumer SPI</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-spi</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
 
