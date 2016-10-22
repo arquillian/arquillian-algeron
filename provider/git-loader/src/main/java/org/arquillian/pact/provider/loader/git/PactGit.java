@@ -46,7 +46,7 @@ public @interface PactGit {
      * Location and name of the private key. By default ~/.ssh/id_rsa
      * @return
      */
-    String key() default "";
+    String key() default "~/.ssh/id_rsa";
 
     /**
      * Directory where remote git repository is cloned. By default uses temp directory
