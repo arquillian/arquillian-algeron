@@ -1,5 +1,6 @@
 package org.arquillian.pact.consumer.core.publisher;
 
+import org.arquillian.pact.common.configuration.PactRunnerExpressionParser;
 import org.arquillian.pact.consumer.spi.publisher.PactPublisher;
 
 import java.io.IOException;
@@ -18,7 +19,8 @@ public class FolderPactPublisher implements PactPublisher {
 
     @Override
     public void store(final Path pactsLocation) {
-        final Path outputPath = Paths.get(((String) this.configuration.get(OUTPUT_FOLDER)));
+        final String path = (String) this.configuration.get(OUTPUT_FOLDER);
+        final Path outputPath = Paths.get(PactRunnerExpressionParser.parseExpressions(path));
 
         try {
 

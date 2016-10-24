@@ -34,6 +34,10 @@
             <artifactId>arquillian-pact-provider-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.arquillian.pact</groupId>
+            <artifactId>arquillian-pact-common-configuration</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-depchain</artifactId>
             <version>${version.shrinkwrap.resolvers}</version>

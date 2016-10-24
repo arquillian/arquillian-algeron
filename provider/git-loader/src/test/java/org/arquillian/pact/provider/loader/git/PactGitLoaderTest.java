@@ -1,5 +1,6 @@
 package org.arquillian.pact.provider.loader.git;
 
+import org.arquillian.pact.common.git.GitOperations;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.lib.Repository;

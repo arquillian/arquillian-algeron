@@ -1,4 +1,4 @@
-package org.arquillian.pact.provider.api;
+package org.arquillian.pact.common.configuration;
 
 
 import java.util.StringJoiner;

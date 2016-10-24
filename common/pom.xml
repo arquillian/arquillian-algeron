@@ -16,18 +16,15 @@
     </properties>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-pact-consumer-parent</artifactId>
+    <artifactId>arquillian-pact-common-parent</artifactId>
     <packaging>pom</packaging>
 
-    <name>Arquillian Pact Consumer Parent</name>
+    <name>Arquillian Pact Common Parent</name>
 
     <modules>
-        <module>api</module>
-        <module>core</module>
-        <module>spi</module>
-        <module>ftest</module>
-        <module>ftest-incontainer</module>
-        <module>git-publisher</module>
+      <module>git-common</module>
+      <module>configuration-common</module>
     </modules>
 
 </project>
+

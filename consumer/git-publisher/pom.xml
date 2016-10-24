@@ -4,7 +4,7 @@
     <!-- Parent -->
     <parent>
         <groupId>org.arquillian.pact</groupId>
-        <artifactId>arquillian-pact-provider-parent</artifactId>
+        <artifactId>arquillian-pact-consumer-parent</artifactId>
         <version>1.0.0.Final-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -16,36 +16,22 @@
     </properties>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-pact-provider-core</artifactId>
+    <artifactId>arquillian-pact-consumer-git-publisher</artifactId>
 
-    <name>Arquillian Pact Provider Core</name>
+    <name>Arquillian Pact Git Publisher</name>
 
     <dependencies>
         <dependency>
             <groupId>org.arquillian.pact</groupId>
-            <artifactId>arquillian-pact-provider-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.config</groupId>
-            <artifactId>arquillian-config-api</artifactId>
+            <artifactId>arquillian-pact-consumer-spi</artifactId>
         </dependency>
         <dependency>
             <groupId>org.arquillian.pact</groupId>
-            <artifactId>arquillian-pact-provider-spi</artifactId>
+            <artifactId>arquillian-pact-common-git</artifactId>
         </dependency>
         <dependency>
             <groupId>org.arquillian.pact</groupId>
             <artifactId>arquillian-pact-common-configuration</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>au.com.dius</groupId>
-            <artifactId>pact-jvm-provider_2.11</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>au.com.dius</groupId>
-            <artifactId>pact-jvm-model</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -65,3 +51,4 @@
     </dependencies>
 
 </project>
+

@@ -35,6 +35,10 @@
         </dependency>
         <dependency>
             <groupId>org.arquillian.pact</groupId>
+            <artifactId>arquillian-pact-common-configuration</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.arquillian.pact</groupId>
             <artifactId>arquillian-pact-provider-core</artifactId>
             <scope>test</scope>
         </dependency>
@@ -70,8 +74,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jgit</groupId>
-            <artifactId>org.eclipse.jgit</artifactId>
+            <groupId>org.arquillian.pact</groupId>
+            <artifactId>arquillian-pact-common-git</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

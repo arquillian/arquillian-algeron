@@ -169,6 +169,16 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.arquillian.pact</groupId>
+                <artifactId>arquillian-pact-common-git</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.pact</groupId>
+                <artifactId>arquillian-pact-common-configuration</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.github.rholder</groupId>
                 <artifactId>guava-retrying</artifactId>
                 <version>${version.guava-retrying}</version>
@@ -210,6 +220,7 @@
     <modules>
         <module>consumer</module>
         <module>provider</module>
+        <module>common</module>
     </modules>
     <build>
         <plugins>

@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 /**
  * Used to point to source of pacts for contract tests from git repository
- * All properties supports ${name:default} commons-lang3 StrSubstitutor (https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/text/StrSubstitutor.html) syntax
+ * All properties supports ${name:default} syntax
  *
  * @see PactGitLoader pact loader
  */

@@ -8,7 +8,7 @@ import au.com.dius.pact.provider.reporters.ReporterManager;
 import au.com.dius.pact.provider.reporters.VerifierReporter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpRequest;
-import org.arquillian.pact.provider.api.SystemPropertyResolver;
+import org.arquillian.pact.common.configuration.SystemPropertyResolver;
 import org.arquillian.pact.provider.spi.ArquillianTestClassAwareTarget;
 import org.arquillian.pact.provider.spi.PactProviderExecutionAwareTarget;
 import org.arquillian.pact.provider.spi.Provider;

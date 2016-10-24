@@ -1,4 +1,4 @@
-package org.arquillian.pact.provider.loader.git;
+package org.arquillian.pact.common.git;
 
 import com.jcraft.jsch.UserInfo;
 

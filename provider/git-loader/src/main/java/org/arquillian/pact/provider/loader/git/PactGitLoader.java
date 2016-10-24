@@ -2,7 +2,8 @@ package org.arquillian.pact.provider.loader.git;
 
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.PactReader;
-import org.arquillian.pact.provider.api.PactRunnerExpressionParser;
+import org.arquillian.pact.common.configuration.PactRunnerExpressionParser;
+import org.arquillian.pact.common.git.GitOperations;
 import org.arquillian.pact.provider.spi.loader.PactLoader;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
