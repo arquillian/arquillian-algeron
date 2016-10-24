@@ -158,7 +158,7 @@ public class PactGitLoader implements PactLoader {
 
     private PullResult executePull(Git git) {
         final PullResult pullResult;
-        if (isSet(this.pactGit.username()) && isSet(this.pactGit.passphrase())) {
+        if (isSet(this.pactGit.username()) && isSet(this.pactGit.password())) {
 
             pullResult = this.gitOperations.pullRepository(git,
                     getResolvedValue(this.pactGit.remote()),
