@@ -185,7 +185,7 @@ public class PactGitLoader implements PactLoader {
 
     private Path getPrivateKey() {
         if (isSet(this.pactGit.key())) {
-            return Paths.get(getResolvedValue(this.pactGit.key()));
+            return Paths.get(getResolvedValue(resolveHomeDirectory(this.pactGit.key())));
         }
 
         return null;
@@ -197,5 +197,12 @@ public class PactGitLoader implements PactLoader {
 
     private String getResolvedValue(String field) {
         return PactRunnerExpressionParser.parseExpressions(field);
+    }
+
+    public static String resolveHomeDirectory(String path) {
+        if(path.startsWith("~")) {
+            return path.replace("~", System.getProperty("user.home"));
+        }
+        return path;
     }
 }
