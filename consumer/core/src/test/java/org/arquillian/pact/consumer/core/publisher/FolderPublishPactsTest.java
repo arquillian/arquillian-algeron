@@ -21,7 +21,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PublishPactsTest extends AbstractManagerTestBase {
+public class FolderPublishPactsTest extends AbstractManagerTestBase {
 
     @Override
     protected void addExtensions(List<Class<?>> extensions) {

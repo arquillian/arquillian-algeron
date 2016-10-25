@@ -67,6 +67,7 @@
         <version.jgit>4.5.0.201609210915-r</version.jgit>
         <version.slf4j-api>1.7.21</version.slf4j-api>
         <version.snakeyaml>1.17</version.snakeyaml>
+        <version.wiremock>2.2.2</version.wiremock>
     </properties>
 
     <dependencyManagement>
@@ -212,6 +213,12 @@
                 <groupId>io.rest-assured</groupId>
                 <artifactId>rest-assured</artifactId>
                 <version>${version.rest-assured}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.tomakehurst</groupId>
+                <artifactId>wiremock</artifactId>
+                <version>${version.wiremock}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
