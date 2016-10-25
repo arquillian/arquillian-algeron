@@ -20,6 +20,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static org.arquillian.pact.common.configuration.HomeResolver.resolveHomeDirectory;
+
 /**
  * Loader to get pact files from git repository.
  */
@@ -131,7 +133,7 @@ public class PactGitLoader implements PactLoader {
 
     private Git executeClone(Path repository) {
         Git git;
-        if (isSet(this.pactGit.username()) && isSet(this.pactGit.passphrase())) {
+        if (isSet(this.pactGit.username()) && isSet(this.pactGit.password())) {
 
             git = this.gitOperations.cloneRepository(
                     getResolvedValue(this.pactGit.value()),
@@ -200,10 +202,4 @@ public class PactGitLoader implements PactLoader {
         return PactRunnerExpressionParser.parseExpressions(field);
     }
 
-    public static String resolveHomeDirectory(String path) {
-        if(path.startsWith("~")) {
-            return path.replace("~", System.getProperty("user.home"));
-        }
-        return path;
-    }
 }

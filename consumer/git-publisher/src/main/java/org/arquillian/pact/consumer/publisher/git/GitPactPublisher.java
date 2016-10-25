@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import static org.arquillian.pact.common.configuration.HomeResolver.resolveHomeDirectory;
+
 public class GitPactPublisher implements PactPublisher {
 
     static final String URL = "url";
@@ -243,7 +245,7 @@ public class GitPactPublisher implements PactPublisher {
 
     private Path getPrivateKey() {
         if (isSet(KEY, String.class, this.configuration)) {
-            return Paths.get(getResolvedValue((String) this.configuration.get(BRANCH)));
+            return Paths.get(getResolvedValue(resolveHomeDirectory((String) this.configuration.get(KEY))));
         }
 
         return null;

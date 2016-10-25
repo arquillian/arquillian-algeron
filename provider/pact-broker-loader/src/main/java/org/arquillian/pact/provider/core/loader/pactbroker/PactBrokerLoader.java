@@ -72,7 +72,12 @@ public class PactBrokerLoader implements PactLoader {
     }
 
     public PactBrokerLoader(final PactBroker pactBroker) {
-        this(pactBroker.host(), pactBroker.port(), pactBroker.protocol(), Arrays.asList(pactBroker.tags()));
+        this(getResolvedValue(pactBroker.host()),
+                getResolvedValue(pactBroker.port()),
+                getResolvedValue(pactBroker.protocol()),
+                        Arrays.stream(pactBroker.tags())
+                                .map(tag -> getResolvedValue(tag))
+                                .collect(toList()));
     }
 
     public List<Pact> load(final String providerName) throws IOException {
@@ -161,5 +166,9 @@ public class PactBrokerLoader implements PactLoader {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static String getResolvedValue(String field) {
+        return PactRunnerExpressionParser.parseExpressions(field);
     }
 }
