@@ -1,0 +1,43 @@
+{
+    "provider": {
+        "name": "test_provider"
+    },
+    "consumer": {
+        "name": "test_consumer"
+    },
+    "interactions": [
+        {
+            "description": "ConsumerTest test interaction",
+            "request": {
+                "method": "GET",
+                "path": "/"
+            },
+            "response": {
+                "status": 200,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "body": {
+                    "name": "harry",
+                    "responsetest": true
+                }
+            },
+            "providerStates": [
+                {
+                    "name": "test state",
+                    "params": {
+                        "name": "Alexandra"
+                    }
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "pact-specification": {
+            "version": "3.0.0"
+        },
+        "pact-jvm": {
+            "version": ""
+        }
+    }
+}
