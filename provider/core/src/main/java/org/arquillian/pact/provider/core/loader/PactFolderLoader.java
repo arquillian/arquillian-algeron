@@ -2,7 +2,7 @@ package org.arquillian.pact.provider.core.loader;
 
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.PactReader;
-import org.arquillian.pact.common.configuration.PactRunnerExpressionParser;
+import org.arquillian.pact.configuration.PactRunnerExpressionParser;
 import org.arquillian.pact.provider.spi.loader.PactLoader;
 
 import java.io.File;

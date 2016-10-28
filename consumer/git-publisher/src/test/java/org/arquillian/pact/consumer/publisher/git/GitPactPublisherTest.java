@@ -1,6 +1,6 @@
 package org.arquillian.pact.consumer.publisher.git;
 
-import org.arquillian.pact.common.git.GitOperations;
+import org.arquillian.pact.git.GitOperations;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.lib.Repository;
@@ -54,10 +54,7 @@ public class GitPactPublisherTest {
         gitPactPublisher.gitOperations = gitOperations;
 
         File repository = temporaryFolder.newFolder("repo");
-        Map<String, Object> config = new HashMap<>();
-        config.put(GitPactPublisher.URL, "myurl");
-        config.put(GitPactPublisher.COMMENT, "my comment");
-        config.put(GitPactPublisher.REPOSITORY, repository.getAbsolutePath());
+        final Map<String, Object> config = getConfigurationWithCommonFields(repository);
         gitPactPublisher.configure(config);
 
         when(gitOperations.isValidGitRepository(Paths.get(repository.getAbsolutePath()))).thenReturn(false);
@@ -68,9 +65,9 @@ public class GitPactPublisherTest {
         when(this.repository.getDirectory()).thenReturn(new File(repository, ".git"));
 
 
-        gitPactPublisher.store(Paths.get(pactLocation.getAbsolutePath()));
+        gitPactPublisher.publish(Paths.get(pactLocation.getAbsolutePath()));
         verify(gitOperations).addAndCommit(git, "my comment");
-        verify(gitOperations).pushRepository(git, "origin");
+        verify(gitOperations).pushToRepository(git, "origin");
 
         assertThat(new File(repository, "pact.txt")).exists().hasContent("Contract File");
 
@@ -88,10 +85,7 @@ public class GitPactPublisherTest {
         gitPactPublisher.gitOperations = gitOperations;
 
         File repository = temporaryFolder.newFolder("repo");
-        Map<String, Object> config = new HashMap<>();
-        config.put(GitPactPublisher.URL, "myurl");
-        config.put(GitPactPublisher.COMMENT, "my comment");
-        config.put(GitPactPublisher.REPOSITORY, repository.getAbsolutePath());
+        final Map<String, Object> config = getConfigurationWithCommonFields(repository);
         gitPactPublisher.configure(config);
 
         when(git.getRepository()).thenReturn(this.repository);
@@ -100,16 +94,16 @@ public class GitPactPublisherTest {
         when(gitOperations.openGitRepository(Paths.get(repository.getAbsolutePath()))).thenReturn(git);
         when(gitOperations.hasAtLeastOneReference(this.repository)).thenReturn(true);
         when(pullResult.isSuccessful()).thenReturn(true);
-        when(gitOperations.pullRepository(git, "origin", "master")).thenReturn(pullResult);
+        when(gitOperations.pullFromRepository(git, "origin", "master")).thenReturn(pullResult);
 
         when(gitOperations.isLocalBranch(git, "master")).thenReturn(true);
 
         when(this.repository.getDirectory()).thenReturn(new File(repository, ".git"));
 
 
-        gitPactPublisher.store(Paths.get(pactLocation.getAbsolutePath()));
+        gitPactPublisher.publish(Paths.get(pactLocation.getAbsolutePath()));
         verify(gitOperations).addAndCommit(git, "my comment");
-        verify(gitOperations).pushRepository(git, "origin");
+        verify(gitOperations).pushToRepository(git, "origin");
 
         assertThat(new File(repository, "pact.txt")).exists().hasContent("Contract File");
 
@@ -127,10 +121,7 @@ public class GitPactPublisherTest {
         gitPactPublisher.gitOperations = gitOperations;
 
         File repository = temporaryFolder.newFolder("repo");
-        Map<String, Object> config = new HashMap<>();
-        config.put(GitPactPublisher.URL, "myurl");
-        config.put(GitPactPublisher.COMMENT, "my comment");
-        config.put(GitPactPublisher.REPOSITORY, repository.getAbsolutePath());
+        final Map<String, Object> config = getConfigurationWithCommonFields(repository);
         config.put(GitPactPublisher.TAG, "mytag");
         gitPactPublisher.configure(config);
 
@@ -140,17 +131,17 @@ public class GitPactPublisherTest {
         when(gitOperations.openGitRepository(Paths.get(repository.getAbsolutePath()))).thenReturn(git);
         when(gitOperations.hasAtLeastOneReference(this.repository)).thenReturn(true);
         when(pullResult.isSuccessful()).thenReturn(true);
-        when(gitOperations.pullRepository(git, "origin", "master")).thenReturn(pullResult);
+        when(gitOperations.pullFromRepository(git, "origin", "master")).thenReturn(pullResult);
 
         when(gitOperations.isLocalBranch(git, "master")).thenReturn(true);
 
         when(this.repository.getDirectory()).thenReturn(new File(repository, ".git"));
 
 
-        gitPactPublisher.store(Paths.get(pactLocation.getAbsolutePath()));
+        gitPactPublisher.publish(Paths.get(pactLocation.getAbsolutePath()));
         verify(gitOperations).addAndCommit(git, "my comment");
         verify(gitOperations).createTag(git, "mytag");
-        verify(gitOperations).pushRepository(git, "origin");
+        verify(gitOperations).pushToRepository(git, "origin");
 
         assertThat(new File(repository, "pact.txt")).exists().hasContent("Contract File");
 
@@ -168,10 +159,7 @@ public class GitPactPublisherTest {
         gitPactPublisher.gitOperations = gitOperations;
 
         File repository = temporaryFolder.newFolder("repo");
-        Map<String, Object> config = new HashMap<>();
-        config.put(GitPactPublisher.URL, "myurl");
-        config.put(GitPactPublisher.COMMENT, "my comment");
-        config.put(GitPactPublisher.REPOSITORY, repository.getAbsolutePath());
+        final Map<String, Object> config = getConfigurationWithCommonFields(repository);
         config.put(GitPactPublisher.BRANCH, "mybranch");
         gitPactPublisher.configure(config);
 
@@ -181,16 +169,25 @@ public class GitPactPublisherTest {
         when(gitOperations.openGitRepository(Paths.get(repository.getAbsolutePath()))).thenReturn(git);
         when(gitOperations.hasAtLeastOneReference(this.repository)).thenReturn(true);
         when(pullResult.isSuccessful()).thenReturn(true);
-        when(gitOperations.pullRepository(git, "origin", "mybranch")).thenReturn(pullResult);
+        when(gitOperations.pullFromRepository(git, "origin", "mybranch")).thenReturn(pullResult);
 
         when(gitOperations.isLocalBranch(git, "mybranch")).thenReturn(false);
         when(gitOperations.isRemoteBranch(git, "mybranch", "origin")).thenReturn(false);
 
         when(this.repository.getDirectory()).thenReturn(new File(repository, ".git"));
 
-        gitPactPublisher.store(Paths.get(pactLocation.getAbsolutePath()));
+        gitPactPublisher.publish(Paths.get(pactLocation.getAbsolutePath()));
         verify(gitOperations).createBranchAndCheckout(git, "mybranch");
 
+    }
+
+    private Map<String, Object> getConfigurationWithCommonFields(File repository) {
+        Map<String, Object> config = new HashMap<>();
+        config.put(GitPactPublisher.URL, "myurl");
+        config.put(GitPactPublisher.COMMENT, "my comment");
+        config.put(GitPactPublisher.REPOSITORY, repository.getAbsolutePath());
+
+        return config;
     }
 
 }

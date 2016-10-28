@@ -1,7 +1,7 @@
 package org.arquillian.pact.consumer.publisher.git;
 
-import org.arquillian.pact.common.configuration.PactRunnerExpressionParser;
-import org.arquillian.pact.common.git.GitOperations;
+import org.arquillian.pact.configuration.PactRunnerExpressionParser;
+import org.arquillian.pact.git.GitOperations;
 import org.arquillian.pact.consumer.spi.publisher.PactPublisher;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import static org.arquillian.pact.common.configuration.HomeResolver.resolveHomeDirectory;
+import static org.arquillian.pact.configuration.HomeResolver.resolveHomeDirectory;
 
 public class GitPactPublisher implements PactPublisher {
 
@@ -45,58 +45,66 @@ public class GitPactPublisher implements PactPublisher {
     }
 
     @Override
-    public void store(Path pactsLocation) {
+    public void publish(Path contractsSource) throws IOException {
 
         Git git = null;
         try {
-            if (isSet(REPOSITORY, String.class, this.configuration)) {
-
-                Path repository = Paths.get(getResolvedValue((String) this.configuration.get(REPOSITORY)));
-
-                if (this.gitOperations.isValidGitRepository(repository)) {
-
-                    git = this.gitOperations.openGitRepository(repository);
-                    if (this.gitOperations.hasAtLeastOneReference(git.getRepository())) {
-
-                        final PullResult pullResult = executePull(git);
-
-                        if (!pullResult.isSuccessful()) {
-                            // Merge conflicts
-                            throw new IllegalArgumentException("There are merge conflicts into an existing git repo. Provider should not deal with merge conflicts. Correct them or delete the repo and execute again the test.");
-                        }
-                    } else {
-                        throw new IllegalArgumentException(String.format("Git repository %s was not cloned correctly.", git.getRepository().getDirectory().getAbsolutePath()));
-                    }
-                } else {
-                    logger.log(Level.INFO, String.format("%s directory is not a git directory or does not exists and it is going to be deleted and cloned", repository));
-
-                    Files.deleteIfExists(repository);
-                    Files.createDirectories(repository);
-                    git = executeClone(repository);
-                }
-
-            } else {
-                // Put files in a temp directory
-                final Path testGitRepository = Files.createTempDirectory("TestGitRepository");
-
-                logger.info(String.format("Repository is going to be cloned at %s", testGitRepository));
-
-                git = executeClone(testGitRepository);
-            }
+            git = getGitRepositoryWithLatestRemoteChanges(git);
 
             // Now repository structure is created and we can start operating on it
             final Path outputLocation = moveToCorrectLocation(git);
-            copyPactFiles(pactsLocation, outputLocation);
+            copyPactFiles(contractsSource, outputLocation);
             executeCommitAndPush(git);
 
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
         } finally {
             if (git != null) {
                 git.close();
             }
         }
 
+    }
+
+    protected Git getGitRepositoryWithLatestRemoteChanges(Git git) throws IOException {
+        if (isSet(REPOSITORY, String.class, this.configuration)) {
+
+            Path repository = Paths.get(getResolvedValue((String) this.configuration.get(REPOSITORY)));
+
+            if (this.gitOperations.isValidGitRepository(repository)) {
+                git = useLocalGitRepository(repository);
+            } else {
+                logger.log(Level.INFO, String.format("%s directory is not a git directory or does not exists and it is going to be deleted and cloned", repository));
+
+                Files.deleteIfExists(repository);
+                Files.createDirectories(repository);
+                git = executeClone(repository);
+            }
+
+        } else {
+            // Put files in a temp directory
+            final Path testGitRepository = Files.createTempDirectory("TestGitRepository");
+
+            logger.info(String.format("Repository is going to be cloned at %s", testGitRepository));
+
+            git = executeClone(testGitRepository);
+        }
+        return git;
+    }
+
+    protected Git useLocalGitRepository(Path repository) throws IOException {
+        Git git;
+        git = this.gitOperations.openGitRepository(repository);
+        if (this.gitOperations.hasAtLeastOneReference(git.getRepository())) {
+
+            final PullResult pullResult = executePull(git);
+
+            if (!pullResult.isSuccessful()) {
+                // Merge conflicts
+                throw new IllegalArgumentException("There are merge conflicts into an existing git repo. Provider should not deal with merge conflicts. Correct them or delete the repo and execute again the test.");
+            }
+        } else {
+            throw new IllegalArgumentException(String.format("Git repository %s was not cloned correctly.", git.getRepository().getDirectory().getAbsolutePath()));
+        }
+        return git;
     }
 
     private void executeCommitAndPush(Git git) {
@@ -115,7 +123,7 @@ public class GitPactPublisher implements PactPublisher {
     private void executePush(Git git) {
         if (isSet(USERNAME, String.class, this.configuration) && isSet(PASSWORD, String.class, this.configuration)) {
 
-            this.gitOperations.pushRepository(git,
+            this.gitOperations.pushToRepository(git,
                     getResolvedValue((String) this.configuration.get(REMOTE)),
                     getResolvedValue((String) this.configuration.get(USERNAME)),
                     getResolvedValue((String) this.configuration.get(PASSWORD))
@@ -123,15 +131,15 @@ public class GitPactPublisher implements PactPublisher {
         } else {
             if (isSet(PASSPHRASE, String.class, this.configuration)) {
 
-                this.gitOperations.pushRepository(git,
+                this.gitOperations.pushToRepository(git,
                         getResolvedValue((String) this.configuration.get(REMOTE)),
                         getResolvedValue((String) this.configuration.get(PASSPHRASE)),
                         getPrivateKey());
             } else {
 
-                this.gitOperations.pushRepository(git,
+                this.gitOperations.pushToRepository(git,
                         getResolvedValue((String) this.configuration.get(REMOTE))
-                        );
+                );
             }
         }
     }
@@ -196,7 +204,7 @@ public class GitPactPublisher implements PactPublisher {
         final PullResult pullResult;
         if (isSet(USERNAME, String.class, this.configuration) && isSet(PASSWORD, String.class, this.configuration)) {
 
-            pullResult = this.gitOperations.pullRepository(git,
+            pullResult = this.gitOperations.pullFromRepository(git,
                     getResolvedValue((String) this.configuration.get(REMOTE)),
                     getResolvedValue((String) this.configuration.get(BRANCH)),
                     getResolvedValue((String) this.configuration.get(USERNAME)),
@@ -205,14 +213,14 @@ public class GitPactPublisher implements PactPublisher {
         } else {
             if (isSet(PASSPHRASE, String.class, this.configuration)) {
 
-                pullResult = this.gitOperations.pullRepository(git,
+                pullResult = this.gitOperations.pullFromRepository(git,
                         getResolvedValue((String) this.configuration.get(REMOTE)),
                         getResolvedValue((String) this.configuration.get(BRANCH)),
                         getResolvedValue((String) this.configuration.get(PASSPHRASE)),
                         getPrivateKey());
             } else {
 
-                pullResult = this.gitOperations.pullRepository(git,
+                pullResult = this.gitOperations.pullFromRepository(git,
                         getResolvedValue((String) this.configuration.get(REMOTE)),
                         getResolvedValue((String) this.configuration.get(BRANCH)));
             }

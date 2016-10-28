@@ -68,6 +68,7 @@
         <version.slf4j-api>1.7.21</version.slf4j-api>
         <version.snakeyaml>1.17</version.snakeyaml>
         <version.wiremock>2.2.2</version.wiremock>
+        <version.jcip-annotations>1.0</version.jcip-annotations>
     </properties>
 
     <dependencyManagement>
@@ -171,12 +172,12 @@
             </dependency>
             <dependency>
                 <groupId>org.arquillian.pact</groupId>
-                <artifactId>arquillian-pact-common-git</artifactId>
+                <artifactId>arquillian-pact-git</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.arquillian.pact</groupId>
-                <artifactId>arquillian-pact-common-configuration</artifactId>
+                <artifactId>arquillian-pact-configuration</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -220,6 +221,11 @@
                 <artifactId>wiremock</artifactId>
                 <version>${version.wiremock}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.jcip</groupId>
+                <artifactId>jcip-annotations</artifactId>
+                <version>${version.jcip-annotations}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

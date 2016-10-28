@@ -1,6 +1,6 @@
 package org.arquillian.pact.provider.loader.git;
 
-import org.arquillian.pact.common.git.GitOperations;
+import org.arquillian.pact.git.GitOperations;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.lib.Repository;
@@ -69,7 +69,7 @@ public class PactGitLoaderTest {
         when(gitOperations.openGitRepository(path)).thenReturn(git);
         when(gitOperations.hasAtLeastOneReference(repository)).thenReturn(true);
 
-        when(gitOperations.pullRepository(git, "origin", "master")).thenReturn(pullResult);
+        when(gitOperations.pullFromRepository(git, "origin", "master")).thenReturn(pullResult);
         when(gitOperations.isLocalBranch(git, "master")).thenReturn(true);
 
         PactGitLoader pactGitLoader = new PactGitLoader(TestWithPactRepositoryDirectory.class.getAnnotation(PactGit.class));
@@ -77,7 +77,7 @@ public class PactGitLoaderTest {
 
         final Path pactsFromGitRepo = pactGitLoader.getPactsFolderFromGitRepo();
 
-        verify(gitOperations).pullRepository(git, "origin", "master");
+        verify(gitOperations).pullFromRepository(git, "origin", "master");
         verify(gitOperations).checkoutBranch(git, "master");
         assertThat(pactsFromGitRepo.toString()).isEqualTo("/tmp");
 
@@ -90,7 +90,7 @@ public class PactGitLoaderTest {
         when(gitOperations.openGitRepository(path)).thenReturn(git);
         when(gitOperations.hasAtLeastOneReference(repository)).thenReturn(true);
 
-        when(gitOperations.pullRepository(git, "origin", "master")).thenReturn(pullResult);
+        when(gitOperations.pullFromRepository(git, "origin", "master")).thenReturn(pullResult);
         when(gitOperations.isLocalBranch(git, "master")).thenReturn(false);
 
         PactGitLoader pactGitLoader = new PactGitLoader(TestWithPactRepositoryDirectory.class.getAnnotation(PactGit.class));
@@ -98,7 +98,7 @@ public class PactGitLoaderTest {
 
         final Path pactsFromGitRepo = pactGitLoader.getPactsFolderFromGitRepo();
 
-        verify(gitOperations).pullRepository(git, "origin", "master");
+        verify(gitOperations).pullFromRepository(git, "origin", "master");
         verify(gitOperations).checkoutBranch(git, "master", "origin");
         assertThat(pactsFromGitRepo.toString()).isEqualTo("/tmp");
 
@@ -111,7 +111,7 @@ public class PactGitLoaderTest {
         when(gitOperations.openGitRepository(path)).thenReturn(git);
         when(gitOperations.hasAtLeastOneReference(repository)).thenReturn(true);
 
-        when(gitOperations.pullRepository(git, "origin", "master")).thenReturn(pullResult);
+        when(gitOperations.pullFromRepository(git, "origin", "master")).thenReturn(pullResult);
         when(gitOperations.isLocalBranch(git, "master")).thenReturn(false);
 
         PactGitLoader pactGitLoader = new PactGitLoader(TestWithPactRepositoryDirectoryAndSubfolder.class.getAnnotation(PactGit.class));
@@ -119,7 +119,7 @@ public class PactGitLoaderTest {
 
         final Path pactsFromGitRepo = pactGitLoader.getPactsFolderFromGitRepo();
 
-        verify(gitOperations).pullRepository(git, "origin", "master");
+        verify(gitOperations).pullFromRepository(git, "origin", "master");
         verify(gitOperations).checkoutBranch(git, "master", "origin");
         assertThat(pactsFromGitRepo.toString()).isEqualTo("/tmp/pacts");
 
@@ -132,7 +132,7 @@ public class PactGitLoaderTest {
         when(gitOperations.openGitRepository(path)).thenReturn(git);
         when(gitOperations.hasAtLeastOneReference(repository)).thenReturn(true);
 
-        when(gitOperations.pullRepository(git, "origin", "mybranch")).thenReturn(pullResult);
+        when(gitOperations.pullFromRepository(git, "origin", "mybranch")).thenReturn(pullResult);
         when(gitOperations.isLocalBranch(git, "master")).thenReturn(false);
 
         PactGitLoader pactGitLoader = new PactGitLoader(TestWithPactRepositoryDirectoryAndTag.class.getAnnotation(PactGit.class));
@@ -140,7 +140,7 @@ public class PactGitLoaderTest {
 
         final Path pactsFromGitRepo = pactGitLoader.getPactsFolderFromGitRepo();
 
-        verify(gitOperations).pullRepository(git, "origin", "mybranch");
+        verify(gitOperations).pullFromRepository(git, "origin", "mybranch");
         verify(gitOperations).checkoutTag(git, "mytag");
         assertThat(pactsFromGitRepo.toString()).isEqualTo("/tmp");
 

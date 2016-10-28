@@ -72,7 +72,7 @@
         </dependency>
         <dependency>
             <groupId>org.arquillian.pact</groupId>
-            <artifactId>arquillian-pact-common-configuration</artifactId>
+            <artifactId>arquillian-pact-configuration</artifactId>
         </dependency>
         <dependency>
             <groupId>au.com.dius</groupId>
@@ -115,6 +115,11 @@
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.jcip</groupId>
+            <artifactId>jcip-annotations</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

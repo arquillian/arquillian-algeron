@@ -2,8 +2,8 @@ package org.arquillian.pact.provider.loader.git;
 
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.PactReader;
-import org.arquillian.pact.common.configuration.PactRunnerExpressionParser;
-import org.arquillian.pact.common.git.GitOperations;
+import org.arquillian.pact.configuration.PactRunnerExpressionParser;
+import org.arquillian.pact.git.GitOperations;
 import org.arquillian.pact.provider.spi.loader.PactLoader;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static org.arquillian.pact.common.configuration.HomeResolver.resolveHomeDirectory;
+import static org.arquillian.pact.configuration.HomeResolver.resolveHomeDirectory;
 
 /**
  * Loader to get pact files from git repository.
@@ -163,7 +163,7 @@ public class PactGitLoader implements PactLoader {
         final PullResult pullResult;
         if (isSet(this.pactGit.username()) && isSet(this.pactGit.password())) {
 
-            pullResult = this.gitOperations.pullRepository(git,
+            pullResult = this.gitOperations.pullFromRepository(git,
                     getResolvedValue(this.pactGit.remote()),
                     getResolvedValue(this.pactGit.branch()),
                     getResolvedValue(this.pactGit.username()),
@@ -171,14 +171,14 @@ public class PactGitLoader implements PactLoader {
         } else {
             if (isSet(this.pactGit.passphrase())) {
 
-                pullResult = this.gitOperations.pullRepository(git,
+                pullResult = this.gitOperations.pullFromRepository(git,
                         getResolvedValue(this.pactGit.remote()),
                         getResolvedValue(this.pactGit.branch()),
                         getResolvedValue(this.pactGit.passphrase()),
                         getPrivateKey());
             } else {
 
-                pullResult = this.gitOperations.pullRepository(git,
+                pullResult = this.gitOperations.pullFromRepository(git,
                         getResolvedValue(this.pactGit.remote()),
                         getResolvedValue(this.pactGit.branch()));
             }

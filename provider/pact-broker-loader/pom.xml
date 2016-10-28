@@ -51,7 +51,7 @@
         </dependency>
         <dependency>
             <groupId>org.arquillian.pact</groupId>
-            <artifactId>arquillian-pact-common-configuration</artifactId>
+            <artifactId>arquillian-pact-configuration</artifactId>
         </dependency>
     </dependencies>
 

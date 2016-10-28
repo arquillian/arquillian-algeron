@@ -1,9 +1,10 @@
 package org.arquillian.pact.consumer.core.publisher;
 
 
-import org.arquillian.pact.common.configuration.PactRunnerExpressionParser;
+import org.arquillian.pact.configuration.PactRunnerExpressionParser;
 import org.arquillian.pact.consumer.spi.publisher.PactPublisher;
 
+import javax.xml.ws.http.HTTPException;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,11 +26,11 @@ public class UrlPactPublisher implements PactPublisher {
     private Map<String, Object> configuration = null;
 
     @Override
-    public void store(Path pactsLocation) {
+    public void publish(Path contractsSource) throws IOException {
 
         String url = PactRunnerExpressionParser.parseExpressions((String) this.configuration.get(URL));
 
-        try (Stream<Path> stream = Files.walk(pactsLocation)) {
+        try (Stream<Path> stream = Files.walk(contractsSource)) {
             stream.forEach(path -> {
                 try {
                     if (! Files.isDirectory(path)) {
@@ -40,10 +41,7 @@ public class UrlPactPublisher implements PactPublisher {
                     throw new IllegalStateException(e);
                 }
             });
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
         }
-
     }
 
     public void sendPost(URL url, Path content) throws IOException {
@@ -64,7 +62,7 @@ public class UrlPactPublisher implements PactPublisher {
             int responseCode = con.getResponseCode();
             StringBuilder response = readResponse(con);
             if (isFailureResponseCode(responseCode)) {
-                throw new IOException(String.format("Http Post failed with status code %s and error message %s", responseCode, response.toString()));
+                throw new HTTPException(responseCode);
             }
         } finally {
             if (con != null) {
@@ -85,7 +83,7 @@ public class UrlPactPublisher implements PactPublisher {
     }
 
     protected boolean isFailureResponseCode(int responseCode) {
-        return responseCode < 200 && responseCode > 299;
+        return responseCode > 299;
     }
 
     @Override

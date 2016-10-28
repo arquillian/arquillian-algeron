@@ -1,6 +1,6 @@
 package org.arquillian.pact.consumer.core.publisher;
 
-import org.arquillian.pact.common.configuration.PactRunnerExpressionParser;
+import org.arquillian.pact.configuration.PactRunnerExpressionParser;
 import org.arquillian.pact.consumer.spi.publisher.PactPublisher;
 
 import java.io.IOException;
@@ -18,21 +18,15 @@ public class FolderPactPublisher implements PactPublisher {
     private Map<String, Object> configuration = null;
 
     @Override
-    public void store(final Path pactsLocation) {
+    public void publish(final Path contractsSource) throws IOException {
         final String path = (String) this.configuration.get(OUTPUT_FOLDER);
         final Path outputPath = Paths.get(PactRunnerExpressionParser.parseExpressions(path));
 
-        try {
-
-            if (Files.notExists(outputPath)) {
-                Files.createDirectories(outputPath);
-            }
-
-            copyPactFiles(pactsLocation, outputPath);
-
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
+        if (Files.notExists(outputPath)) {
+            Files.createDirectories(outputPath);
         }
+
+        copyPactFiles(contractsSource, outputPath);
 
     }
 
@@ -40,7 +34,7 @@ public class FolderPactPublisher implements PactPublisher {
         try (Stream<Path> stream = Files.walk(pactsLocation)) {
             stream.forEach(path -> {
                 try {
-                    if (! Files.isDirectory(path)) {
+                    if (!Files.isDirectory(path)) {
                         final Path pactFile = outputPath.resolve(path.getFileName());
                         Files.copy(path, pactFile, StandardCopyOption.REPLACE_EXISTING);
                     }

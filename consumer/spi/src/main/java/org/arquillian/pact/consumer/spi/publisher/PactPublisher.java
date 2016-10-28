@@ -1,5 +1,6 @@
 package org.arquillian.pact.consumer.spi.publisher;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -10,10 +11,10 @@ import java.util.Map;
 public interface PactPublisher {
 
     /**
-     * Store pacts to appropriate repository.
-     * @param pactsLocation where pact files are generated.
+     * Publish pacts to appropriate repository.
+     * @param contractsSource where pact files are generated.
      */
-    void store(Path pactsLocation);
+    void publish(Path contractsSource) throws IOException;
 
     /**
      * Returns the name to identify this published in configuration file.
