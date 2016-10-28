@@ -147,7 +147,7 @@ public class GitOperations {
     }
 
     /**
-     * Executes a checkot -b command using given branch.
+     * Executes a checkout -b command using given branch.
      * @param git instance.
      * @param branch to create and checkout.
      * @return Ref to current branch.
