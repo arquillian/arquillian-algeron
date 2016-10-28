@@ -1,4 +1,4 @@
-package org.arquillian.pact.provider.ftest;
+package org.arquillian.pact.provider.skip;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRule;
@@ -7,7 +7,6 @@ import org.arquillian.pact.provider.core.httptarget.Target;
 import org.arquillian.pact.provider.core.loader.PactFolder;
 import org.arquillian.pact.provider.spi.Provider;
 import org.arquillian.pact.provider.spi.State;
-import org.assertj.core.api.Assertions;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -19,11 +18,9 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.annotation.security.RunAs;
 import java.net.URL;
 import java.util.Map;
 
-import static com.github.restdriver.clientdriver.RestClientDriver.giveResponse;
 import static com.github.restdriver.clientdriver.RestClientDriver.giveResponseAsBytes;
 import static com.github.restdriver.clientdriver.RestClientDriver.onRequestTo;
 import static org.assertj.core.api.Assertions.assertThat;

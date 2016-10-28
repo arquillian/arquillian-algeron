@@ -1,4 +1,4 @@
-package org.arquillian.pact.provider.ftest;
+package org.arquillian.pact.provider.skip;
 
 import javax.ejb.Lock;
 import javax.ejb.LockType;
