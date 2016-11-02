@@ -8,6 +8,7 @@ import org.arquillian.pact.consumer.core.client.container.PactConsumerConfigurat
 import org.arquillian.pact.consumer.core.client.container.PactConsumerRemoteExtension;
 import org.arquillian.pact.consumer.core.client.container.RemoteConsumerPactTest;
 import org.arquillian.pact.consumer.core.util.PactConsumerVersionExtractor;
+import org.arquillian.pact.consumer.core.util.ResolveClassAnnotation;
 import org.arquillian.pact.consumer.spi.Pact;
 import org.jboss.arquillian.container.test.spi.RemoteLoadableExtension;
 import org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender;
@@ -35,7 +36,8 @@ public class PactConsumerArchiveAppender implements AuxiliaryArchiveAppender {
                 .addClasses(AbstractConsumerPactTest.class,
                         RemoteConsumerPactTest.class, PactConsumerConfiguration.class,
                         MockProviderConfigCreator.class, PactConsumerConfigurator.class,
-                        PactConsumerRemoteExtension.class, PactFilesCommand.class, ConsumerProviderPair.class)
+                        PactConsumerRemoteExtension.class, PactFilesCommand.class, ConsumerProviderPair.class,
+                        ResolveClassAnnotation.class)
                 .addPackages(true, Pact.class.getPackage())
                 .addAsServiceProvider(RemoteLoadableExtension.class, PactConsumerRemoteExtension.class);
 
