@@ -2,7 +2,7 @@ package org.arquillian.pact.provider.loader.maven;
 
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.PactReader;
-import org.arquillian.pact.provider.api.PactRunnerExpressionParser;
+import org.arquillian.pact.configuration.PactRunnerExpressionParser;
 import org.arquillian.pact.provider.spi.loader.PactLoader;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;

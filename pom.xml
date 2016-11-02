@@ -66,6 +66,9 @@
         <version.rest-assured>3.0.1</version.rest-assured>
         <version.jgit>4.5.0.201609210915-r</version.jgit>
         <version.slf4j-api>1.7.21</version.slf4j-api>
+        <version.snakeyaml>1.17</version.snakeyaml>
+        <version.wiremock>2.2.2</version.wiremock>
+        <version.jcip-annotations>1.0</version.jcip-annotations>
     </properties>
 
     <dependencyManagement>
@@ -96,6 +99,25 @@
                 <groupId>au.com.dius</groupId>
                 <artifactId>pact-jvm-consumer_2.11</artifactId>
                 <version>${version.pact}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${version.snakeyaml}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.core</groupId>
+                <artifactId>arquillian-core-impl-base</artifactId>
+                <version>${version.arquillian_core}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-container-impl-base</artifactId>
+                <version>${version.arquillian_core}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian.core</groupId>
@@ -149,6 +171,16 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.arquillian.pact</groupId>
+                <artifactId>arquillian-pact-git</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.pact</groupId>
+                <artifactId>arquillian-pact-configuration</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.github.rholder</groupId>
                 <artifactId>guava-retrying</artifactId>
                 <version>${version.guava-retrying}</version>
@@ -184,12 +216,24 @@
                 <version>${version.rest-assured}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>com.github.tomakehurst</groupId>
+                <artifactId>wiremock</artifactId>
+                <version>${version.wiremock}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.jcip</groupId>
+                <artifactId>jcip-annotations</artifactId>
+                <version>${version.jcip-annotations}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <modules>
         <module>consumer</module>
         <module>provider</module>
+        <module>common</module>
     </modules>
     <build>
         <plugins>

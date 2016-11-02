@@ -1,6 +1,7 @@
 package org.arquillian.pact.consumer.core;
 
 import au.com.dius.pact.model.PactSpecVersion;
+import org.yaml.snakeyaml.Yaml;
 
 import java.util.Map;
 import java.util.Properties;
@@ -14,6 +15,8 @@ public class PactConsumerConfiguration {
     private static final String PROVIDER = "provider";
     private static final String PACT_ARTIFACT_VERSION = "pactArtifactVersion";
     private static final String PACT_REPORT_DIR = "pactReportDir";
+    private static final String PACT_PUBLISH_CONTRACTS = "publishContracts";
+    private static final String PACT_PUBLISH_CONFIGURATION = "pactPublishConfiguration";
 
 
     private String host = "localhost";
@@ -23,6 +26,21 @@ public class PactConsumerConfiguration {
     private String provider = null;
     private String pactArtifactVersion = null;
     private String pactReportDir = null;
+
+    private boolean publishContracts = false;
+    private Map<String, Object> publishConfiguration = null;
+
+    public boolean isPublishContracts() {
+        return publishContracts;
+    }
+
+    public boolean isPublishConfigurationSet() {
+        return publishConfiguration != null;
+    }
+
+    public Map<String, Object> getPublishConfiguration() {
+        return publishConfiguration;
+    }
 
     public boolean isPactReportDirSet() {
         return pactReportDir != null;
@@ -128,8 +146,20 @@ public class PactConsumerConfiguration {
             pactConsumerConfiguration.pactReportDir = map.get(PACT_REPORT_DIR);
         }
 
+        if (map.containsKey(PACT_PUBLISH_CONTRACTS)) {
+            pactConsumerConfiguration.publishContracts = Boolean.parseBoolean(map.get(PACT_PUBLISH_CONTRACTS));
+        }
+
+        if (map.containsKey(PACT_PUBLISH_CONFIGURATION)) {
+            pactConsumerConfiguration.publishConfiguration = loadConfiguration(map.get(PACT_PUBLISH_CONFIGURATION));
+        }
+
         return pactConsumerConfiguration;
 
+    }
+
+    private final static Map<String, Object> loadConfiguration(String configurationContent) {
+        return (Map<String, Object>) new Yaml().load(configurationContent);
     }
 
 }

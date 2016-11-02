@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 
 /**
  * Used to point to source of pacts for contract tests
+ * All properties supports ${name:-default} syntax
  *
  * @see PactUrlLoader pact loader
  */

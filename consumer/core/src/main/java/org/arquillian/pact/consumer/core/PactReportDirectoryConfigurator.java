@@ -5,7 +5,7 @@ import org.jboss.arquillian.core.api.event.ManagerStopping;
 
 public class PactReportDirectoryConfigurator {
 
-    private static final String PACT_ROOT_DIR = "pact.rootDir";
+    public static final String PACT_ROOT_DIR = "pact.rootDir";
 
     private boolean customReportDirectory = false;
 

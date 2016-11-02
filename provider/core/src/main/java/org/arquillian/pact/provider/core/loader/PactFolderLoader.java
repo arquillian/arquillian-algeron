@@ -2,11 +2,10 @@ package org.arquillian.pact.provider.core.loader;
 
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.PactReader;
-import org.arquillian.pact.provider.api.PactRunnerExpressionParser;
+import org.arquillian.pact.configuration.PactRunnerExpressionParser;
 import org.arquillian.pact.provider.spi.loader.PactLoader;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -66,4 +65,5 @@ public class PactFolderLoader implements PactLoader {
         }
         return file;
     }
+
 }

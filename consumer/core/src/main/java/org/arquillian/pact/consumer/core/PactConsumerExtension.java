@@ -13,7 +13,8 @@ public class PactConsumerExtension implements LoadableExtension {
     public void register(ExtensionBuilder builder) {
         builder.observer(PactConsumerConfigurator.class)
                 .observer(MockProviderConfigCreator.class)
-                .observer(PactReportDirectoryConfigurator.class);
+                .observer(PactReportDirectoryConfigurator.class)
+                .observer(PactsPublisher.class);
 
         if(Validate.classExists("org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender")) {
             builder.service(AuxiliaryArchiveAppender.class, PactConsumerArchiveAppender.class)

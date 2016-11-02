@@ -1,5 +1,17 @@
-package org.arquillian.pact.provider.api;
-
+/*
+ * Copyright 2016 pact-jvm project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.arquillian.pact.configuration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +59,8 @@ public class SystemPropertyResolver {
         }
 
         PropertyValueTuple invoke() {
-            if (propertyName.contains(":")) {
-                String[] kv = splitWorker(propertyName, ':', true);
+            if (propertyName.contains(":-")) {
+                String[] kv = splitWorker(propertyName, true);
                 propertyName = kv[0];
                 if (kv.length > 1) {
                     defaultValue = kv[1];
@@ -57,7 +69,7 @@ public class SystemPropertyResolver {
             return this;
         }
 
-        private String[] splitWorker(final String str, final char separatorChar, final boolean preserveAllTokens) {
+        private String[] splitWorker(final String str, final boolean preserveAllTokens) {
             // Performance tuned for 2.0 (JDK1.4)
 
             if (str == null) {
@@ -72,13 +84,14 @@ public class SystemPropertyResolver {
             boolean match = false;
             boolean lastMatch = false;
             while (i < len) {
-                if (str.charAt(i) == separatorChar) {
+                if (str.charAt(i) == ':' && (i+1 < len && str.charAt(i+1) == '-')) {
                     if (match || preserveAllTokens) {
                         list.add(str.substring(start, i));
                         match = false;
                         lastMatch = true;
                     }
-                    start = ++i;
+                    start = i+2;
+                    i+=2;
                     continue;
                 }
                 lastMatch = false;
