@@ -8,6 +8,8 @@ import org.arquillian.pact.consumer.core.PactsPublisher;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.test.AbstractManagerTestBase;
 import org.jboss.arquillian.test.spi.event.suite.AfterSuite;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -34,65 +36,56 @@ public class FolderPactsPublisherTest extends AbstractManagerTestBase {
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
+    private Map<String, String> params;
+    private File output;
+
+    @Before
+    public void setupConfiguration() throws IOException {
+        final File origin = temporaryFolder.newFolder("origin");
+        System.setProperty(PactReportDirectoryConfigurator.PACT_ROOT_DIR, origin.getAbsolutePath());
+
+        output = temporaryFolder.newFolder("output");
+        byte[] content = "Contract File".getBytes();
+        Files.copy(new ByteArrayInputStream(content), new File(origin, "pact.txt").toPath());
+
+        String config = "provider: folder\n" +
+                "outputFolder: " + output.getAbsolutePath() + "\n";
+
+        params = new HashMap<>();
+        params.put("pactPublishConfiguration", config);
+    }
+
+    @After
+    public void unsetSystemProperties() {
+        System.clearProperty(PactReportDirectoryConfigurator.PACT_ROOT_DIR);
+    }
+
     @Test
     public void should_move_files_to_output_directory() throws IOException {
 
-        try {
-            final File origin = temporaryFolder.newFolder("origin");
-            System.setProperty(PactReportDirectoryConfigurator.PACT_ROOT_DIR, origin.getAbsolutePath());
+        params.put("publishContracts", "true");
+        final PactConsumerConfiguration pactConsumerConfiguration = PactConsumerConfiguration.fromMap(params);
+        bind(ApplicationScoped.class, PactConsumerConfiguration.class, pactConsumerConfiguration);
 
-            final File output = temporaryFolder.newFolder("output");
-            byte[] content = "Contract File".getBytes();
-            Files.copy(new ByteArrayInputStream(content), new File(origin, "pact.txt").toPath());
+        fire(new AfterSuite());
 
-            String config = "provider: folder\n" +
-                    "outputFolder: " + output.getAbsolutePath() + "\n";
+        assertThat(output).isDirectory();
+        assertThat(new File(output, "pact.txt")).exists().hasContent("Contract File");
 
-            final Map<String, String> params = new HashMap<>();
-            params.put("publishContracts", "true");
-            params.put("pactPublishConfiguration", config);
-
-            final PactConsumerConfiguration pactConsumerConfiguration = PactConsumerConfiguration.fromMap(params);
-            bind(ApplicationScoped.class, PactConsumerConfiguration.class, pactConsumerConfiguration);
-
-            fire(new AfterSuite());
-
-            assertThat(output).isDirectory();
-            assertThat(new File(output, "pact.txt")).exists().hasContent("Contract File");
-
-        } finally {
-            System.clearProperty(PactReportDirectoryConfigurator.PACT_ROOT_DIR);
-        }
     }
 
     @Test
     public void should_not_move_files_to_output_directory_if_no_publish_contracts() throws IOException {
 
-        try {
-            final File origin = temporaryFolder.newFolder("origin");
-            System.setProperty(PactReportDirectoryConfigurator.PACT_ROOT_DIR, origin.getAbsolutePath());
 
-            final File output = temporaryFolder.newFolder("output");
-            byte[] content = "Contract File".getBytes();
-            Files.copy(new ByteArrayInputStream(content), new File(origin, "pact.txt").toPath());
+        final PactConsumerConfiguration pactConsumerConfiguration = PactConsumerConfiguration.fromMap(params);
+        bind(ApplicationScoped.class, PactConsumerConfiguration.class, pactConsumerConfiguration);
 
-            String config = "provider: folder\n" +
-                    "outputFolder: " + output.getAbsolutePath() + "\n";
+        fire(new AfterSuite());
 
-            final Map<String, String> params = new HashMap<>();
-            params.put("pactPublishConfiguration", config);
+        assertThat(output).isDirectory();
+        assertThat(new File(output, "pact.txt")).doesNotExist();
 
-            final PactConsumerConfiguration pactConsumerConfiguration = PactConsumerConfiguration.fromMap(params);
-            bind(ApplicationScoped.class, PactConsumerConfiguration.class, pactConsumerConfiguration);
-
-            fire(new AfterSuite());
-
-            assertThat(output).isDirectory();
-            assertThat(new File(output, "pact.txt")).doesNotExist();
-
-        } finally {
-            System.clearProperty(PactReportDirectoryConfigurator.PACT_ROOT_DIR);
-        }
     }
 
 }
