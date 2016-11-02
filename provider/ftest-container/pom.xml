@@ -16,7 +16,7 @@
     </properties>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-pact-provider-ftest-incontainer</artifactId>
+    <artifactId>arquillian-pact-provider-ftest-container</artifactId>
 
     <name>Arquillian Pact Provider ftest container</name>
 

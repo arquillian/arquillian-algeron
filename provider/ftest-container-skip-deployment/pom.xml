@@ -16,7 +16,7 @@
     </properties>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-pact-provider-ftest-incontainer-skip-deployment</artifactId>
+    <artifactId>arquillian-pact-provider-ftest-container-skip-deployment</artifactId>
 
     <name>Arquillian Pact Provider ftest container skip deployment</name>
 

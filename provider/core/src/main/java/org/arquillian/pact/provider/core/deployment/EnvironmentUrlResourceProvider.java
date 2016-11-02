@@ -28,7 +28,7 @@ public class EnvironmentUrlResourceProvider extends URLResourceProvider {
         if (DeploymentEnabler.shouldEnableDeployment(pactProviderConfigurationInstance.get())) {
             return super.doLookup(resource, qualifiers);
         } else {
-            final Optional<Environment> environmentAnnotation = getEnvironmentAnnotationPosition(qualifiers);
+            final Optional<Environment> environmentAnnotation = getEnvironmentAnnotation(qualifiers);
             if (environmentAnnotation.isPresent()) {
                 return resolveAnnotation(environmentAnnotation.get());
             } else {
@@ -37,7 +37,7 @@ public class EnvironmentUrlResourceProvider extends URLResourceProvider {
         }
     }
 
-    private Optional<Environment> getEnvironmentAnnotationPosition(Annotation[] annotations) {
+    private Optional<Environment> getEnvironmentAnnotation(Annotation[] annotations) {
 
         for (int i = 0; i < annotations.length; i++) {
             if (Environment.class.equals(annotations[i].annotationType())) {
