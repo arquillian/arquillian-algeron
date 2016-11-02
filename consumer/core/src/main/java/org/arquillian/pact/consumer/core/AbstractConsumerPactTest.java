@@ -112,8 +112,8 @@ public abstract class AbstractConsumerPactTest {
         final Optional<Class<?>> classWithPactAnnotation = ResolveClassAnnotation.getClassWithAnnotation(testClass.getJavaClass(), Pact.class);
         final List<Method> pactMethods = findPactFragmentMethods(testClass);
         for (Method method : pactMethods) {
-            Pact pact = resolvePactAnnotation(classWithPactAnnotation, method);
-            if (pact != null && pact.provider().equals(currentProvider)
+            Optional<Pact> pact = resolvePactAnnotation(classWithPactAnnotation, method);
+            if (pact.isPresent() && pact.get().provider().equals(currentProvider)
                     && (pactFragment.isEmpty() || pactFragment.equals(method.getName()))) {
 
                 validatePactSignature(method);
@@ -123,13 +123,13 @@ public abstract class AbstractConsumerPactTest {
         return Optional.empty();
     }
 
-    private Pact resolvePactAnnotation(Optional<Class<?>> clazz, Method method) {
+    private Optional<Pact> resolvePactAnnotation(Optional<Class<?>> clazz, Method method) {
         Pact pactMethodAnnotation = method.getAnnotation(Pact.class);
 
         if (pactMethodAnnotation == null) {
             // It can be at class level.
             if (clazz.isPresent()) {
-                return clazz.get().getAnnotation(Pact.class);
+                return Optional.ofNullable(clazz.get().getAnnotation(Pact.class));
             } else {
                 // method will be ignored.
                 logger.log(Level.INFO, String.format("Method %s returns a %s type but it is not annotated at method nor at class level with %s",
@@ -139,7 +139,7 @@ public abstract class AbstractConsumerPactTest {
                 return null;
             }
         } else {
-            return pactMethodAnnotation;
+            return Optional.of(pactMethodAnnotation);
         }
 
     }
