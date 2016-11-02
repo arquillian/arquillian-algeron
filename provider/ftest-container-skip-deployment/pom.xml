@@ -16,9 +16,9 @@
     </properties>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-pact-provider-ftest-incontainer</artifactId>
+    <artifactId>arquillian-pact-provider-ftest-container-skip-deployment</artifactId>
 
-    <name>Arquillian Pact Provider ftest container</name>
+    <name>Arquillian Pact Provider ftest container skip deployment</name>
 
     <dependencies>
         <dependency>
@@ -49,6 +49,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.github.rest-driver</groupId>
+            <artifactId>rest-client-driver</artifactId>
+            <version>2.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -60,6 +66,21 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <myservice.url>http://localhost:8332</myservice.url>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
+
 
 

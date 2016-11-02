@@ -16,9 +16,9 @@
     </properties>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-pact-consumer-ftest-incontainer</artifactId>
+    <artifactId>arquillian-pact-consumer-ftest-container</artifactId>
 
-    <name>Arquillian Pact Consumer ftest Incontainer</name>
+    <name>Arquillian Pact Consumer ftest container</name>
 
     <dependencies>
         <dependency>

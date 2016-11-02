@@ -26,7 +26,8 @@
       <module>core</module>
       <module>spi</module>
       <module>ftest</module>
-      <module>ftest-incontainer</module>
+      <module>ftest-container</module>
+      <module>ftest-container-skip-deployment</module>
       <module>pact-broker-loader</module>
       <module>maven-loader</module>
       <module>git-loader</module>
