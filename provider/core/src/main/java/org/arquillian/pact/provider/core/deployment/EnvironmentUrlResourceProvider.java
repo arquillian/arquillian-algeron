@@ -13,9 +13,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
+/**
+ * URL Resource Provider that in case of annotating a URL with ArquillianResource and
+ * {@link Environment} the value of the URL is got from provided system property or environment variable
+ * instead of using the common Arquillian enrichment.
+ */
 public class EnvironmentUrlResourceProvider extends URLResourceProvider {
-
-    private static final int NOT_FOUND = -1;
 
     @Inject
     Instance<PactProviderConfiguration> pactProviderConfigurationInstance;
@@ -25,37 +28,35 @@ public class EnvironmentUrlResourceProvider extends URLResourceProvider {
         if (DeploymentEnabler.shouldEnableDeployment(pactProviderConfigurationInstance.get())) {
             return super.doLookup(resource, qualifiers);
         } else {
-            int position = NOT_FOUND;
-            if ((position = getEnvironmentAnnotationPosition(qualifiers)) == NOT_FOUND) {
-                return super.doLookup(resource, qualifiers);
+            final Optional<Environment> environmentAnnotation = getEnvironmentAnnotationPosition(qualifiers);
+            if (environmentAnnotation.isPresent()) {
+                return resolveAnnotation(environmentAnnotation.get());
             } else {
-                return resolveAnnotation((Environment) qualifiers[position]);
+                return super.doLookup(resource, qualifiers);
             }
         }
     }
 
-    private int getEnvironmentAnnotationPosition(Annotation[] annotations) {
+    private Optional<Environment> getEnvironmentAnnotationPosition(Annotation[] annotations) {
 
         for (int i = 0; i < annotations.length; i++) {
             if (Environment.class.equals(annotations[i].annotationType())) {
-                return i;
+                return Optional.of((Environment) annotations[i]);
             }
         }
 
-        return NOT_FOUND;
+        return Optional.empty();
     }
 
     private URL resolveAnnotation(Environment environmentVar) {
         String resolvedUrl = Optional.ofNullable(System.getenv(environmentVar.value()))
                 .orElse(Optional.ofNullable(System.getProperty(environmentVar.value()))
                         .orElse(""));
-        URL url;
         try {
-            url = new URL(resolvedUrl);
+            return new URL(resolvedUrl);
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException(e);
         }
-        return url;
     }
 
 }

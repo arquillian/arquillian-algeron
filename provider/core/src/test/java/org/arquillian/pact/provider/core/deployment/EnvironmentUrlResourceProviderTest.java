@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EnvironmentUrlResourceProvuderTest {
+public class EnvironmentUrlResourceProviderTest {
 
     @Test
     public void should_resolve_url_if_environment_annotation_present() throws NoSuchFieldException {
