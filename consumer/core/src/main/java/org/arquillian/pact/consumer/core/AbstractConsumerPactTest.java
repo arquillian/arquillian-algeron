@@ -10,6 +10,7 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.MockProviderConfig;
 import au.com.dius.pact.model.PactFragment;
 import org.arquillian.pact.consumer.core.client.container.ConsumerProviderPair;
+import org.arquillian.pact.consumer.core.util.ResolveClassAnnotation;
 import org.arquillian.pact.consumer.spi.Pact;
 import org.arquillian.pact.consumer.spi.PactVerification;
 import org.jboss.arquillian.core.api.Instance;
@@ -19,11 +20,17 @@ import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.arquillian.test.spi.event.suite.Test;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 public abstract class AbstractConsumerPactTest {
 
+    private static final Logger logger = Logger.getLogger(AbstractConsumerPactTest.class.getName());
     private static final VerificationResult PACT_VERIFIED = PactVerified$.MODULE$;
 
     @Inject
@@ -99,13 +106,14 @@ public abstract class AbstractConsumerPactTest {
         }
     }
 
-    private Optional<Method> findPactMethod(String currentProvider, TestClass testClass, PactVerification pactVerification) {
+    protected Optional<Method> findPactMethod(String currentProvider, TestClass testClass, PactVerification pactVerification) {
         String pactFragment = pactVerification.fragment();
 
-        final Method[] pactMethods = testClass.getMethods(Pact.class);
+        final Optional<Class<?>> classWithPactAnnotation = ResolveClassAnnotation.getClassWithAnnotation(testClass.getJavaClass(), Pact.class);
+        final List<Method> pactMethods = findPactFragmentMethods(testClass);
         for (Method method : pactMethods) {
-            Pact pact = method.getAnnotation(Pact.class);
-            if (pact != null && pact.provider().equals(currentProvider)
+            Optional<Pact> pact = resolvePactAnnotation(classWithPactAnnotation, method);
+            if (pact.isPresent() && pact.get().provider().equals(currentProvider)
                     && (pactFragment.isEmpty() || pactFragment.equals(method.getName()))) {
 
                 validatePactSignature(method);
@@ -113,6 +121,27 @@ public abstract class AbstractConsumerPactTest {
             }
         }
         return Optional.empty();
+    }
+
+    private Optional<Pact> resolvePactAnnotation(Optional<Class<?>> clazz, Method method) {
+        Pact pactMethodAnnotation = method.getAnnotation(Pact.class);
+
+        if (pactMethodAnnotation == null) {
+            // It can be at class level.
+            if (clazz.isPresent()) {
+                return Optional.ofNullable(clazz.get().getAnnotation(Pact.class));
+            } else {
+                // method will be ignored.
+                logger.log(Level.INFO, String.format("Method %s returns a %s type but it is not annotated at method nor at class level with %s",
+                        method.getName(),
+                        PactFragment.class.getName(),
+                        Pact.class.getName()));
+                return null;
+            }
+        } else {
+            return Optional.of(pactMethodAnnotation);
+        }
+
     }
 
     private void validatePactSignature(Method method) {
@@ -125,6 +154,14 @@ public abstract class AbstractConsumerPactTest {
             throw new UnsupportedOperationException("Method " + method.getName() +
                     " does not conform required method signature 'public PactFragment xxx(PactDslWithProvider builder)'");
         }
+    }
+
+    private List<Method> findPactFragmentMethods(TestClass testClass) {
+        final Method[] methods = testClass.getJavaClass().getMethods();
+
+        return Arrays.stream(methods)
+                .filter(method -> method.getReturnType().isAssignableFrom(PactFragment.class))
+                .collect(Collectors.toList());
     }
 
 }
