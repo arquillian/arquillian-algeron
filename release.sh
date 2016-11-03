@@ -80,4 +80,4 @@ milestone_url="https://api.github.com/repos/${repo}/milestones"
 
 milestone_number=$(curl -H "Authorization: token ${token}" ${milestone_url} | jq --arg title $param1 'map(select(.title == $title)) | .[0].number')
 
-mvn -B release:prepare -DreleaseVersion=${param1} -Dtag=${param1} -DdevelopmentVersion=${param2} && git push origin && git push --tags origin && curl -X PATCH --data '{ "state": "closed" }' -H "Authorization: token ${token}" ${milestone_url}/${milestone_number}
+mvn -B release:prepare release:perform -DreleaseVersion=${param1} -Dtag=${param1} -DdevelopmentVersion=${param2} && git push origin && git push --tags origin && curl -X PATCH --data '{ "state": "closed" }' -H "Authorization: token ${token}" ${milestone_url}/${milestone_number}
