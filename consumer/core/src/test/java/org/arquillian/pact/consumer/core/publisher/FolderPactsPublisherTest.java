@@ -77,6 +77,7 @@ public class FolderPactsPublisherTest extends AbstractManagerTestBase {
     @Test
     public void should_not_move_files_to_output_directory_if_no_publish_contracts() throws IOException {
 
+
         final PactConsumerConfiguration pactConsumerConfiguration = PactConsumerConfiguration.fromMap(params);
         bind(ApplicationScoped.class, PactConsumerConfiguration.class, pactConsumerConfiguration);
 
