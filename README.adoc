@@ -378,6 +378,17 @@ Optionally they can be committed into a branch or tag the commit.
 
 This publisher just takes the generated "pact" files, copied to repository, commit them and push them to remote.
 
+First of all you need to add git publisher dependency:
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+    <groupId>org.arquillian.pact</groupId>
+    <artifactId>arquillian-pact-consumer-git-publisher</artifactId>
+</dependency>
+----
+
 [source, xml]
 .arquillian.xml
 ----
