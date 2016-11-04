@@ -19,6 +19,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Arquillian.class)
+@Pact(provider="test_provider", consumer="test_consumer")
 public class ClientGatewayTest {
 
     @Deployment
@@ -26,7 +27,6 @@ public class ClientGatewayTest {
         return ShrinkWrap.create(JavaArchive.class).addClasses(ClientGateway.class);
     }
 
-    @Pact(provider="test_provider", consumer="test_consumer")
     public PactFragment createFragment(PactDslWithProvider builder) {
 
         Map<String, String> header = new HashMap<>();

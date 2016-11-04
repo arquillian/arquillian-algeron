@@ -51,18 +51,18 @@ public abstract class AbstractConsumerPactTest {
         final Object testInstance = testEventContext.getEvent().getTestInstance();
         final TestClass testClass = testEventContext.getEvent().getTestClass();
 
-        Optional<Method> possiblePactMethod = findPactMethod(currentProvider, testClass, pactVerification);
+        Optional<PactMethod> possiblePactMethod = findPactMethod(currentProvider, testClass, pactVerification);
         if (!possiblePactMethod.isPresent()) {
             throw new UnsupportedOperationException("Could not find method with @Pact for the provider " + currentProvider);
         }
 
-        Method method = possiblePactMethod.get();
-        Pact pact = method.getAnnotation(Pact.class);
+        PactMethod pactMethod = possiblePactMethod.get();
+        Pact pact = pactMethod.getPact();
         PactDslWithProvider dslBuilder = ConsumerPactBuilder.consumer(pact.consumer()).hasPactWith(currentProvider);
         PactFragment pactFragment;
 
         try {
-            pactFragment = (PactFragment) method.invoke(testInstance, dslBuilder);
+            pactFragment = (PactFragment) pactMethod.getMethod().invoke(testInstance, dslBuilder);
         } catch (Exception e) {
             throw new RuntimeException("Failed to invoke pact method", e);
         }
@@ -106,7 +106,7 @@ public abstract class AbstractConsumerPactTest {
         }
     }
 
-    protected Optional<Method> findPactMethod(String currentProvider, TestClass testClass, PactVerification pactVerification) {
+    protected Optional<PactMethod> findPactMethod(String currentProvider, TestClass testClass, PactVerification pactVerification) {
         String pactFragment = pactVerification.fragment();
 
         final Optional<Class<?>> classWithPactAnnotation = ResolveClassAnnotation.getClassWithAnnotation(testClass.getJavaClass(), Pact.class);
@@ -117,7 +117,7 @@ public abstract class AbstractConsumerPactTest {
                     && (pactFragment.isEmpty() || pactFragment.equals(method.getName()))) {
 
                 validatePactSignature(method);
-                return Optional.of(method);
+                return Optional.of(new PactMethod(method, pact.get()));
             }
         }
         return Optional.empty();
@@ -162,6 +162,24 @@ public abstract class AbstractConsumerPactTest {
         return Arrays.stream(methods)
                 .filter(method -> method.getReturnType().isAssignableFrom(PactFragment.class))
                 .collect(Collectors.toList());
+    }
+
+    protected static class PactMethod {
+        private Method method;
+        private Pact pact;
+
+        public PactMethod(Method method, Pact pact) {
+            this.method = method;
+            this.pact = pact;
+        }
+
+        public Method getMethod() {
+            return method;
+        }
+
+        public Pact getPact() {
+            return pact;
+        }
     }
 
 }
