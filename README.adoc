@@ -339,8 +339,8 @@ To configure folder publisher you need to configure `pactPublishConfiguration` w
 <1> `provider` attribute is used for setting which publisher to use. In case of Folder publisher, you need to set to `folder`.
 <2> `outputFolder` configures where to copy "pact" files.
 
-You can set `outputFolder` value using Java system property or environment variable by using form `${name:-defaultvalue}.
-For example `outputFolder: ${output:-/mypacts}` will first check if there is a Java system property with name output and get the value, if there is no value, then checks for environment variable.
+You can set `outputFolder` value using Java system property or environment variable by using form `${name:defaultvalue}.
+For example `outputFolder: ${output:/mypacts}` will first check if there is a Java system property with name output and get the value, if there is no value, then checks for environment variable.
 If that is not defined too it will use the default value i.e. `/mypacts`.
 
 ==== URL Publisher
@@ -369,7 +369,7 @@ For example given `http://myhost/pacts` and a "pact" file called `consumer_provi
 <1> `provider` attribute is used for setting which publisher to use. In case of URL publisher, you need to set to `url`.
 <2> `url` configures to send as `POST` the contract content.
 
-You can set `url` value using Java system property or environment variable by using form `${name:-defaultvalue}`.
+You can set `url` value using Java system property or environment variable by using form `${name:defaultvalue}`.
 
 ==== Git Publisher
 
@@ -410,7 +410,7 @@ First of all you need to add git publisher dependency:
             remote: origin # <7>
             repository: /git/myrepo # <8>
             pactDirectory: pacts/ # <9>
-            tag: v ${version:-1.0.0-SNAPSHOT} # <10>
+            tag: v ${version:1.0.0-SNAPSHOT} # <10>
             branch: master # <11>
             email: my@email.com # <12>
         </property>
@@ -431,7 +431,7 @@ First of all you need to add git publisher dependency:
 <11> `branch` sets a branch where contract files are copied and committed. By default is `master`.
 <12> `email` used for commit. By default it gets email from general configuration.
 
-Any of the git attributes can be set using Java system property or environment variable by using form `${name:-defaultvalue}`.
+Any of the git attributes can be set using Java system property or environment variable by using form `${name:defaultvalue}`.
 
 ==== SPI
 

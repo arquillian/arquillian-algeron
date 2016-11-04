@@ -23,7 +23,7 @@ public class PactRunnerExpressionParserTest {
 
     @Test
     public void should_return_default_value_if_no_sys_prop() {
-        assertThat(PactRunnerExpressionParser.parseExpressions("${myprop2:-myvalue}")).isEqualTo("myvalue");
+        assertThat(PactRunnerExpressionParser.parseExpressions("${myprop2:myvalue}")).isEqualTo("myvalue");
     }
 
     @Test
@@ -38,12 +38,12 @@ public class PactRunnerExpressionParserTest {
 
     @Test
     public void can_use_default_chars_if_not_sys_prop() {
-        assertThat(PactRunnerExpressionParser.parseExpressions("myvalue:-secondvalue")).isEqualTo("myvalue:-secondvalue");
+        assertThat(PactRunnerExpressionParser.parseExpressions("myvalue:secondvalue")).isEqualTo("myvalue:secondvalue");
     }
 
     @Test
     public void should_return_empty_string_if_default_value_separator_is_present_but_no_default_value() {
-        assertThat(PactRunnerExpressionParser.parseExpressions("${myprop2:-}")).isEqualTo("");
+        assertThat(PactRunnerExpressionParser.parseExpressions("${myprop2:}")).isEqualTo("");
     }
 
 }
