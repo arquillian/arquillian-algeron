@@ -339,8 +339,8 @@ To configure folder publisher you need to configure `pactPublishConfiguration` w
 <1> `provider` attribute is used for setting which publisher to use. In case of Folder publisher, you need to set to `folder`.
 <2> `outputFolder` configures where to copy "pact" files.
 
-You can set `outputFolder value using Java system property or environment variable by using form `${name:-defaultvalue}.
-For example `outputFolder: ${output:-/mypacts} will first check if there is a Java system property with name output and get the value, if there is no value, then checks for environment variable. `
+You can set `outputFolder` value using Java system property or environment variable by using form `${name:-defaultvalue}.
+For example `outputFolder: ${output:-/mypacts}` will first check if there is a Java system property with name output and get the value, if there is no value, then checks for environment variable.
 If that is not defined too it will use the default value i.e. `/mypacts`.
 
 ==== URL Publisher
