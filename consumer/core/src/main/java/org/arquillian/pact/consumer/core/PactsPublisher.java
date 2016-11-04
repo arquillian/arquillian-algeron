@@ -2,6 +2,7 @@ package org.arquillian.pact.consumer.core;
 
 import org.arquillian.pact.consumer.spi.publisher.PactPublisher;
 import org.jboss.arquillian.core.api.annotation.Observes;
+import org.jboss.arquillian.test.spi.event.suite.AfterClass;
 import org.jboss.arquillian.test.spi.event.suite.AfterSuite;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class PactsPublisher {
     private static Logger logger = Logger.getLogger(PactsPublisher.class.getName());
     private static final String PROVIDER = "provider";
 
-    public void publish(@Observes AfterSuite event, PactConsumerConfiguration pactConsumerConfiguration) throws IOException {
+    public void publish(@Observes AfterClass event, PactConsumerConfiguration pactConsumerConfiguration) throws IOException {
         if (pactConsumerConfiguration.isPublishContracts() && pactConsumerConfiguration.isPublishConfigurationSet()) {
 
             final Map<String, Object> publishConfiguration = pactConsumerConfiguration.getPublishConfiguration();

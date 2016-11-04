@@ -8,6 +8,7 @@ import org.arquillian.pact.consumer.core.PactReportDirectoryConfigurator;
 import org.arquillian.pact.consumer.core.PactsPublisher;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.test.AbstractManagerTestBase;
+import org.jboss.arquillian.test.spi.event.suite.AfterClass;
 import org.jboss.arquillian.test.spi.event.suite.AfterSuite;
 import org.junit.Rule;
 import org.junit.Test;
@@ -63,7 +64,7 @@ public class UrlPactsPublisherTest extends AbstractManagerTestBase {
                         .withRequestBody(new ContainsPattern("Contract File"))
                         .willReturn(aResponse().withStatus(200)));
 
-            fire(new AfterSuite());
+            fire(new AfterClass(UrlPactsPublisherTest.class));
 
             verify(postRequestedFor(urlEqualTo("/pacts/pact.txt"))
                     .withRequestBody(new ContainsPattern("Contract File")));

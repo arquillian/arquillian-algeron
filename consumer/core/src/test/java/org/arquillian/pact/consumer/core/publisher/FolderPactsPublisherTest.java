@@ -7,6 +7,7 @@ import org.arquillian.pact.consumer.core.PactReportDirectoryConfigurator;
 import org.arquillian.pact.consumer.core.PactsPublisher;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.test.AbstractManagerTestBase;
+import org.jboss.arquillian.test.spi.event.suite.AfterClass;
 import org.jboss.arquillian.test.spi.event.suite.AfterSuite;
 import org.junit.After;
 import org.junit.Before;
@@ -67,7 +68,7 @@ public class FolderPactsPublisherTest extends AbstractManagerTestBase {
         final PactConsumerConfiguration pactConsumerConfiguration = PactConsumerConfiguration.fromMap(params);
         bind(ApplicationScoped.class, PactConsumerConfiguration.class, pactConsumerConfiguration);
 
-        fire(new AfterSuite());
+        fire(new AfterClass(FolderPactsPublisherTest.class));
 
         assertThat(output).isDirectory();
         assertThat(new File(output, "pact.txt")).exists().hasContent("Contract File");
@@ -80,7 +81,7 @@ public class FolderPactsPublisherTest extends AbstractManagerTestBase {
         final PactConsumerConfiguration pactConsumerConfiguration = PactConsumerConfiguration.fromMap(params);
         bind(ApplicationScoped.class, PactConsumerConfiguration.class, pactConsumerConfiguration);
 
-        fire(new AfterSuite());
+        fire(new AfterClass(FolderPactsPublisherTest.class));
 
         assertThat(output).isDirectory();
         assertThat(new File(output, "pact.txt")).doesNotExist();
