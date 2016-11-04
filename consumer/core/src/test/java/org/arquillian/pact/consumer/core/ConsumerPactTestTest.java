@@ -34,9 +34,13 @@ public class ConsumerPactTestTest {
 
         AbstractConsumerPactTest abstractConsumerPactTest = new StandaloneConsumerPactTest();
         TestClass testClass = new TestClass(PactMethod.class);
-        final Optional<Method> pactFragmentMethod = abstractConsumerPactTest.findPactMethod("p1", testClass, pactVerification);
+        final Optional<AbstractConsumerPactTest.PactMethod> pactFragmentMethod = abstractConsumerPactTest.findPactMethod("p1", testClass, pactVerification);
 
-        assertThat(pactFragmentMethod).isPresent().contains(PactMethod.class.getMethod("contract1", PactDslWithProvider.class));
+        final Method annotatedMethod = PactMethod.class.getMethod("contract1", PactDslWithProvider.class);
+        assertThat(pactFragmentMethod.get().getMethod())
+                .isEqualTo(annotatedMethod);
+        assertThat(pactFragmentMethod.get().getPact())
+                .isEqualTo(annotatedMethod.getAnnotation(Pact.class));
 
     }
 
@@ -45,9 +49,13 @@ public class ConsumerPactTestTest {
 
         AbstractConsumerPactTest abstractConsumerPactTest = new StandaloneConsumerPactTest();
         TestClass testClass = new TestClass(PactClass.class);
-        final Optional<Method> pactFragmentMethod = abstractConsumerPactTest.findPactMethod("p2", testClass, pactVerification);
 
-        assertThat(pactFragmentMethod).isPresent().contains(PactClass.class.getMethod("contract2", PactDslWithProvider.class));
+        final Optional<AbstractConsumerPactTest.PactMethod> pactFragmentMethod = abstractConsumerPactTest.findPactMethod("p2", testClass, pactVerification);
+
+        assertThat(pactFragmentMethod.get().getMethod())
+                .isEqualTo(PactClass.class.getMethod("contract2", PactDslWithProvider.class));
+        assertThat(pactFragmentMethod.get().getPact())
+                .isEqualTo(PactClass.class.getAnnotation(Pact.class));
 
     }
 
@@ -56,9 +64,15 @@ public class ConsumerPactTestTest {
 
         AbstractConsumerPactTest abstractConsumerPactTest = new StandaloneConsumerPactTest();
         TestClass testClass = new TestClass(PactMethodClass.class);
-        final Optional<Method> pactFragmentMethod = abstractConsumerPactTest.findPactMethod("p4", testClass, pactVerification);
 
-        assertThat(pactFragmentMethod).isPresent().contains(PactMethodClass.class.getMethod("contract3", PactDslWithProvider.class));
+        final Optional<AbstractConsumerPactTest.PactMethod> pactFragmentMethod = abstractConsumerPactTest.findPactMethod("p4", testClass, pactVerification);
+
+        final Method annotatedMethod = PactMethodClass.class.getMethod("contract3", PactDslWithProvider.class);
+        assertThat(pactFragmentMethod.get().getMethod())
+                .isEqualTo(annotatedMethod);
+        assertThat(pactFragmentMethod.get().getPact())
+                .isEqualTo(annotatedMethod.getAnnotation(Pact.class));
+
 
     }
 
@@ -67,7 +81,7 @@ public class ConsumerPactTestTest {
 
         AbstractConsumerPactTest abstractConsumerPactTest = new StandaloneConsumerPactTest();
         TestClass testClass = new TestClass(PactMethodClass.class);
-        final Optional<Method> pactFragmentMethod = abstractConsumerPactTest.findPactMethod("p3", testClass, pactVerification);
+        final Optional<AbstractConsumerPactTest.PactMethod> pactFragmentMethod = abstractConsumerPactTest.findPactMethod("p3", testClass, pactVerification);
 
         assertThat(pactFragmentMethod).isNotPresent();
 
