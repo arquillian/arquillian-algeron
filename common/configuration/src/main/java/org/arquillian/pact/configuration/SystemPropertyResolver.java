@@ -14,7 +14,9 @@
 package org.arquillian.pact.configuration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class SystemPropertyResolver {
     public String resolveValue(final String property) {
@@ -63,7 +65,7 @@ public class SystemPropertyResolver {
                 String[] kv = splitWorker(propertyName, ':', true);
                 propertyName = kv[0];
                 if (kv.length > 1) {
-                    defaultValue = kv[1];
+                    defaultValue = String.join(":", Arrays.copyOfRange(kv, 1, kv.length));
                 }
             }
             return this;

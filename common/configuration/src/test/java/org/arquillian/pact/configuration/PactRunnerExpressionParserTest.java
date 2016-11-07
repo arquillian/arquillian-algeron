@@ -46,4 +46,10 @@ public class PactRunnerExpressionParserTest {
         assertThat(PactRunnerExpressionParser.parseExpressions("${myprop2:}")).isEqualTo("");
     }
 
+    @Test
+    public void should_scan_only_first_colon_as_property() {
+        assertThat(PactRunnerExpressionParser.parseExpressions("${giturl:http://localhost:3000/alex/gamer-contracts.git}")).isEqualTo("http://localhost:3000/alex/gamer-contracts.git");
+    }
+
+
 }
