@@ -1,11 +1,14 @@
 package org.arquillian.pact.provider.core.deployment;
 
 
+import org.arquillian.pact.configuration.Reflection;
 import org.arquillian.pact.provider.api.deployment.Environment;
 import org.arquillian.pact.provider.core.PactProviderConfiguration;
-import org.jboss.arquillian.container.test.impl.enricher.resource.URLResourceProvider;
+import org.jboss.arquillian.container.test.impl.enricher.resource.OperatesOnDeploymentAwareProvider;
+import org.jboss.arquillian.core.api.Injector;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
+import org.jboss.arquillian.core.spi.LoadableExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 
 import java.lang.annotation.Annotation;
@@ -18,23 +21,68 @@ import java.util.Optional;
  * {@link Environment} the value of the URL is got from provided system property or environment variable
  * instead of using the common Arquillian enrichment.
  */
-public class EnvironmentUrlResourceProvider extends URLResourceProvider {
+public class EnvironmentUrlResourceProvider extends OperatesOnDeploymentAwareProvider {
+
+    private static final String CUSTOM_SWARM_URL_PROVIDER = "org.wildfly.swarm.arquillian.resources.SwarmURIResourceProvider";
+
+    private static final String DEFAULT_URL_PROVIDER = "org.jboss.arquillian.container.test.impl.enricher.resource.URLResourceProvider";
 
     @Inject
     Instance<PactProviderConfiguration> pactProviderConfigurationInstance;
 
+    @Inject
+    Instance<Injector> injectorInstance;
+
+    public EnvironmentUrlResourceProvider() {
+        super();
+    }
+
     @Override
     public Object doLookup(ArquillianResource resource, Annotation... qualifiers) {
         if (DeploymentEnabler.shouldEnableDeployment(pactProviderConfigurationInstance.get())) {
-            return super.doLookup(resource, qualifiers);
+            return resolveResourceProvider(resource, qualifiers);
         } else {
             final Optional<Environment> environmentAnnotation = getEnvironmentAnnotation(qualifiers);
             if (environmentAnnotation.isPresent()) {
                 return resolveAnnotation(environmentAnnotation.get());
             } else {
-                return super.doLookup(resource, qualifiers);
+                return resolveResourceProvider(resource, qualifiers);
             }
         }
+    }
+
+    private Object resolveResourceProvider(ArquillianResource resource, Annotation[] qualifiers) {
+        if (isSwarmUrlProviderOverriden()) {
+            return createSwarmUrlResourceProvider().doLookup(resource, qualifiers);
+        } else {
+            return createDefaultUrlResourceProvider().doLookup(resource, qualifiers);
+        }
+    }
+
+    private OperatesOnDeploymentAwareProvider createDefaultUrlResourceProvider() {
+        try {
+            Class<? extends OperatesOnDeploymentAwareProvider> defaultUrlProvider = (Class<? extends OperatesOnDeploymentAwareProvider>) Class.forName(DEFAULT_URL_PROVIDER);
+            OperatesOnDeploymentAwareProvider urlResourceProvider = Reflection.newInstance(defaultUrlProvider, new Class[0], new Object[0]);
+
+            return injectorInstance.get().inject(urlResourceProvider);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private OperatesOnDeploymentAwareProvider createSwarmUrlResourceProvider() {
+        try {
+            Class<? extends OperatesOnDeploymentAwareProvider> swarmUrlProvider = (Class<? extends OperatesOnDeploymentAwareProvider>) Class.forName(CUSTOM_SWARM_URL_PROVIDER);
+            OperatesOnDeploymentAwareProvider urlResourceProvider = Reflection.newInstance(swarmUrlProvider, new Class[0], new Object[0]);
+
+            return injectorInstance.get().inject(urlResourceProvider);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private boolean isSwarmUrlProviderOverriden() {
+        return LoadableExtension.Validate.classExists(CUSTOM_SWARM_URL_PROVIDER);
     }
 
     private Optional<Environment> getEnvironmentAnnotation(Annotation[] annotations) {
@@ -59,4 +107,8 @@ public class EnvironmentUrlResourceProvider extends URLResourceProvider {
         }
     }
 
+    @Override
+    public boolean canProvide(Class<?> type) {
+        return type.isAssignableFrom(URL.class);
+    }
 }
