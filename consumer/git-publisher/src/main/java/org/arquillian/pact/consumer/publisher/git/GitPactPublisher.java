@@ -12,9 +12,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.arquillian.pact.configuration.HomeResolver.resolveHomeDirectory;
@@ -51,10 +54,19 @@ public class GitPactPublisher implements PactPublisher {
         try {
             git = getGitRepositoryWithLatestRemoteChanges(git);
 
+            logger.log(Level.INFO, String.format("Git repository with contract files at %s.", git.getRepository().getDirectory()
+                    .getParentFile().getAbsolutePath()));
+
             // Now repository structure is created and we can start operating on it
             final Path outputLocation = moveToCorrectLocation(git);
-            copyPactFiles(contractsSource, outputLocation);
+            final List<Path> pactFiles = copyPactFiles(contractsSource, outputLocation);
             executeCommitAndPush(git);
+
+            logger.log(Level.INFO, String.format("Contract files %s pushed to %s repository.",
+                    pactFiles.stream()
+                        .map(path -> path.getFileName().toString())
+                        .collect(Collectors.joining(System.lineSeparator(), "[", "]")),
+                    configuration.get(URL)));
 
         } finally {
             if (git != null) {
@@ -157,19 +169,23 @@ public class GitPactPublisher implements PactPublisher {
         }
     }
 
-    private void copyPactFiles(Path pactsLocation, Path outputPath) throws IOException {
+    private List<Path> copyPactFiles(Path pactsLocation, Path outputPath) throws IOException {
+        final List<Path> pactsFiles = new ArrayList<>();
         try (Stream<Path> stream = Files.walk(pactsLocation)) {
-            stream.forEach(path -> {
+            stream
+                    .filter(path -> !Files.isDirectory(path))
+                    .peek(path -> pactsFiles.add(path))
+                    .forEach(path -> {
                 try {
-                    if (!Files.isDirectory(path)) {
-                        final Path pactFile = outputPath.resolve(path.getFileName());
-                        Files.copy(path, pactFile, StandardCopyOption.REPLACE_EXISTING);
-                    }
+                    final Path pactFile = outputPath.resolve(path.getFileName());
+                    Files.copy(path, pactFile, StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
                     throw new IllegalArgumentException(e);
                 }
             });
         }
+
+        return pactsFiles;
     }
 
     private Git executeClone(Path repository) {
