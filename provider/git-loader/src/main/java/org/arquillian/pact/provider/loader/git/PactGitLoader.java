@@ -93,7 +93,7 @@ public class PactGitLoader implements PactLoader {
                 // Put files in a temp directory
                 final Path testGitRepository = Files.createTempDirectory("TestGitRepository");
 
-                logger.info(String.format("Repository is going to be cloned at %s", testGitRepository));
+                logger.log(Level.INFO, String.format("Repository is going to be cloned at %s", testGitRepository));
 
                 git = executeClone(testGitRepository);
                 location = moveToCorrectLocation(git);
