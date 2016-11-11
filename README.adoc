@@ -1,4 +1,14 @@
 = Arquillian Pact
+:numbered:
+:sectlink:
+:sectanchors:
+:sectid:
+:source-language: java
+:source-highlighter: coderay
+:sectnums:
+:icons: font
+:toc: left
+:toclevels: 3
 
 image:https://travis-ci.org/arquillian/arquillian-pact.svg?branch=master["Build Status", link="https://travis-ci.org/arquillian/arquillian-pact"]
 
@@ -313,7 +323,7 @@ Arquillian can be configured using system properties or environment variables.
 If you want to enable pact publishing feature only in CI/CD, you can set environment variable `arq.extension.pact-consumer.publishContracts` to true.
 ====
 
-==== Folder Publisher
+===== Folder Publisher
 
 Folder publisher copies "pact" files from configured output directory (by default `target/pacts`) to another directory.
 To configure folder publisher you need to configure `pactPublishConfiguration` with next configuration:
@@ -343,7 +353,7 @@ You can set `outputFolder` value using Java system property or environment varia
 For example `outputFolder: ${output:/mypacts}` will first check if there is a Java system property with name output and get the value, if there is no value, then checks for environment variable.
 If that is not defined too it will use the default value i.e. `/mypacts`.
 
-==== URL Publisher
+===== URL Publisher
 
 URL publisher sends a `POST` request to configured URL, appending at the end of the URL the "pact" filename and sending the contract content as body content.
 For example given `http://myhost/pacts` and a "pact" file called `consumer_provider.json`, the resulting URL would be: `http://myhost/pacts/consumer_provider.json`
@@ -371,7 +381,7 @@ For example given `http://myhost/pacts` and a "pact" file called `consumer_provi
 
 You can set `url` value using Java system property or environment variable by using form `${name:defaultvalue}`.
 
-==== Git Publisher
+===== Git Publisher
 
 Git publisher publishes "pact" files to a git repository.
 Optionally they can be committed into a branch or tag the commit.
@@ -433,7 +443,7 @@ First of all you need to add git publisher dependency:
 
 Any of the git attributes can be set using Java system property or environment variable by using form `${name:defaultvalue}`.
 
-==== SPI
+===== SPI
 
 You can also implement your own publisher.
 To make it so you need create a class that implements `org.arquillian.pact.consumer.spi.publisher.PactPublisher` and register this service inside `META-INF/services/org.arquillian.pact.consumer.spi.publisher.PactPublisher`.
