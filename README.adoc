@@ -349,9 +349,9 @@ To configure folder publisher you need to configure `pactPublishConfiguration` w
 <1> `provider` attribute is used for setting which publisher to use. In case of Folder publisher, you need to set to `folder`.
 <2> `outputFolder` configures where to copy "pact" files.
 
-You can set `outputFolder` value using Java system property or environment variable by using form `${name:defaultvalue}.
-For example `outputFolder: ${output:/mypacts}` will first check if there is a Java system property with name output and get the value, if there is no value, then checks for environment variable.
-If that is not defined too it will use the default value i.e. `/mypacts`.
+You can set `outputFolder` value using Java system property `${name:defaultvalue} or environment variable `${env.name:defaultvalue}.
+For example `outputFolder: ${output:/mypacts}` will first check if there is a Java system property with name output and get the value.
+If that is not defined it will use the default value i.e. `/mypacts`.
 
 ===== URL Publisher
 
@@ -379,7 +379,7 @@ For example given `http://myhost/pacts` and a "pact" file called `consumer_provi
 <1> `provider` attribute is used for setting which publisher to use. In case of URL publisher, you need to set to `url`.
 <2> `url` configures to send as `POST` the contract content.
 
-You can set `url` value using Java system property or environment variable by using form `${name:defaultvalue}`.
+You can set `url` value using Java system property `${name:defaultvalue}` or environment variable `${env.name:defaultvalue}`.
 
 ===== Git Publisher
 
@@ -441,7 +441,7 @@ First of all you need to add git publisher dependency:
 <11> `branch` sets a branch where contract files are copied and committed. By default is `master`.
 <12> `email` used for commit. By default it gets email from general configuration.
 
-Any of the git attributes can be set using Java system property or environment variable by using form `${name:defaultvalue}`.
+Any of the git attributes can be set using Java system property `${name:defaultvalue}` or environment variable `${env.name:defaultvalue}`.
 
 ===== SPI
 
@@ -472,7 +472,7 @@ From Git:: `@PactGit("https://github.com/lordofthejars/starwarspact.git")` Also 
 You can use system properties to set vales too. Inspect `@PactGit` annotation for all options that accept this loader such as authentication, use branch or tag or set a pact directory.
 
 It's possible to use a custom Pact source.
-For this, implement interface `org.arquillian.pact.provider.spi.loader.PactLoader` and annotate the test class with `@PactSource(MyOwnPactLoader.class)`.
+For this, implement interface `PactLoader` and annotate the test class with `@PactSource(MyOwnPactLoader.class)`.
 
 NOTE: class `MyOwnPactLoader` must have a default empty constructor or a constructor with one argument of class Class which at runtime will be the test class so you can get custom annotations of test class.
 

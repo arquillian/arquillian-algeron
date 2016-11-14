@@ -1,2 +1,0 @@
-org.arquillian.pact.consumer.core.publisher.FolderPactPublisher
-org.arquillian.pact.consumer.core.publisher.UrlPactPublisher
