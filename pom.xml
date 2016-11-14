@@ -13,14 +13,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Artifact Configuration -->
-    <groupId>org.arquillian.pact</groupId>
-    <artifactId>arquillian-pact-parent</artifactId>
+    <groupId>org.arquillian.algeron</groupId>
+    <artifactId>arquillian-algeron-parent</artifactId>
     <version>1.0.0.Final-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Arquillian Pact  Extension</name>
+    <name>Arquillian Algeron Extension</name>
     <url>http://arquillian.org</url>
-    <description>Arquillian Pact Extension to run consumer-driven contracts with Pact</description>
+    <description>Arquillian Algeron Extension to run consumer-driven contracts with Pact and explore other approaches</description>
     
     <developers>
         <developer>
@@ -146,38 +146,38 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.arquillian.pact</groupId>
-                <artifactId>arquillian-pact-provider-api</artifactId>
+                <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-pact-provider-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.arquillian.pact</groupId>
-                <artifactId>arquillian-pact-provider-spi</artifactId>
+                <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-pact-provider-spi</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.arquillian.pact</groupId>
-                <artifactId>arquillian-pact-provider-core</artifactId>
+                <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-pact-provider-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.arquillian.pact</groupId>
-                <artifactId>arquillian-pact-consumer-spi</artifactId>
+                <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-pact-consumer-spi</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.arquillian.pact</groupId>
-                <artifactId>arquillian-pact-consumer-core</artifactId>
+                <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-pact-consumer-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.arquillian.pact</groupId>
-                <artifactId>arquillian-pact-git</artifactId>
+                <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-git</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.arquillian.pact</groupId>
-                <artifactId>arquillian-pact-configuration</artifactId>
+                <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-configuration</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -231,8 +231,7 @@
     </dependencyManagement>
 
     <modules>
-        <module>consumer</module>
-        <module>provider</module>
+        <module>pact</module>
         <module>common</module>
     </modules>
     <build>

@@ -3,8 +3,8 @@
 
     <!-- Parent -->
     <parent>
-        <groupId>org.arquillian.pact</groupId>
-        <artifactId>arquillian-pact-common-parent</artifactId>
+        <groupId>org.arquillian.algeron</groupId>
+        <artifactId>arquillian-algeron-common-parent</artifactId>
         <version>1.0.0.Final-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -16,9 +16,9 @@
     </properties>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-pact-configuration</artifactId>
+    <artifactId>arquillian-algeron-configuration</artifactId>
 
-    <name>Arquillian Pact Configuration</name>
+    <name>Arquillian Algeron Configuration</name>
 
     <dependencies>
         <dependency>
