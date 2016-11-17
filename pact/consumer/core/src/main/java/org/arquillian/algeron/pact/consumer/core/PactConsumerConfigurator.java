@@ -1,5 +1,6 @@
 package org.arquillian.algeron.pact.consumer.core;
 
+import org.arquillian.algeron.consumer.core.AlgeronConsumerConfiguration;
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
@@ -16,7 +17,7 @@ public class PactConsumerConfigurator {
     @ApplicationScoped
     InstanceProducer<PactConsumerConfiguration> pactConsumerConfigurationInstanceProducer;
 
-    public void configure(@Observes ArquillianDescriptor arquillianDescriptor) {
+    public void configure(@Observes AlgeronConsumerConfiguration event, ArquillianDescriptor arquillianDescriptor) {
         Map<String, String> config = arquillianDescriptor.extension(EXTENSION_NAME).getExtensionProperties();
         PactConsumerConfiguration pactConsumerConfiguration = PactConsumerConfiguration.fromMap(config);
 

@@ -26,7 +26,6 @@
         <module>core</module>
         <module>spi</module>
         <module>ftest</module>
-        <module>git-publisher</module>
         <module>ftest-container</module>
     </modules>
 

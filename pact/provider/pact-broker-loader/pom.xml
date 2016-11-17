@@ -27,6 +27,10 @@
         </dependency>
         <dependency>
             <groupId>org.arquillian.algeron</groupId>
+            <artifactId>arquillian-algeron-provider-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.arquillian.algeron</groupId>
             <artifactId>arquillian-algeron-pact-provider-spi</artifactId>
         </dependency>
         <dependency>

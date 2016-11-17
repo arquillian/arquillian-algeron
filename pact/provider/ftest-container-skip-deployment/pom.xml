@@ -18,7 +18,7 @@
     <!-- Artifact Configuration -->
     <artifactId>arquillian-algeron-pact-provider-ftest-container-skip-deployment</artifactId>
 
-    <name>Arquillian Algeron Provider ftest container skip deployment</name>
+    <name>Arquillian Algeron Provider Pact ftest container skip deployment</name>
 
     <dependencies>
         <dependency>

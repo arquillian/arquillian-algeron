@@ -13,7 +13,6 @@ public class PactProviderConfiguration {
     private static final String HOST = "host";
     private static final String PORT = "port";
     private static final String PATH = "path";
-    private static final String SKIP_DEPLOYMENT = "skipDeployment";
 
     private URL targetUrl;
     private boolean insecure = false;
@@ -23,12 +22,9 @@ public class PactProviderConfiguration {
     private int port = 8080;
     private String path = "/";
 
-    private boolean skipDeployment = false;
-
     private PactProviderConfiguration() {
         super();
     }
-
 
     public URL getTargetUrl() {
         return targetUrl;
@@ -54,9 +50,6 @@ public class PactProviderConfiguration {
         return insecure;
     }
 
-    public boolean isSkipDeployment() {
-        return skipDeployment;
-    }
 
     public boolean isTargetUrlSet() {
         return this.getTargetUrl() != null;
@@ -91,10 +84,6 @@ public class PactProviderConfiguration {
 
         if (config.containsKey(PATH)) {
             configuration.path = config.get(PATH);
-        }
-
-        if (config.containsKey(SKIP_DEPLOYMENT)) {
-            configuration.skipDeployment = Boolean.parseBoolean(config.get(SKIP_DEPLOYMENT));
         }
 
         return configuration;

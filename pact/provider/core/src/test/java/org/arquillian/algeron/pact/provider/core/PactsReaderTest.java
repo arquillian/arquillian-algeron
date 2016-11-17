@@ -2,9 +2,9 @@ package org.arquillian.algeron.pact.provider.core;
 
 import au.com.dius.pact.model.Consumer;
 import au.com.dius.pact.model.Pact;
-import org.arquillian.algeron.pact.provider.core.loader.PactFolder;
 import org.arquillian.algeron.pact.provider.api.Pacts;
 import org.arquillian.algeron.pact.provider.spi.Provider;
+import org.arquillian.algeron.provider.core.retriever.ContractsFolder;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class PactsReaderTest {
     }
 
     @Provider("planets_provider")
-    @PactFolder("pacts")
+    @ContractsFolder("pacts")
     public static class PactDefinition {
 
     }

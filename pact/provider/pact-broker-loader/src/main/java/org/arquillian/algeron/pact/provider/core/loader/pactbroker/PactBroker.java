@@ -1,6 +1,6 @@
 package org.arquillian.algeron.pact.provider.core.loader.pactbroker;
 
-import org.arquillian.algeron.pact.provider.spi.loader.PactSource;
+import org.arquillian.algeron.provider.spi.retriever.ContractsSource;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@PactSource(PactBrokerLoader.class)
+@ContractsSource(PactBrokerLoader.class)
 public @interface PactBroker {
     /**
      * @return host of pact broker

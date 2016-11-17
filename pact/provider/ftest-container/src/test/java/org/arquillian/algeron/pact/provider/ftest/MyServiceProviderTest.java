@@ -1,9 +1,9 @@
 package org.arquillian.algeron.pact.provider.ftest;
 
 import org.arquillian.algeron.pact.provider.core.httptarget.Target;
-import org.arquillian.algeron.pact.provider.core.loader.PactFolder;
 import org.arquillian.algeron.pact.provider.spi.Provider;
 import org.arquillian.algeron.pact.provider.spi.State;
+import org.arquillian.algeron.provider.core.retriever.ContractsFolder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 @Provider("test_provider")
-@PactFolder("pacts")
+@ContractsFolder("pacts")
 public class MyServiceProviderTest {
 
     @Deployment(testable = false)

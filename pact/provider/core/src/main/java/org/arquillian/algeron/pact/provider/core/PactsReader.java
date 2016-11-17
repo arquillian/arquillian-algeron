@@ -4,11 +4,12 @@ package org.arquillian.algeron.pact.provider.core;
 import static java.util.stream.Collectors.toList;
 
 import au.com.dius.pact.model.Pact;
+import au.com.dius.pact.model.PactReader;
 import org.arquillian.algeron.pact.provider.api.Pacts;
 import org.arquillian.algeron.pact.provider.spi.Consumer;
 import org.arquillian.algeron.pact.provider.spi.Provider;
-import org.arquillian.algeron.pact.provider.spi.loader.PactLoader;
-import org.arquillian.algeron.pact.provider.spi.loader.PactSource;
+import org.arquillian.algeron.provider.spi.retriever.ContractsRetriever;
+import org.arquillian.algeron.provider.spi.retriever.ContractsSource;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
@@ -20,12 +21,14 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Reads provided Pacts from defined @PactSource or any annotation meta-annotated with @PactSource
+ * Reads provided Pacts from defined @ContractsSource or any annotation meta-annotated with @ContractsSource
  */
 public class PactsReader {
 
@@ -53,7 +56,11 @@ public class PactsReader {
 
         List<Pact> pacts = new ArrayList<>();
         try {
-            pacts = getPactSource(testClass).load(serviceName).stream()
+            final ContractsRetriever contractsSource = getContractsSource(testClass);
+            contractsSource.setProviderName(serviceName);
+            final List<URI> contractsDirectory = contractsSource.retrieve();
+
+            pacts = loadContractFiles(contractsDirectory, serviceName).stream()
                     .filter(p -> consumerName == null || p.getConsumer().getName().equals(consumerName))
                     .collect(toList());
         } catch (IOException e) {
@@ -62,27 +69,44 @@ public class PactsReader {
         return pacts;
     }
 
-    protected PactLoader getPactSource(final TestClass testClass) {
+    protected List<Pact> loadContractFiles(List<URI> contracts, String providerName) {
+        if (contracts != null) {
+            List<URI> contractFiles = contracts.stream()
+                    .filter(uri -> uri.toString().endsWith(".json"))
+                    .collect(toList());
+
+            if (contractFiles != null) {
+                return contractFiles.stream()
+                        .map(URI::toString)
+                        .map(PactReader::loadPact)
+                        .filter(pact -> pact.getProvider().getName().equals(providerName))
+                        .collect(Collectors.toList());
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    protected ContractsRetriever getContractsSource(final TestClass testClass) {
 
         // Gets a test annotated directly with PactSource annotation
-        final PactSource pactSource = testClass.getAnnotation(PactSource.class);
+        final ContractsSource pactSource = testClass.getAnnotation(ContractsSource.class);
 
         // Gets annotations that might be meta annotated with PactSource annotation
         final List<Annotation> pactLoaders = Arrays.stream(testClass.getJavaClass().getAnnotations())
-                .filter(annotation -> annotation.annotationType().getAnnotation(PactSource.class) != null)
+                .filter(annotation -> annotation.annotationType().getAnnotation(ContractsSource.class) != null)
                 .collect(toList());
 
         // It can only be one PactSource in test
         if ((pactSource == null ? 0 : 1) + pactLoaders.size() != 1) {
-            throw new IllegalArgumentException(String.format("Exactly one pact source should be set, but %s are set", (pactSource == null ? 0 : 1) + pactLoaders.size()));
+            throw new IllegalArgumentException(String.format("Exactly one contract source should be set, but %s are set", (pactSource == null ? 0 : 1) + pactLoaders.size()));
         }
 
         try {
             if (pactSource != null) {
-                final Class<? extends PactLoader> pactLoaderClass = pactSource.value();
+                final Class<? extends ContractsRetriever> pactLoaderClass = pactSource.value();
                 try {
                     // Checks if there is a constructor with one argument of type Class.
-                    final Constructor<? extends PactLoader> contructorWithClass = pactLoaderClass.getDeclaredConstructor(Class.class);
+                    final Constructor<? extends ContractsRetriever> contructorWithClass = pactLoaderClass.getDeclaredConstructor(Class.class);
                     contructorWithClass.setAccessible(true);
                     return contructorWithClass.newInstance(testClass.getJavaClass());
                 } catch(NoSuchMethodException e) {
@@ -90,11 +114,11 @@ public class PactsReader {
                 }
             } else {
                 final Annotation annotation = pactLoaders.iterator().next();
-                return annotation.annotationType().getAnnotation(PactSource.class).value()
+                return annotation.annotationType().getAnnotation(ContractsSource.class).value()
                         .getConstructor(annotation.annotationType()).newInstance(annotation);
             }
         } catch (final InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            throw new IllegalStateException("Error while creating pact source", e);
+            throw new IllegalStateException("Error while creating contracts source", e);
         }
     }
 }

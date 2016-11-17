@@ -1,7 +1,5 @@
 package org.arquillian.algeron.pact.provider.core.loader.pactbroker;
 
-import au.com.dius.pact.model.Pact;
-import au.com.dius.pact.model.PactReader;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -15,8 +13,8 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.utils.URIBuilder;
-import org.arquillian.algeron.configuration.PactRunnerExpressionParser;
-import org.arquillian.algeron.pact.provider.spi.loader.PactLoader;
+import org.arquillian.algeron.configuration.RunnerExpressionParser;
+import org.arquillian.algeron.provider.spi.retriever.ContractsRetriever;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,9 +38,9 @@ import java.util.stream.StreamSupport;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Out-of-the-box implementation of {@link PactLoader} that downloads pacts from Pact broker
+ * Out-of-the-box implementation of {@link org.arquillian.algeron.provider.spi.retriever.ContractsRetriever} that downloads pacts from Pact broker
  */
-public class PactBrokerLoader implements PactLoader {
+public class PactBrokerLoader implements ContractsRetriever {
     private static final Logger LOGGER = Logger.getLogger(PactBrokerLoader.class.getName());
     private static final String PACT_URL_PATTERN = "/pacts/provider/{0}/latest";
     private static final String PACT_URL_PATTERN_WITH_TAG = "/pacts/provider/{0}/latest/{1}";
@@ -51,6 +49,8 @@ public class PactBrokerLoader implements PactLoader {
     private final String pactBrokerPort;
     private final String pactBrokerProtocol;
     private final List<String> pactBrokerTags;
+
+    private String providerName;
 
     private final Retryer<HttpResponse> retryer = RetryerBuilder.<HttpResponse>newBuilder()
             .retryIfResult(response -> response.getStatusLine().getStatusCode() >= 500)
@@ -80,21 +80,27 @@ public class PactBrokerLoader implements PactLoader {
                                 .collect(toList()));
     }
 
-    public List<Pact> load(final String providerName) throws IOException {
-        List<Pact> pacts = new ArrayList<>();
+    @Override
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
+    }
+
+    @Override
+    public List<URI> retrieve() throws IOException {
+        List<URI> pacts = new ArrayList<>();
         for (String tag: pactBrokerTags) {
             pacts.addAll(loadPactsForProvider(providerName, tag));
         }
         return pacts;
     }
 
-    private List<Pact> loadPactsForProvider(final String providerName, final String tag) throws IOException {
+    private List<URI> loadPactsForProvider(final String providerName, final String tag) throws IOException {
         LOGGER.log(Level.FINER, String.format("Loading pacts from pact broker for provider %s and tag %s ", providerName, tag));
         final HttpResponse httpResponse;
         try {
-            URIBuilder uriBuilder = new URIBuilder().setScheme(PactRunnerExpressionParser.parseExpressions(pactBrokerProtocol))
-                    .setHost(PactRunnerExpressionParser.parseExpressions(pactBrokerHost))
-                    .setPort(Integer.parseInt(PactRunnerExpressionParser.parseExpressions(pactBrokerPort)));
+            URIBuilder uriBuilder = new URIBuilder().setScheme(RunnerExpressionParser.parseExpressions(pactBrokerProtocol))
+                    .setHost(RunnerExpressionParser.parseExpressions(pactBrokerHost))
+                    .setPort(Integer.parseInt(RunnerExpressionParser.parseExpressions(pactBrokerPort)));
             if (tag.equals("latest")) {
                 uriBuilder.setPath(MessageFormat.format(PACT_URL_PATTERN, providerName));
             } else {
@@ -134,7 +140,7 @@ public class PactBrokerLoader implements PactLoader {
             if (pacts != null) {
                 return StreamSupport.stream(pacts.spliterator(), false)
                         .map(jsonNode -> jsonNode.asObject().getString("href", ""))
-                        .map(PactReader::loadPact)
+                        .map(URI::create)
                         .collect(toList());
             }
         }
@@ -169,6 +175,6 @@ public class PactBrokerLoader implements PactLoader {
     }
 
     private static String getResolvedValue(String field) {
-        return PactRunnerExpressionParser.parseExpressions(field);
+        return RunnerExpressionParser.parseExpressions(field);
     }
 }

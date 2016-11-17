@@ -2,11 +2,11 @@ package org.arquillian.algeron.pact.provider.skip;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRule;
-import org.arquillian.algeron.pact.provider.api.deployment.Environment;
 import org.arquillian.algeron.pact.provider.core.httptarget.Target;
-import org.arquillian.algeron.pact.provider.core.loader.PactFolder;
 import org.arquillian.algeron.pact.provider.spi.Provider;
 import org.arquillian.algeron.pact.provider.spi.State;
+import org.arquillian.algeron.provider.api.deployment.Environment;
+import org.arquillian.algeron.provider.core.retriever.ContractsFolder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 @Provider("test_provider")
-@PactFolder("pacts")
+@ContractsFolder("pacts")
 @RunAsClient
 public class MyServiceProviderTest {
 
