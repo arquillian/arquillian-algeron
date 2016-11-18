@@ -26,6 +26,10 @@
             <artifactId>arquillian-algeron-pact-provider-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.arquillian.algeron</groupId>
+            <artifactId>arquillian-algeron-provider-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.arquillian.config</groupId>
             <artifactId>arquillian-config-api</artifactId>
         </dependency>

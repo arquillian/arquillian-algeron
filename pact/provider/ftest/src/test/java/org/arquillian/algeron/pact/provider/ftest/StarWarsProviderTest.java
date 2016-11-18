@@ -3,8 +3,8 @@ package org.arquillian.algeron.pact.provider.ftest;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRule;
 import org.arquillian.algeron.pact.provider.core.httptarget.Target;
-import org.arquillian.algeron.pact.provider.core.loader.PactFolder;
 import org.arquillian.algeron.pact.provider.spi.Provider;
+import org.arquillian.algeron.provider.core.retriever.ContractsFolder;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.BeforeClass;
@@ -16,7 +16,7 @@ import static com.github.restdriver.clientdriver.RestClientDriver.*;
 
 @RunWith(Arquillian.class)
 @Provider("planets_provider")
-@PactFolder("pacts")
+@ContractsFolder("pacts")
 public class StarWarsProviderTest {
 
     @ClassRule

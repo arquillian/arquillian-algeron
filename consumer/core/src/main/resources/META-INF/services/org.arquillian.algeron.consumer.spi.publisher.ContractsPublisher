@@ -1,0 +1,2 @@
+org.arquillian.algeron.consumer.core.publisher.FolderContractsPublisher
+org.arquillian.algeron.consumer.core.publisher.UrlContractsPublisher

@@ -4,12 +4,12 @@ import au.com.dius.pact.model.Consumer;
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.RequestResponseInteraction;
 import org.arquillian.algeron.pact.provider.core.httptarget.Target;
-import org.arquillian.algeron.pact.provider.core.loader.PactFolder;
 import org.arquillian.algeron.pact.provider.api.Pacts;
 import org.arquillian.algeron.pact.provider.spi.CurrentConsumer;
 import org.arquillian.algeron.pact.provider.spi.CurrentInteraction;
 import org.arquillian.algeron.pact.provider.spi.Provider;
 import org.arquillian.algeron.pact.provider.spi.State;
+import org.arquillian.algeron.provider.core.retriever.ContractsFolder;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.spi.EventContext;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -25,7 +25,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -102,7 +101,7 @@ public class InteractionRunnerTest {
     }
 
     @Provider("planets_provider")
-    @PactFolder("pacts")
+    @ContractsFolder("pacts")
     public static class PactProviderWithNoTarget {
 
         @CurrentConsumer
@@ -114,7 +113,7 @@ public class InteractionRunnerTest {
     }
 
     @Provider("planets_provider")
-    @PactFolder("pacts")
+    @ContractsFolder("pacts")
     public static class PactProvider {
 
         @CurrentConsumer
@@ -129,7 +128,7 @@ public class InteractionRunnerTest {
     }
 
     @Provider("planets_provider")
-    @PactFolder("pacts")
+    @ContractsFolder("pacts")
     public static class PactProviderWithWrongStateMethod {
 
         @State("default")

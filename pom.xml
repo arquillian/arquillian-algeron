@@ -157,6 +157,31 @@
             </dependency>
             <dependency>
                 <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-consumer-spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-consumer-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-provider-spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-provider-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-provider-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.algeron</groupId>
                 <artifactId>arquillian-algeron-pact-provider-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -233,6 +258,8 @@
     <modules>
         <module>pact</module>
         <module>common</module>
+        <module>consumer</module>
+        <module>provider</module>
     </modules>
     <build>
         <plugins>
