@@ -67,7 +67,7 @@
         <version.jgit>4.5.0.201609210915-r</version.jgit>
         <version.slf4j-api>1.7.21</version.slf4j-api>
         <version.snakeyaml>1.17</version.snakeyaml>
-        <version.wiremock>2.2.2</version.wiremock>
+        <version.wiremock>2.3.1</version.wiremock>
         <version.jcip-annotations>1.0</version.jcip-annotations>
     </properties>
 
