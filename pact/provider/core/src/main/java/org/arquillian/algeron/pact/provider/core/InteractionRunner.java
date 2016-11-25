@@ -5,7 +5,6 @@ import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.ProviderState;
 import au.com.dius.pact.model.RequestResponseInteraction;
 import au.com.dius.pact.model.RequestResponsePact;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.HttpRequest;
 import org.arquillian.algeron.pact.provider.core.httptarget.Target;
 import org.arquillian.algeron.pact.provider.api.Pacts;
@@ -30,12 +29,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -131,20 +128,7 @@ public class InteractionRunner {
     protected void validateState(final TestClass testClass, final List<Throwable> errors) {
         Arrays.stream(testClass.getMethods(State.class)).forEach(method -> {
             validatePublicVoidMethods(method, errors);
-            if (methodDoesNotHaveSingleMapParameter(method)) {
-                final String mapError = String.format("Method %s should take only a single Map parameter", method.getName());
-                logger.log(Level.SEVERE, mapError);
-                errors.add(new IllegalArgumentException(mapError));
-            } else if (method.getParameterCount() > 1) {
-                final String multipleParametersError = String.format("Method %s should either take no parameters or a single Map parameter", method.getName());
-                logger.log(Level.SEVERE, multipleParametersError);
-                errors.add(new IllegalArgumentException(multipleParametersError));
-            }
         });
-    }
-
-    private boolean methodDoesNotHaveSingleMapParameter(Method method) {
-        return method.getParameterCount() == 1 && !Map.class.isAssignableFrom(method.getParameterTypes()[0]);
     }
 
     protected void validateTargetRequestFilters(final TestClass testClass, final List<Throwable> errors) {
@@ -224,16 +208,102 @@ public class InteractionRunner {
         if (!interaction.getProviderStates().isEmpty()) {
             for (final ProviderState state : interaction.getProviderStates()) {
                 Arrays.stream(testClass.getMethods(State.class))
-                        .filter(method -> ArrayUtils.contains(method.getAnnotation(State.class).value(), state.getName()))
+                        .filter(method -> ArrayUtils.matches(
+                                method.getAnnotation(State.class).value(), state.getName()))
                         .forEach(method -> {
-                            if (method.getParameterCount() == 1) {
+                            if (isStateMethodWithMapParameter(method)) {
                                 executeMethod(method, target, state.getParams());
                             } else {
-                                executeMethod(method, target);
+                                if (method.getParameterCount() > 0) {
+                                    // Use regular expressions to pass parameters.
+                                    executeStateMethodWithRegExp(method, state, target);
+                                } else {
+                                    executeMethod(method, target);
+                                }
                             }
                         });
             }
         }
+    }
+
+    private void executeStateMethodWithRegExp(Method stateMethod, ProviderState state, Object target) {
+        final Optional<String> matchingStateOptional = ArrayUtils.firstMatch(
+                stateMethod.getAnnotation(State.class).value(), state.getName());
+        // We are sure that at this point, an state is present
+        final String matchingState = matchingStateOptional.get();
+        final List<String> arguments = ArgumentPatternMatcher.arguments(
+                Pattern.compile(matchingState), state.getName());
+
+        if (arguments.size() != stateMethod.getParameterCount()) {
+            throw new IllegalArgumentException(String.format("Consumer state %s matches with provider state %s but provider method contains %s arguments instead of matching %s",
+                    state.getName(), matchingState, stateMethod.getParameterCount(), arguments.size()));
+        }
+
+        Class<?>[] parameterTypes = stateMethod.getParameterTypes();
+
+        final Object[] instances = new Object[parameterTypes.length];
+
+        for (int i = 0; i < parameterTypes.length; i++) {
+            Class<?> parameter = parameterTypes[i];
+            if (isSimpleType(parameter)) {
+                instances[i] = cast(arguments.get(i), parameter);
+            } else {
+                if (isCollectionType(parameter)) {
+                    instances[i] = cast(arguments.get(i));
+                }
+            }
+        }
+
+        executeMethod(stateMethod, target, instances);
+    }
+
+
+    private Collection<String> cast(String argument) {
+
+        final StringTokenizer elementsSeparator = new StringTokenizer(argument, ",");
+        final List<String> listElements = new ArrayList<>();
+        while (elementsSeparator.hasMoreTokens()) {
+            listElements.add(elementsSeparator.nextToken().trim());
+        }
+
+        return listElements;
+    }
+
+    private Object cast(String argument, Class<?> parameterType) {
+
+        if (String.class.isAssignableFrom(parameterType)) {
+            return argument;
+        } else {
+            if (int.class.isAssignableFrom(parameterType) || Integer.class.isAssignableFrom(parameterType)) {
+                return Integer.parseInt(argument);
+            } else {
+                if (double.class.isAssignableFrom(parameterType) || Double.class.isAssignableFrom(parameterType)) {
+                    return Double.parseDouble(argument);
+                } else {
+                    if (long.class.isAssignableFrom(parameterType) || Long.class.isAssignableFrom(parameterType)) {
+                        return Long.parseLong(argument);
+                    } else {
+                        if (float.class.isAssignableFrom(parameterType) || Float.class.isAssignableFrom(parameterType)) {
+                            return Float.parseFloat(argument);
+                        }
+                    }
+                }
+            }
+        }
+        throw new IllegalArgumentException(String.format("Argument %s is of type %s and it is not a Number nor a String or Collection os Strings"));
+    }
+
+    private boolean isCollectionType(Class<?> type) {
+        return Collection.class.isAssignableFrom(type);
+    }
+
+    private boolean isSimpleType(Class<?> type) {
+        return type.isPrimitive() || Number.class.isAssignableFrom(type) || String.class.isAssignableFrom(type);
+    }
+
+    private boolean isStateMethodWithMapParameter(Method method) {
+        return method.getParameterCount() == 1 &&
+                Map.class.isAssignableFrom(method.getParameterTypes()[0]);
     }
 
     private void executeMethod(Method method, Object target, Object... params) {

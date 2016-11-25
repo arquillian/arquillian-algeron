@@ -8,6 +8,7 @@ import au.com.dius.pact.model.PactReader;
 import org.arquillian.algeron.pact.provider.api.Pacts;
 import org.arquillian.algeron.pact.provider.spi.Consumer;
 import org.arquillian.algeron.pact.provider.spi.Provider;
+import org.arquillian.algeron.provider.core.AlgeronProviderConfiguration;
 import org.arquillian.algeron.provider.spi.retriever.ContractsRetriever;
 import org.arquillian.algeron.provider.spi.retriever.ContractsSource;
 import org.jboss.arquillian.core.api.InstanceProducer;
