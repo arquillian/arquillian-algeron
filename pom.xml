@@ -197,6 +197,11 @@
             </dependency>
             <dependency>
                 <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-pact-provider-assertj</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.algeron</groupId>
                 <artifactId>arquillian-algeron-git</artifactId>
                 <version>${project.version}</version>
             </dependency>
