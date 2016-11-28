@@ -18,7 +18,7 @@ public class ArgumentPatternMatcher {
                 int startIndex = matcher.start(i);
 
                 if (startIndex == -1) {
-                    argumentsValues.add(null);
+                    argumentsValues.add("");
                 } else {
                     argumentsValues.add(matcher.group(i));
                 }

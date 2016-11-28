@@ -107,7 +107,7 @@ public class InteractionRunnerTest {
         PactProviderWithIntegerParameterStateMethod test = new PactProviderWithIntegerParameterStateMethod();
         interactionRunner.executeStateChanges(requestResponseInteraction, testClass, test);
 
-        assertThat(test.getNumberOfCakes())
+        assertThat(test.getNumberOfCukes())
                 .isEqualTo(36);
 
     }
@@ -162,11 +162,11 @@ public class InteractionRunnerTest {
     @ContractsFolder("pacts")
     public static class PactProviderWithIntegerParameterStateMethod {
 
-        private int numberOfCakes = 0;
+        private int numberOfCukes = 0;
 
         @State("I have (\\d+) cukes in my belly")
         public void stateMethod(int numberOfCakes) {
-            this.numberOfCakes = numberOfCakes;
+            this.numberOfCukes = numberOfCakes;
         }
 
         @CurrentConsumer
@@ -178,8 +178,8 @@ public class InteractionRunnerTest {
         @ArquillianResource
         Target target;
 
-        public int getNumberOfCakes() {
-            return numberOfCakes;
+        public int getNumberOfCukes() {
+            return numberOfCukes;
         }
     }
 

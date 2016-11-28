@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public class ArrayUtils {
+public class ArrayMatcher {
 
     public static final boolean matches(String[] patternArray, String value) {
         return firstMatch(patternArray, value).isPresent();

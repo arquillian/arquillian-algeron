@@ -208,7 +208,7 @@ public class InteractionRunner {
         if (!interaction.getProviderStates().isEmpty()) {
             for (final ProviderState state : interaction.getProviderStates()) {
                 Arrays.stream(testClass.getMethods(State.class))
-                        .filter(method -> ArrayUtils.matches(
+                        .filter(method -> ArrayMatcher.matches(
                                 method.getAnnotation(State.class).value(), state.getName()))
                         .forEach(method -> {
                             if (isStateMethodWithMapParameter(method)) {
@@ -227,7 +227,7 @@ public class InteractionRunner {
     }
 
     private void executeStateMethodWithRegExp(Method stateMethod, ProviderState state, Object target) {
-        final Optional<String> matchingStateOptional = ArrayUtils.firstMatch(
+        final Optional<String> matchingStateOptional = ArrayMatcher.firstMatch(
                 stateMethod.getAnnotation(State.class).value(), state.getName());
         // We are sure that at this point, an state is present
         final String matchingState = matchingStateOptional.get();
@@ -245,61 +245,13 @@ public class InteractionRunner {
 
         for (int i = 0; i < parameterTypes.length; i++) {
             Class<?> parameter = parameterTypes[i];
-            if (isSimpleType(parameter)) {
-                instances[i] = cast(arguments.get(i), parameter);
-            } else {
-                if (isCollectionType(parameter)) {
-                    instances[i] = cast(arguments.get(i));
-                }
-            }
+            instances[i] = StateTypeConverter.convert(arguments.get(i), parameter);
         }
 
         executeMethod(stateMethod, target, instances);
     }
 
 
-    private Collection<String> cast(String argument) {
-
-        final StringTokenizer elementsSeparator = new StringTokenizer(argument, ",");
-        final List<String> listElements = new ArrayList<>();
-        while (elementsSeparator.hasMoreTokens()) {
-            listElements.add(elementsSeparator.nextToken().trim());
-        }
-
-        return listElements;
-    }
-
-    private Object cast(String argument, Class<?> parameterType) {
-
-        if (String.class.isAssignableFrom(parameterType)) {
-            return argument;
-        } else {
-            if (int.class.isAssignableFrom(parameterType) || Integer.class.isAssignableFrom(parameterType)) {
-                return Integer.parseInt(argument);
-            } else {
-                if (double.class.isAssignableFrom(parameterType) || Double.class.isAssignableFrom(parameterType)) {
-                    return Double.parseDouble(argument);
-                } else {
-                    if (long.class.isAssignableFrom(parameterType) || Long.class.isAssignableFrom(parameterType)) {
-                        return Long.parseLong(argument);
-                    } else {
-                        if (float.class.isAssignableFrom(parameterType) || Float.class.isAssignableFrom(parameterType)) {
-                            return Float.parseFloat(argument);
-                        }
-                    }
-                }
-            }
-        }
-        throw new IllegalArgumentException(String.format("Argument %s is of type %s and it is not a Number nor a String or Collection os Strings"));
-    }
-
-    private boolean isCollectionType(Class<?> type) {
-        return Collection.class.isAssignableFrom(type);
-    }
-
-    private boolean isSimpleType(Class<?> type) {
-        return type.isPrimitive() || Number.class.isAssignableFrom(type) || String.class.isAssignableFrom(type);
-    }
 
     private boolean isStateMethodWithMapParameter(Method method) {
         return method.getParameterCount() == 1 &&
