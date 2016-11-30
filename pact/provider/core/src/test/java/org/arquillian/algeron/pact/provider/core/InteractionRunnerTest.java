@@ -165,8 +165,8 @@ public class InteractionRunnerTest {
         private int numberOfCukes = 0;
 
         @State("I have (\\d+) cukes in my belly")
-        public void stateMethod(int numberOfCakes) {
-            this.numberOfCukes = numberOfCakes;
+        public void stateMethod(int numberOfCukes) {
+            this.numberOfCukes = numberOfCukes;
         }
 
         @CurrentConsumer
