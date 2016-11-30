@@ -9,7 +9,8 @@ import java.net.URL;
 
 public class PactProviderAssertions extends Assertions {
 
-    Target target;
+    private Target target;
+    private URL url;
 
     PactProviderAssertions(Target target) {
         this.target = target;
@@ -19,17 +20,22 @@ public class PactProviderAssertions extends Assertions {
         return new PactProviderAssertions(target);
     }
 
-    public void verifiesContract() {
-        this.target.testInteraction();
+    public void satisfiesContract() {
+        if (this.url == null) {
+            this.target.testInteraction();
+        } else {
+            this.target.testInteraction(this.url);
+        }
     }
 
-    public ProviderUrlAssert withUrl(URL url) {
-        return new ProviderUrlAssert(this, url);
+    public PactProviderAssertions withUrl(URL url) {
+        this.url = url;
+        return this;
     }
 
-    public ProviderUrlAssert withUrl(String url) {
+    public PactProviderAssertions withUrl(String url) {
         try {
-            return new ProviderUrlAssert(this, new URL(url));
+            return withUrl(new URL(url));
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException(e);
         }

@@ -31,7 +31,7 @@ public class PactProviderAssertionsTest {
     @Test
     public void should_test_interactions_without_url_assertj() throws MalformedURLException {
 
-        assertThat(target).verifiesContract();
+        assertThat(target).satisfiesContract();
         verify(target).testInteraction();
 
     }
