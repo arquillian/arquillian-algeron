@@ -1,6 +1,5 @@
 package org.arquillian.algeron.pact.provider.ftest;
 
-import org.arquillian.algeron.pact.provider.assertj.PactProviderAssertions;
 import org.arquillian.algeron.pact.provider.core.httptarget.Target;
 import org.arquillian.algeron.pact.provider.spi.Provider;
 import org.arquillian.algeron.pact.provider.spi.State;
@@ -41,7 +40,7 @@ public class MyServiceProviderTest {
 
     @Test
     public void should_provide_valid_answers() {
-        assertThat(target).withUrl(webapp).verifiesContract();
+        assertThat(target).withUrl(webapp).satisfiesContract();
     }
 
 }

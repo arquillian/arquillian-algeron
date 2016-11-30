@@ -12,7 +12,7 @@ public class ProviderUrlAssert {
         this.url = url;
     }
 
-    public void verifiesContract() {
+    public void satisfiesContract() {
         this.pactProviderAssertions.target.testInteraction(url);
     }
 

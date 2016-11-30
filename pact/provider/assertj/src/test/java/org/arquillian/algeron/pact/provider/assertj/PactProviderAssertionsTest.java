@@ -23,7 +23,7 @@ public class PactProviderAssertionsTest {
     public void should_test_interactions_with_url_assertj() throws MalformedURLException {
 
         final URL url = new URL("http://www.google.com");
-        assertThat(target).withUrl(url).verifiesContract();
+        assertThat(target).withUrl(url).satisfiesContract();
         verify(target).testInteraction(url);
 
     }
