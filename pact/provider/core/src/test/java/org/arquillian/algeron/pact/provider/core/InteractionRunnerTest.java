@@ -2,6 +2,7 @@ package org.arquillian.algeron.pact.provider.core;
 
 import au.com.dius.pact.model.Consumer;
 import au.com.dius.pact.model.Pact;
+import au.com.dius.pact.model.ProviderState;
 import au.com.dius.pact.model.RequestResponseInteraction;
 import org.arquillian.algeron.pact.provider.core.httptarget.Target;
 import org.arquillian.algeron.pact.provider.api.Pacts;
@@ -21,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +40,12 @@ public class InteractionRunnerTest {
 
     @Mock
     private Target target;
+
+    @Mock
+    private RequestResponseInteraction requestResponseInteraction;
+
+    @Mock
+    private ProviderState providerState;
 
     private Instance<Pacts> pactsInstance;
 
@@ -86,18 +94,41 @@ public class InteractionRunnerTest {
     }
 
     @org.junit.Test
-    public void should_throw_exception_when_state_param_is_not_empy_nor_map() {
-        when(test.getTestClass()).thenReturn(new TestClass(PactProviderWithWrongStateMethod.class));
-        PactProviderWithWrongStateMethod pactDefinition = new PactProviderWithWrongStateMethod();
-        when(test.getTestInstance()).thenReturn(pactDefinition);
+    public void should_execute_states_with_regular_expression_syntax_for_simple_types() {
 
-        final InteractionRunner interactionRunner = new InteractionRunner();
-        interactionRunner.pactsInstance = pactsInstance;
-        interactionRunner.targetInstance = () -> target;
+        when(providerState.getName()).thenReturn("I have 36 cukes in my belly");
+        final List<ProviderState> providerStates = new ArrayList<>();
+        providerStates.add(providerState);
+        when(requestResponseInteraction.getProviderStates()).thenReturn(providerStates);
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> interactionRunner.executePacts(eventContext))
-                .withMessage("Method stateMethod should take only a single Map parameter");
+        InteractionRunner interactionRunner = new InteractionRunner();
+
+        TestClass testClass = new TestClass(PactProviderWithIntegerParameterStateMethod.class);
+        PactProviderWithIntegerParameterStateMethod test = new PactProviderWithIntegerParameterStateMethod();
+        interactionRunner.executeStateChanges(requestResponseInteraction, testClass, test);
+
+        assertThat(test.getNumberOfCukes())
+                .isEqualTo(36);
+
+    }
+
+    @org.junit.Test
+    public void should_execute_states_with_regular_expression_syntax_for_collection_types() {
+
+        when(providerState.getName()).thenReturn("The following animals: cow, pig, bug");
+        final List<ProviderState> providerStates = new ArrayList<>();
+        providerStates.add(providerState);
+        when(requestResponseInteraction.getProviderStates()).thenReturn(providerStates);
+
+        InteractionRunner interactionRunner = new InteractionRunner();
+
+        TestClass testClass = new TestClass(PactProviderWithListParameterStateMethod.class);
+        PactProviderWithListParameterStateMethod test = new PactProviderWithListParameterStateMethod();
+        interactionRunner.executeStateChanges(requestResponseInteraction, testClass, test);
+
+        assertThat(test.getAnimals())
+                .contains("cow", "pig", "bug");
+
     }
 
     @Provider("planets_provider")
@@ -129,11 +160,13 @@ public class InteractionRunnerTest {
 
     @Provider("planets_provider")
     @ContractsFolder("pacts")
-    public static class PactProviderWithWrongStateMethod {
+    public static class PactProviderWithIntegerParameterStateMethod {
 
-        @State("default")
-        public void stateMethod(String param) {
+        private int numberOfCukes = 0;
 
+        @State("I have (\\d+) cukes in my belly")
+        public void stateMethod(int numberOfCukes) {
+            this.numberOfCukes = numberOfCukes;
         }
 
         @CurrentConsumer
@@ -145,6 +178,34 @@ public class InteractionRunnerTest {
         @ArquillianResource
         Target target;
 
+        public int getNumberOfCukes() {
+            return numberOfCukes;
+        }
+    }
+
+    @Provider("planets_provider")
+    @ContractsFolder("pacts")
+    public static class PactProviderWithListParameterStateMethod {
+
+        private List<String> animals = new ArrayList<>();
+
+        @State("The following animals: (.*)")
+        public void stateMethod(List<String> animals) {
+            this.animals = animals;
+        }
+
+        @CurrentConsumer
+        Consumer consumer;
+
+        @CurrentInteraction
+        RequestResponseInteraction interaction;
+
+        @ArquillianResource
+        Target target;
+
+        public List<String> getAnimals() {
+            return animals;
+        }
     }
 
 }
