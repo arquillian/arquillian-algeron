@@ -29,6 +29,7 @@
       <module>ftest-container</module>
       <module>ftest-container-skip-deployment</module>
       <module>pact-broker-loader</module>
+      <module>assertj</module>
     </modules>
 
     <dependencies>
