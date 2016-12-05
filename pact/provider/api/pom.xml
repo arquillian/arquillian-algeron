@@ -26,6 +26,10 @@
             <artifactId>pact-jvm-model</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.arquillian.algeron</groupId>
+            <artifactId>arquillian-algeron-provider-api</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
