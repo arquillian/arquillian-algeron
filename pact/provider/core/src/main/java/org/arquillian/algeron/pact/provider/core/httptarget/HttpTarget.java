@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -259,14 +260,14 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
 
         int i = 0;
         for (Object value : values) {
-            String errPrefix = String.valueOf(i) + " - ";
+            String errPrefix = String.valueOf(i) + ": ";
             error.append(errPrefix);
             if (value instanceof Throwable) {
-                error.append(errPrefix).append(exceptionMessage((Throwable) value, errPrefix.length()));
+                error.append(exceptionMessage((Throwable) value, errPrefix.length()));
             } else if (value instanceof Map) {
-                error.append(errPrefix).append(convertMapToErrorString((Map) value));
+                error.append(convertMapToErrorString((Map) value));
             } else {
-                error.append(errPrefix).append(value.toString());
+                error.append(value.toString());
             }
             error.append(System.lineSeparator());
 
@@ -310,7 +311,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
         if (mismatches.containsKey("comparison")) {
             Object comparison = mismatches.get("comparison");
             if (mismatches.containsKey("diff")) {
-                return mapToString((Map) comparison);
+                return String.format("%s%n%s", mapToString((Map) comparison), listToString(((List) mismatches.get("diff"))));
             } else {
                 if (comparison instanceof Map) {
                     return mapToString((Map) comparison);
@@ -321,6 +322,10 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
         } else {
             return mapToString(mismatches);
         }
+    }
+
+    private String listToString(List<String> list) {
+        return list.stream().collect(Collectors.joining(System.lineSeparator())).toString();
     }
 
     private String mapToString(Map comparison) {
