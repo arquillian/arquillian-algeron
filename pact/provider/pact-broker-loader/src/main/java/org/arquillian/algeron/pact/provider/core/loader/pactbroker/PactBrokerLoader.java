@@ -21,13 +21,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -45,12 +48,8 @@ public class PactBrokerLoader implements ContractsRetriever {
     private static final String PACT_URL_PATTERN = "/pacts/provider/{0}/latest";
     private static final String PACT_URL_PATTERN_WITH_TAG = "/pacts/provider/{0}/latest/{1}";
 
-    private final String pactBrokerHost;
-    private final String pactBrokerPort;
-    private final String pactBrokerProtocol;
-    private final List<String> pactBrokerTags;
-
     private String providerName;
+    private PactBroker pactBroker;
 
     private final Retryer<HttpResponse> retryer = RetryerBuilder.<HttpResponse>newBuilder()
             .retryIfResult(response -> response.getStatusLine().getStatusCode() >= 500)
@@ -59,26 +58,10 @@ public class PactBrokerLoader implements ContractsRetriever {
             .build();
     private Callable<HttpResponse> httpResponseCallable;
 
-    public PactBrokerLoader(final String pactBrokerHost, final String pactBrokerPort, final String pactBrokerProtocol) {
-        this(pactBrokerHost, pactBrokerPort, pactBrokerProtocol, Collections.singletonList("latest"));
+    public PactBrokerLoader() {
+        super();
     }
 
-    public PactBrokerLoader(final String pactBrokerHost, final String pactBrokerPort, final String pactBrokerProtocol,
-                            final List<String> tags) {
-        this.pactBrokerHost = pactBrokerHost;
-        this.pactBrokerPort = pactBrokerPort;
-        this.pactBrokerProtocol = pactBrokerProtocol;
-        this.pactBrokerTags = tags;
-    }
-
-    public PactBrokerLoader(final PactBroker pactBroker) {
-        this(getResolvedValue(pactBroker.host()),
-                getResolvedValue(pactBroker.port()),
-                getResolvedValue(pactBroker.protocol()),
-                        Arrays.stream(pactBroker.tags())
-                                .map(tag -> getResolvedValue(tag))
-                                .collect(toList()));
-    }
 
     @Override
     public void setProviderName(String providerName) {
@@ -86,9 +69,21 @@ public class PactBrokerLoader implements ContractsRetriever {
     }
 
     @Override
+    public void configure(Map<String, Object> configuration) {
+        this.pactBroker = new PactBrokerImpl(configuration);
+    }
+
+    @Override
+    public String getName() {
+        return "pactbroker";
+    }
+
+    @Override
     public List<URI> retrieve() throws IOException {
         List<URI> pacts = new ArrayList<>();
-        for (String tag: pactBrokerTags) {
+        for (String tag: Arrays.stream(pactBroker.tags())
+                .map(tag -> getResolvedValue(tag))
+                .collect(toList())) {
             pacts.addAll(loadPactsForProvider(providerName, tag));
         }
         return pacts;
@@ -98,9 +93,9 @@ public class PactBrokerLoader implements ContractsRetriever {
         LOGGER.log(Level.FINER, String.format("Loading pacts from pact broker for provider %s and tag %s ", providerName, tag));
         final HttpResponse httpResponse;
         try {
-            URIBuilder uriBuilder = new URIBuilder().setScheme(RunnerExpressionParser.parseExpressions(pactBrokerProtocol))
-                    .setHost(RunnerExpressionParser.parseExpressions(pactBrokerHost))
-                    .setPort(Integer.parseInt(RunnerExpressionParser.parseExpressions(pactBrokerPort)));
+            URIBuilder uriBuilder = new URIBuilder().setScheme(RunnerExpressionParser.parseExpressions(pactBroker.protocol()))
+                    .setHost(RunnerExpressionParser.parseExpressions(pactBroker.host()))
+                    .setPort(Integer.parseInt(RunnerExpressionParser.parseExpressions(pactBroker.port())));
             if (tag.equals("latest")) {
                 uriBuilder.setPath(MessageFormat.format(PACT_URL_PATTERN, providerName));
             } else {
@@ -154,6 +149,79 @@ public class PactBrokerLoader implements ContractsRetriever {
 
     public void setHttpResponseCallable(Callable<HttpResponse> httpResponseCallable) {
         this.httpResponseCallable = httpResponseCallable;
+    }
+
+    static class PactBrokerImpl implements PactBroker {
+
+        private static final String HOST = "host";
+        private static final String PORT = "port";
+        private static final String PROTOCOL = "protocol";
+        private static final String TAGS = "tags";
+
+        private String host = "";
+        private String port = "";
+        private String protocol = "http";
+        private List<String> tags = new ArrayList<>();
+
+        public PactBrokerImpl(Map<String, Object> configuration) {
+
+            if (configuration.containsKey(HOST)) {
+                this.host = (String) configuration.get(HOST);
+            } else {
+                throw new IllegalArgumentException("Host field is mandatory in Pact Broker Retriever.");
+            }
+
+            if (configuration.containsKey(PORT)) {
+                this.port = (String) configuration.get(PORT);
+            } else {
+                throw new IllegalArgumentException("Port field is mandatory in Pact Broker Retriever.");
+            }
+
+            if (configuration.containsKey(PROTOCOL)) {
+                this.protocol = (String) configuration.get(PROTOCOL);
+            }
+
+            if (configuration.containsKey(TAGS)) {
+                Object tags = configuration.get(TAGS);
+
+                if (tags instanceof String) {
+                    this.tags.add(RunnerExpressionParser.parseExpressions((String) tags));
+                } else {
+                    if(tags instanceof Collection) {
+                        Collection<String> listOfTags = (Collection) tags;
+                        this.tags.addAll(listOfTags.stream().map(tag -> getResolvedValue(tag))
+                                .collect(toList()));
+                    }
+                }
+            } else {
+                this.tags.add("latest");
+            }
+        }
+
+        @Override
+        public String host() {
+            return host;
+        }
+
+        @Override
+        public String port() {
+            return port;
+        }
+
+        @Override
+        public String protocol() {
+            return protocol;
+        }
+
+        @Override
+        public String[] tags() {
+            return tags.toArray(new String[tags.size()]);
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return PactBroker.class;
+        }
     }
 
     private static String asStringPreservingNewLines(InputStream response) {

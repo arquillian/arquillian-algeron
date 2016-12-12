@@ -2,9 +2,12 @@ package org.arquillian.algeron.pact.provider.core;
 
 import au.com.dius.pact.model.Consumer;
 import au.com.dius.pact.model.Pact;
+import org.apache.commons.collections.map.HashedMap;
 import org.arquillian.algeron.pact.provider.api.Pacts;
 import org.arquillian.algeron.pact.provider.spi.Provider;
+import org.arquillian.algeron.provider.core.AlgeronProviderConfiguration;
 import org.arquillian.algeron.provider.core.retriever.ContractsFolder;
+import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 import org.junit.Test;
@@ -14,10 +17,14 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PactsReaderTest {
@@ -25,16 +32,45 @@ public class PactsReaderTest {
     @Mock
     InstanceProducer instanceProducer;
 
+    @Mock
+    Instance instance;
+
     @Captor
     ArgumentCaptor<Pacts> argumentCaptor;
 
     @Test
-    public void should_load_pacts_from_test() {
+    public void should_load_pacts_from_annotation_test() {
 
         final PactsReader pactsReader = new PactsReader();
         pactsReader.pactsInstanceProducer = instanceProducer;
+        pactsReader.algeronProviderConfigurationInstance = instance;
 
         pactsReader.readPacts(new BeforeClass(PactDefinition.class));
+        verify(instanceProducer).set(argumentCaptor.capture());
+
+        Pacts pacts = argumentCaptor.getValue();
+        final List<Pact> listOfLoadedPacts = pacts.getPacts();
+        assertThat(listOfLoadedPacts).hasSize(1).element(0)
+                .hasFieldOrPropertyWithValue("provider", new au.com.dius.pact.model.Provider("planets_provider"))
+                .hasFieldOrPropertyWithValue("consumer", new Consumer("planets_consumer"));
+    }
+
+    @Test
+    public void should_load_pacts_from_algeron_provider_configuration() {
+        final PactsReader pactsReader = new PactsReader();
+        pactsReader.pactsInstanceProducer = instanceProducer;
+        pactsReader.algeronProviderConfigurationInstance = instance;
+
+
+        String retriever = "provider: folder" + System.lineSeparator() + "contractsFolder: pacts";
+        final Map<String, String> configuration = new HashMap<>();
+        configuration.put("retrieverConfiguration", retriever);
+
+        final AlgeronProviderConfiguration algeronProviderConfiguration = AlgeronProviderConfiguration.fromMap(configuration);
+
+        when(instance.get()).thenReturn(algeronProviderConfiguration);
+
+        pactsReader.readPacts(new BeforeClass(NonePactDefinition.class));
         verify(instanceProducer).set(argumentCaptor.capture());
 
         Pacts pacts = argumentCaptor.getValue();
@@ -49,4 +85,8 @@ public class PactsReaderTest {
     public static class PactDefinition {
 
     }
+
+    @Provider("planets_provider")
+    public static class NonePactDefinition {}
+
 }

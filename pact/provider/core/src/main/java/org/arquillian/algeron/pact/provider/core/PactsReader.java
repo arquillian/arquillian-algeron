@@ -11,6 +11,7 @@ import org.arquillian.algeron.pact.provider.spi.Provider;
 import org.arquillian.algeron.provider.core.AlgeronProviderConfiguration;
 import org.arquillian.algeron.provider.spi.retriever.ContractsRetriever;
 import org.arquillian.algeron.provider.spi.retriever.ContractsSource;
+import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
@@ -26,16 +27,24 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 /**
  * Reads provided Pacts from defined @ContractsSource or any annotation meta-annotated with @ContractsSource
+ * or configured in arquillian configuration file.
  */
 public class PactsReader {
+
+    public static final String PROVIDER = "provider";
 
     @Inject
     @SuiteScoped
     InstanceProducer<Pacts> pactsInstanceProducer;
+
+    @Inject
+    Instance<AlgeronProviderConfiguration> algeronProviderConfigurationInstance;
 
     public void readPacts(@Observes BeforeClass test) {
         List<Pact> pacts = getPacts(test);
@@ -57,7 +66,7 @@ public class PactsReader {
 
         List<Pact> pacts = new ArrayList<>();
         try {
-            final ContractsRetriever contractsSource = getContractsSource(testClass);
+            final ContractsRetriever contractsSource = getContractsSource(testClass, algeronProviderConfigurationInstance.get());
             contractsSource.setProviderName(serviceName);
             final List<URI> contractsDirectory = contractsSource.retrieve();
 
@@ -87,7 +96,7 @@ public class PactsReader {
         return new ArrayList<>();
     }
 
-    protected ContractsRetriever getContractsSource(final TestClass testClass) {
+    protected ContractsRetriever getContractsSource(final TestClass testClass, AlgeronProviderConfiguration algeronProviderConfiguration) {
 
         // Gets a test annotated directly with PactSource annotation
         final ContractsSource pactSource = testClass.getAnnotation(ContractsSource.class);
@@ -98,8 +107,8 @@ public class PactsReader {
                 .collect(toList());
 
         // It can only be one PactSource in test
-        if ((pactSource == null ? 0 : 1) + pactLoaders.size() != 1) {
-            throw new IllegalArgumentException(String.format("Exactly one contract source should be set, but %s are set", (pactSource == null ? 0 : 1) + pactLoaders.size()));
+        if ((pactSource == null ? 0 : 1) + pactLoaders.size() > 1) {
+            throw new IllegalArgumentException(String.format("Exactly zero or one contract source as annotation should be set, but %s are set", (pactSource == null ? 0 : 1) + pactLoaders.size()));
         }
 
         try {
@@ -114,12 +123,51 @@ public class PactsReader {
                     return pactLoaderClass.newInstance();
                 }
             } else {
-                final Annotation annotation = pactLoaders.iterator().next();
-                return annotation.annotationType().getAnnotation(ContractsSource.class).value()
-                        .getConstructor(annotation.annotationType()).newInstance(annotation);
+                if (isAnnotationPresent(pactLoaders)) {
+                    final Annotation annotation = pactLoaders.iterator().next();
+                    return annotation.annotationType().getAnnotation(ContractsSource.class).value()
+                            .getConstructor(annotation.annotationType()).newInstance(annotation);
+                } else {
+                    return getContractsRetriever(algeronProviderConfiguration);
+                }
             }
         } catch (final InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException("Error while creating contracts source", e);
         }
     }
+
+    private boolean isAnnotationPresent(List<Annotation> pactLoaders) {
+        return pactLoaders.size() > 0;
+    }
+
+    private ContractsRetriever getContractsRetriever(AlgeronProviderConfiguration algeronProviderConfiguration) {
+        if (algeronProviderConfiguration != null && algeronProviderConfiguration.isRetrieverConfigurationSet()) {
+            final Map<String, Object> retrieverConfiguration = algeronProviderConfiguration.getRetrieverConfiguration();
+
+            if (retrieverConfiguration.containsKey(PROVIDER)) {
+                final ContractsRetriever contractRetriever = findContractRetriever((String) retrieverConfiguration.get(PROVIDER));
+                contractRetriever.configure(retrieverConfiguration);
+
+                return contractRetriever;
+            } else {
+                throw new IllegalArgumentException(String.format("Retrieving contracts are enabled, but configuration is not providing a %s property with provider name to be used.", PROVIDER));
+            }
+        }
+
+        throw new IllegalArgumentException("No retriever defined as annotation nor in arquillian configuration file.");
+    }
+
+    private ContractsRetriever findContractRetriever(String name) {
+
+        ServiceLoader<ContractsRetriever> serviceLoader = ServiceLoader.load(ContractsRetriever.class);
+
+        for (ContractsRetriever contractsRetriever : serviceLoader) {
+            if (contractsRetriever.getName().equals(name)) {
+                return contractsRetriever;
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("No retriever registered with name %s.", name));
+    }
+
 }

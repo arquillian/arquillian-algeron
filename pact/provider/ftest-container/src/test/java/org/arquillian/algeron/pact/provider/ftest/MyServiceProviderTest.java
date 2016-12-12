@@ -19,7 +19,6 @@ import static org.arquillian.algeron.pact.provider.assertj.PactProviderAssertion
 
 @RunWith(Arquillian.class)
 @Provider("test_provider")
-@ContractsFolder("pacts")
 public class MyServiceProviderTest {
 
     @Deployment(testable = false)

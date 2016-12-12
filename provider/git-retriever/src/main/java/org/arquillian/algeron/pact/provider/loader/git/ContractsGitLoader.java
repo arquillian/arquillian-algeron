@@ -8,12 +8,14 @@ import org.eclipse.jgit.api.PullResult;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -31,6 +33,10 @@ public class ContractsGitLoader implements ContractsRetriever {
 
     GitOperations gitOperations;
 
+    public ContractsGitLoader() {
+        super();
+    }
+
     public ContractsGitLoader(ContractsGit contractsGit) {
         this.contractsGit = contractsGit;
         this.gitOperations = new GitOperations();
@@ -44,6 +50,17 @@ public class ContractsGitLoader implements ContractsRetriever {
                 .map(URI::create)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public String getName() {
+        return "git";
+    }
+
+    @Override
+    public void configure(Map<String, Object> configuration) {
+        this.contractsGit = new ContractsGitImpl(configuration);
+    }
+
 
     protected Path getContractsFolderFromGitRepo() throws IOException {
         Path location = null;
@@ -189,6 +206,145 @@ public class ContractsGitLoader implements ContractsRetriever {
 
     private String getResolvedValue(String field) {
         return RunnerExpressionParser.parseExpressions(field);
+    }
+
+    static class ContractsGitImpl implements ContractsGit {
+
+        private static final String URL = "url";
+        private static final String USERNAME = "username";
+        private static final String PASSWORD = "password";
+        private static final String PASSPHRASE = "passphrase";
+        private static final String REMOTE = "remote";
+        private static final String KEY = "key";
+        private static final String REPOSITORY = "repository";
+        private static final String CONTRACT_GIT_DIRECTORY = "contractGitDirectory";
+        private static final String TAG = "tag";
+        private static final String BRANCH = "branch";
+
+
+        private String url = "";
+        private String username= "";
+        private String password = "";
+        private String passphrase = "";
+        private String key = "";
+        private String repository = "";
+        private String contractsDirectory = "";
+        private String tag = "";
+        private String branch = "";
+        private String remote = "";
+
+        public ContractsGitImpl(Map<String, Object> configuration) {
+            if (configuration.containsKey(URL)) {
+                url = (String) configuration.get(URL);
+            }
+
+            if (configuration.containsKey(USERNAME)) {
+                username = (String) configuration.get(USERNAME);
+            }
+
+            if (configuration.containsKey(PASSWORD)) {
+                password = (String) configuration.get(PASSWORD);
+            }
+
+            if (configuration.containsKey(PASSPHRASE)) {
+                passphrase = (String) configuration.get(PASSPHRASE);
+            }
+
+            if (configuration.containsKey(KEY)) {
+                key = (String) configuration.get(KEY);
+            }
+
+            if (configuration.containsKey(REPOSITORY)) {
+                repository = (String) configuration.get(REPOSITORY);
+            }
+
+            if (configuration.containsKey(CONTRACT_GIT_DIRECTORY)) {
+                contractsDirectory = (String) configuration.get(CONTRACT_GIT_DIRECTORY);
+            }
+
+            if (configuration.containsKey(TAG)) {
+                tag = (String) configuration.get(TAG);
+            }
+
+            if (configuration.containsKey(BRANCH)) {
+                branch = (String) configuration.get(BRANCH);
+            }
+
+            if (configuration.containsKey(REMOTE)) {
+                remote = (String) configuration.get(REMOTE);
+            }
+
+        }
+
+        @Override
+        public String value() {
+            return url;
+        }
+
+        @Override
+        public String username() {
+            return username;
+        }
+
+        @Override
+        public String password() {
+            return password;
+        }
+
+        @Override
+        public String passphrase() {
+            return passphrase;
+        }
+
+        @Override
+        public String key() {
+            return key;
+        }
+
+        @Override
+        public String repository() {
+            return repository;
+        }
+
+        @Override
+        public String contractsDirectory() {
+            return contractsDirectory;
+        }
+
+        @Override
+        public String tag() {
+            return tag;
+        }
+
+        @Override
+        public String branch() {
+            return branch;
+        }
+
+        @Override
+        public String remote() {
+            return remote;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+
+        @Override
+        public String toString() {
+            return null;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return ContractsGit.class;
+        }
     }
 
 }
