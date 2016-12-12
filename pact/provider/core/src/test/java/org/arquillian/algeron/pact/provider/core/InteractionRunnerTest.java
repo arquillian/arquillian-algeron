@@ -47,11 +47,15 @@ public class InteractionRunnerTest {
     @Mock
     private ProviderState providerState;
 
+    @Mock
+    private Instance algeronConfiguration;
+
     private Instance<Pacts> pactsInstance;
 
     @Before
     public void setup() {
         final PactsReader pactsReader = new PactsReader();
+        pactsReader.algeronProviderConfigurationInstance = algeronConfiguration;
         final List<Pact> pacts = pactsReader.getPacts(new BeforeClass(PactProvider.class));
         pactsInstance = () -> new Pacts(pacts);
 
