@@ -23,7 +23,6 @@ public class ContractsFolderLoader implements ContractsRetriever {
     private String path;
 
     public ContractsFolderLoader() {
-        super();
     }
 
     public ContractsFolderLoader(final File path) {

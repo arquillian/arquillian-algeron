@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.matching.ContainsPattern;
 import net.jcip.annotations.NotThreadSafe;
 import org.arquillian.algeron.consumer.core.AlgeronConsumerConfiguration;
-import org.arquillian.algeron.consumer.core.ContractsPublisher;
+import org.arquillian.algeron.consumer.core.ContractsPublisherObserver;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.test.AbstractManagerTestBase;
 import org.jboss.arquillian.test.spi.event.suite.AfterClass;
@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 @NotThreadSafe
-public class UrlContractsPublisherTest extends AbstractManagerTestBase {
+public class UrlContractsPublisherObserverTest extends AbstractManagerTestBase {
 
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
-        extensions.add(ContractsPublisher.class);
+        extensions.add(ContractsPublisherObserver.class);
         super.addExtensions(extensions);
     }
 
@@ -60,7 +60,7 @@ public class UrlContractsPublisherTest extends AbstractManagerTestBase {
                         .withRequestBody(new ContainsPattern("Contract File"))
                         .willReturn(WireMock.aResponse().withStatus(200)));
 
-        fire(new AfterClass(UrlContractsPublisherTest.class));
+        fire(new AfterClass(UrlContractsPublisherObserverTest.class));
 
         WireMock.verify(WireMock.postRequestedFor(WireMock.urlEqualTo("/pacts/pact.txt"))
                 .withRequestBody(new ContainsPattern("Contract File")));

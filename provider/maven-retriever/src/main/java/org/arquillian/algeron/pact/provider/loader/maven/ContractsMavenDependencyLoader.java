@@ -37,7 +37,6 @@ public class ContractsMavenDependencyLoader implements ContractsRetriever {
     private ContractsMavenDependency contractsMavenDependency;
 
     public ContractsMavenDependencyLoader() {
-        super();
     }
 
     public ContractsMavenDependencyLoader(ContractsMavenDependency contractsMavenDependency) {
@@ -56,7 +55,7 @@ public class ContractsMavenDependencyLoader implements ContractsRetriever {
 
     @Override
     public void configure(Map<String, Object> configuration) {
-        this.contractsMavenDependency = new ContractsMavenDependencyImpl(configuration);
+        this.contractsMavenDependency = new ExternallyConfiguredContractsMavenDependency(configuration);
     }
 
     @Override
@@ -139,7 +138,7 @@ public class ContractsMavenDependencyLoader implements ContractsRetriever {
         return createdFolder;
     }
 
-    static class ContractsMavenDependencyImpl implements ContractsMavenDependency {
+    static class ExternallyConfiguredContractsMavenDependency implements ContractsMavenDependency {
 
         private final static String COORDINATES = "coordinates";
         private final static String OFFLINE = "offline";
@@ -151,7 +150,7 @@ public class ContractsMavenDependencyLoader implements ContractsRetriever {
         private String customSettings = "";
         private String remoteRepository = "";
 
-        public ContractsMavenDependencyImpl(Map<String, Object> configuration) {
+        public ExternallyConfiguredContractsMavenDependency(Map<String, Object> configuration) {
 
             if (configuration.containsKey(COORDINATES)) {
                 Object coordinates = configuration.get(COORDINATES);

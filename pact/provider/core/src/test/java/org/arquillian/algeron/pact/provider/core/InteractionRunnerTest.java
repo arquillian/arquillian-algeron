@@ -54,9 +54,9 @@ public class InteractionRunnerTest {
 
     @Before
     public void setup() {
-        final PactsReader pactsReader = new PactsReader();
-        pactsReader.algeronProviderConfigurationInstance = algeronConfiguration;
-        final List<Pact> pacts = pactsReader.getPacts(new BeforeClass(PactProvider.class));
+        final PactsRetriever pactsRetriever = new PactsRetriever();
+        pactsRetriever.algeronProviderConfigurationInstance = algeronConfiguration;
+        final List<Pact> pacts = pactsRetriever.getPacts(new BeforeClass(PactProvider.class));
         pactsInstance = () -> new Pacts(pacts);
 
         when(eventContext.getEvent()).thenReturn(test);

@@ -23,7 +23,6 @@ public class ContractsUrlLoader implements ContractsRetriever {
     private List<URI> urls;
 
     public ContractsUrlLoader() {
-        super();
     }
 
     public ContractsUrlLoader(final List<URI> urls) {

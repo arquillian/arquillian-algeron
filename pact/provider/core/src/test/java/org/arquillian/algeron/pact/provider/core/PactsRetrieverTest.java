@@ -2,7 +2,6 @@ package org.arquillian.algeron.pact.provider.core;
 
 import au.com.dius.pact.model.Consumer;
 import au.com.dius.pact.model.Pact;
-import org.apache.commons.collections.map.HashedMap;
 import org.arquillian.algeron.pact.provider.api.Pacts;
 import org.arquillian.algeron.pact.provider.spi.Provider;
 import org.arquillian.algeron.provider.core.AlgeronProviderConfiguration;
@@ -22,12 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PactsReaderTest {
+public class PactsRetrieverTest {
 
     @Mock
     InstanceProducer instanceProducer;
@@ -41,13 +39,16 @@ public class PactsReaderTest {
     @Test
     public void should_load_pacts_from_annotation_test() {
 
-        final PactsReader pactsReader = new PactsReader();
-        pactsReader.pactsInstanceProducer = instanceProducer;
-        pactsReader.algeronProviderConfigurationInstance = instance;
+        // Given
+        final PactsRetriever pactsRetriever = new PactsRetriever();
+        pactsRetriever.pactsInstanceProducer = instanceProducer;
+        pactsRetriever.algeronProviderConfigurationInstance = instance;
 
-        pactsReader.readPacts(new BeforeClass(PactDefinition.class));
+        // When
+        pactsRetriever.retrievePacts(new BeforeClass(PactDefinition.class));
+
+        // Then
         verify(instanceProducer).set(argumentCaptor.capture());
-
         Pacts pacts = argumentCaptor.getValue();
         final List<Pact> listOfLoadedPacts = pacts.getPacts();
         assertThat(listOfLoadedPacts).hasSize(1).element(0)
@@ -57,9 +58,11 @@ public class PactsReaderTest {
 
     @Test
     public void should_load_pacts_from_algeron_provider_configuration() {
-        final PactsReader pactsReader = new PactsReader();
-        pactsReader.pactsInstanceProducer = instanceProducer;
-        pactsReader.algeronProviderConfigurationInstance = instance;
+
+        // Given
+        final PactsRetriever pactsRetriever = new PactsRetriever();
+        pactsRetriever.pactsInstanceProducer = instanceProducer;
+        pactsRetriever.algeronProviderConfigurationInstance = instance;
 
 
         String retriever = "provider: folder" + System.lineSeparator() + "contractsFolder: pacts";
@@ -70,9 +73,13 @@ public class PactsReaderTest {
 
         when(instance.get()).thenReturn(algeronProviderConfiguration);
 
-        pactsReader.readPacts(new BeforeClass(NonePactDefinition.class));
-        verify(instanceProducer).set(argumentCaptor.capture());
 
+        // When
+        pactsRetriever.retrievePacts(new BeforeClass(NonePactDefinition.class));
+
+
+        // Then
+        verify(instanceProducer).set(argumentCaptor.capture());
         Pacts pacts = argumentCaptor.getValue();
         final List<Pact> listOfLoadedPacts = pacts.getPacts();
         assertThat(listOfLoadedPacts).hasSize(1).element(0)

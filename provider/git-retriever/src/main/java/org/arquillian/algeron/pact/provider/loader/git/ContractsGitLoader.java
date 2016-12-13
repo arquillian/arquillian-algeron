@@ -34,7 +34,6 @@ public class ContractsGitLoader implements ContractsRetriever {
     GitOperations gitOperations;
 
     public ContractsGitLoader() {
-        super();
     }
 
     public ContractsGitLoader(ContractsGit contractsGit) {
@@ -58,7 +57,7 @@ public class ContractsGitLoader implements ContractsRetriever {
 
     @Override
     public void configure(Map<String, Object> configuration) {
-        this.contractsGit = new ContractsGitImpl(configuration);
+        this.contractsGit = new ExternallyConfiguredContractsGit(configuration);
     }
 
 
@@ -208,7 +207,7 @@ public class ContractsGitLoader implements ContractsRetriever {
         return RunnerExpressionParser.parseExpressions(field);
     }
 
-    static class ContractsGitImpl implements ContractsGit {
+    static class ExternallyConfiguredContractsGit implements ContractsGit {
 
         private static final String URL = "url";
         private static final String USERNAME = "username";
@@ -233,7 +232,7 @@ public class ContractsGitLoader implements ContractsRetriever {
         private String branch = "";
         private String remote = "";
 
-        public ContractsGitImpl(Map<String, Object> configuration) {
+        public ExternallyConfiguredContractsGit(Map<String, Object> configuration) {
             if (configuration.containsKey(URL)) {
                 url = (String) configuration.get(URL);
             }

@@ -12,9 +12,9 @@ import java.util.logging.Logger;
 /**
  * Logic that takes configured pact publisher and publish generated pact files.
  */
-public class ContractsPublisher {
+public class ContractsPublisherObserver {
 
-    private static Logger logger = Logger.getLogger(ContractsPublisher.class.getName());
+    private static Logger logger = Logger.getLogger(ContractsPublisherObserver.class.getName());
     private static final String PROVIDER = "provider";
 
     public void publish(@Observes AfterClass event, AlgeronConsumerConfiguration algeronConsumerConfiguration) throws IOException {

@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * Reads provided Pacts from defined @ContractsSource or any annotation meta-annotated with @ContractsSource
  * or configured in arquillian configuration file.
  */
-public class PactsReader {
+public class PactsRetriever {
 
     public static final String PROVIDER = "provider";
 
@@ -46,7 +46,7 @@ public class PactsReader {
     @Inject
     Instance<AlgeronProviderConfiguration> algeronProviderConfigurationInstance;
 
-    public void readPacts(@Observes BeforeClass test) {
+    public void retrievePacts(@Observes BeforeClass test) {
         List<Pact> pacts = getPacts(test);
         pactsInstanceProducer.set(new Pacts(pacts));
     }
@@ -107,8 +107,8 @@ public class PactsReader {
                 .collect(toList());
 
         // It can only be one PactSource in test
-        if ((pactSource == null ? 0 : 1) + pactLoaders.size() > 1) {
-            throw new IllegalArgumentException(String.format("Exactly zero or one contract source as annotation should be set, but %s are set", (pactSource == null ? 0 : 1) + pactLoaders.size()));
+        if (isIncorrectNumberOfContractSources(pactSource, pactLoaders)) {
+            throw new IllegalArgumentException(String.format("Exactly zero or one contract source as annotation should be set, but %s are set", countNumberOfContractsSource(pactSource, pactLoaders)));
         }
 
         try {
@@ -134,6 +134,14 @@ public class PactsReader {
         } catch (final InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException("Error while creating contracts source", e);
         }
+    }
+
+    private boolean isIncorrectNumberOfContractSources(ContractsSource pactSource, List<Annotation> pactLoaders) {
+        return countNumberOfContractsSource(pactSource, pactLoaders) > 1;
+    }
+
+    private int countNumberOfContractsSource(ContractsSource pactSource, List<Annotation> pactLoaders) {
+        return (pactSource == null ? 0 : 1) + pactLoaders.size();
     }
 
     private boolean isAnnotationPresent(List<Annotation> pactLoaders) {

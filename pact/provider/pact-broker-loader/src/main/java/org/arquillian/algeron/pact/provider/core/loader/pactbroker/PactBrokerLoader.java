@@ -36,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
@@ -59,7 +60,6 @@ public class PactBrokerLoader implements ContractsRetriever {
     private Callable<HttpResponse> httpResponseCallable;
 
     public PactBrokerLoader() {
-        super();
     }
 
 
@@ -70,7 +70,7 @@ public class PactBrokerLoader implements ContractsRetriever {
 
     @Override
     public void configure(Map<String, Object> configuration) {
-        this.pactBroker = new PactBrokerImpl(configuration);
+        this.pactBroker = new ExternallyConfiguredPactBroker(configuration);
     }
 
     @Override
@@ -80,13 +80,17 @@ public class PactBrokerLoader implements ContractsRetriever {
 
     @Override
     public List<URI> retrieve() throws IOException {
-        List<URI> pacts = new ArrayList<>();
-        for (String tag: Arrays.stream(pactBroker.tags())
+        return Arrays.stream(pactBroker.tags())
                 .map(tag -> getResolvedValue(tag))
-                .collect(toList())) {
-            pacts.addAll(loadPactsForProvider(providerName, tag));
-        }
-        return pacts;
+                .map(tag -> {
+                    try {
+                        return loadPactsForProvider(providerName, tag);
+                    } catch (IOException e) {
+                        throw new IllegalStateException(e);
+                    }
+                })
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
     }
 
     private List<URI> loadPactsForProvider(final String providerName, final String tag) throws IOException {
@@ -151,7 +155,7 @@ public class PactBrokerLoader implements ContractsRetriever {
         this.httpResponseCallable = httpResponseCallable;
     }
 
-    static class PactBrokerImpl implements PactBroker {
+    static class ExternallyConfiguredPactBroker implements PactBroker {
 
         private static final String HOST = "host";
         private static final String PORT = "port";
@@ -163,39 +167,11 @@ public class PactBrokerLoader implements ContractsRetriever {
         private String protocol = "http";
         private List<String> tags = new ArrayList<>();
 
-        public PactBrokerImpl(Map<String, Object> configuration) {
-
-            if (configuration.containsKey(HOST)) {
-                this.host = (String) configuration.get(HOST);
-            } else {
-                throw new IllegalArgumentException("Host field is mandatory in Pact Broker Retriever.");
-            }
-
-            if (configuration.containsKey(PORT)) {
-                this.port = (String) configuration.get(PORT);
-            } else {
-                throw new IllegalArgumentException("Port field is mandatory in Pact Broker Retriever.");
-            }
-
-            if (configuration.containsKey(PROTOCOL)) {
-                this.protocol = (String) configuration.get(PROTOCOL);
-            }
-
-            if (configuration.containsKey(TAGS)) {
-                Object tags = configuration.get(TAGS);
-
-                if (tags instanceof String) {
-                    this.tags.add(RunnerExpressionParser.parseExpressions((String) tags));
-                } else {
-                    if(tags instanceof Collection) {
-                        Collection<String> listOfTags = (Collection) tags;
-                        this.tags.addAll(listOfTags.stream().map(tag -> getResolvedValue(tag))
-                                .collect(toList()));
-                    }
-                }
-            } else {
-                this.tags.add("latest");
-            }
+        public ExternallyConfiguredPactBroker(Map<String, Object> configuration) {
+            this.host = getMandatoryField(configuration, HOST);
+            this.port = getMandatoryField(configuration, PORT);
+            this.protocol = getOptionalField(configuration, PROTOCOL,"http");
+            this.tags = getFromStringOrListOfString(configuration, TAGS, "latest");
         }
 
         @Override
@@ -221,6 +197,45 @@ public class PactBrokerLoader implements ContractsRetriever {
         @Override
         public Class<? extends Annotation> annotationType() {
             return PactBroker.class;
+        }
+
+        public List<String> getFromStringOrListOfString(Map<String, Object> configuration, String field, String defaultValue) {
+            List<String> values = new ArrayList<>();
+            if (configuration.containsKey(field)) {
+                Object tags = configuration.get(field);
+
+                if (tags instanceof String) {
+                    values.add(getResolvedValue((String) tags));
+                } else {
+                    if(tags instanceof Collection) {
+                        Collection<String> listOfTags = (Collection) tags;
+                        values.addAll(
+                                listOfTags.stream()
+                                        .map(tag -> getResolvedValue(tag))
+                                        .collect(toList()));
+                    }
+                }
+            } else {
+                values.add(defaultValue);
+            }
+
+            return values;
+        }
+
+        public String getOptionalField(Map<String, Object> configuration, String field, String defaultValue) {
+            if (configuration.containsKey(field)) {
+                return (String) configuration.get(field);
+            } else {
+                return defaultValue;
+            }
+        }
+
+        public String getMandatoryField(Map<String, Object> configuration, String field) {
+            if (configuration.containsKey(field)) {
+                return (String) configuration.get(field);
+            } else {
+                throw new IllegalArgumentException(String.format("%s field is mandatory in Pact Broker Retriever.", field));
+            }
         }
     }
 

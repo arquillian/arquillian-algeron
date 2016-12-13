@@ -3,7 +3,7 @@ package org.arquillian.algeron.consumer.core.publisher;
 
 import net.jcip.annotations.NotThreadSafe;
 import org.arquillian.algeron.consumer.core.AlgeronConsumerConfiguration;
-import org.arquillian.algeron.consumer.core.ContractsPublisher;
+import org.arquillian.algeron.consumer.core.ContractsPublisherObserver;
 import org.assertj.core.api.Assertions;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.test.AbstractManagerTestBase;
@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 @NotThreadSafe
-public class FolderContractsPublisherTest extends AbstractManagerTestBase {
+public class FolderContractsPublisherObserverTest extends AbstractManagerTestBase {
 
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
-        extensions.add(ContractsPublisher.class);
+        extensions.add(ContractsPublisherObserver.class);
         super.addExtensions(extensions);
     }
 
@@ -59,7 +59,7 @@ public class FolderContractsPublisherTest extends AbstractManagerTestBase {
         final AlgeronConsumerConfiguration pactConsumerConfiguration = AlgeronConsumerConfiguration.fromMap(params);
         bind(ApplicationScoped.class, AlgeronConsumerConfiguration.class, pactConsumerConfiguration);
 
-        fire(new AfterClass(FolderContractsPublisherTest.class));
+        fire(new AfterClass(FolderContractsPublisherObserverTest.class));
 
         Assertions.assertThat(output).isDirectory();
         Assertions.assertThat(new File(output, "pact.txt")).exists().hasContent("Contract File");
@@ -72,7 +72,7 @@ public class FolderContractsPublisherTest extends AbstractManagerTestBase {
         final AlgeronConsumerConfiguration pactConsumerConfiguration = AlgeronConsumerConfiguration.fromMap(params);
         bind(ApplicationScoped.class, AlgeronConsumerConfiguration.class, pactConsumerConfiguration);
 
-        fire(new AfterClass(FolderContractsPublisherTest.class));
+        fire(new AfterClass(FolderContractsPublisherObserverTest.class));
 
         Assertions.assertThat(output).isDirectory();
         Assertions.assertThat(new File(output, "pact.txt")).doesNotExist();
