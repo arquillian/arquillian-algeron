@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -16,7 +17,13 @@ import java.util.stream.Collectors;
  * that retrieve contracts from either a subfolder of project resource folder or a directory
  */
 public class ContractsFolderLoader implements ContractsRetriever {
-    private final String path;
+
+    private static final String CONTRACTS_FOLDER = "contractsFolder";
+
+    private String path;
+
+    public ContractsFolderLoader() {
+    }
 
     public ContractsFolderLoader(final File path) {
         this(path.getPath());
@@ -47,6 +54,24 @@ public class ContractsFolderLoader implements ContractsRetriever {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public String getName() {
+        return "folder";
+    }
+
+    @Override
+    public void configure(Map<String, Object> configuration) {
+        if (! configuration.containsKey(CONTRACTS_FOLDER)) {
+            throw new IllegalArgumentException(String.format("Folder Retriever requires %s configuration property", CONTRACTS_FOLDER));
+        }
+
+        if (! (configuration.get(CONTRACTS_FOLDER) instanceof String)) {
+            throw new IllegalArgumentException(String.format("Folder Retriever requires %s configuration property to be an String", CONTRACTS_FOLDER));
+        }
+
+        this.path = (String) configuration.get(CONTRACTS_FOLDER);
+    }
+
     private File resolvePath() {
         final String pathname = RunnerExpressionParser.parseExpressions(path);
         File file = new File(pathname);
@@ -56,5 +81,6 @@ public class ContractsFolderLoader implements ContractsRetriever {
         }
         return file;
     }
+
 
 }

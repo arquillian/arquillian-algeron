@@ -12,9 +12,9 @@ import java.util.logging.Logger;
 /**
  * Logic that takes configured pact publisher and publish generated pact files.
  */
-public class ContractsPublisher {
+public class ContractsPublisherObserver {
 
-    private static Logger logger = Logger.getLogger(ContractsPublisher.class.getName());
+    private static Logger logger = Logger.getLogger(ContractsPublisherObserver.class.getName());
     private static final String PROVIDER = "provider";
 
     public void publish(@Observes AfterClass event, AlgeronConsumerConfiguration algeronConsumerConfiguration) throws IOException {
@@ -24,7 +24,7 @@ public class ContractsPublisher {
             if (publishConfiguration.containsKey(PROVIDER)) {
                 final String providerName = (String) publishConfiguration.get(PROVIDER);
 
-                final org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher contractsPublisher = getPactPublisher(providerName);
+                final org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher contractsPublisher = getContractPublisher(providerName);
                 contractsPublisher.configure(publishConfiguration);
                 contractsPublisher.publish();
             } else {
@@ -33,7 +33,7 @@ public class ContractsPublisher {
         }
     }
 
-    private org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher getPactPublisher(String name) {
+    private org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher getContractPublisher(String name) {
         ServiceLoader<org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher> pactPublisherServiceLoader = ServiceLoader.load(org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher.class);
 
         for (org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher contractsPublisher : pactPublisherServiceLoader) {
@@ -42,7 +42,7 @@ public class ContractsPublisher {
             }
         }
 
-        throw new IllegalArgumentException(String.format("No pact publisher registered with name %s.", name));
+        throw new IllegalArgumentException(String.format("No contract publisher registered with name %s.", name));
     }
 
 }

@@ -55,7 +55,7 @@ public @interface ContractsGit {
     String repository() default "";
 
     /**
-     * In case pacts are stored inside an specific folder, you need to specify where are stored
+     * In case contracts are stored inside an specific folder, you need to specify where are stored
      * @return
      */
     String contractsDirectory() default "";
