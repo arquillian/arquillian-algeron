@@ -9,12 +9,14 @@ import au.com.dius.pact.provider.reporters.VerifierReporter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpRequest;
 import org.arquillian.algeron.configuration.SystemPropertyResolver;
+import org.arquillian.algeron.pact.provider.core.recorder.ArquillianVerifierReporter;
 import org.arquillian.algeron.pact.provider.spi.ArquillianTestClassAwareTarget;
 import org.arquillian.algeron.pact.provider.spi.PactProviderExecutionAwareTarget;
 import org.arquillian.algeron.pact.provider.spi.Provider;
 import org.arquillian.algeron.pact.provider.spi.TargetRequestFilter;
 import org.arquillian.algeron.pact.provider.spi.VerificationReports;
 
+import org.jboss.arquillian.core.api.Injector;
 import org.jboss.arquillian.test.spi.TestClass;
 
 import java.io.File;
@@ -43,6 +45,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
 
     private au.com.dius.pact.model.Consumer currentConsumer;
     private RequestResponseInteraction currentRequestResponseInteraction;
+    private Injector injector;
 
     /**
      * @param host host of tested service
@@ -219,10 +222,15 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
             verifier.setReporters(Arrays.stream(reports)
                     .filter(r -> !r.isEmpty())
                     .map(r -> {
-                        VerifierReporter reporter = ReporterManager.createReporter(r.trim());
-                        reporter.setReportDir(reportDir);
-                        reporter.setReportFile(new File(reportDir, name + " - " + description + reporter.getExt()));
-                        return reporter;
+                        final String reportType = r.trim();
+                        if ("recorder".equals(reportType)) {
+                            return injector.inject(new ArquillianVerifierReporter());
+                        } else {
+                            VerifierReporter reporter = ReporterManager.createReporter(reportType);
+                            reporter.setReportDir(reportDir);
+                            reporter.setReportFile(new File(reportDir, name + " - " + description + reporter.getExt()));
+                            return reporter;
+                        }
                     }).collect(Collectors.toList()));
         }
     }
@@ -339,6 +347,11 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     public void setTestClass(TestClass testClass, Object testInstance) {
         this.testClass = testClass;
         this.testInstance = testInstance;
+    }
+
+    @Override
+    public void setInjector(Injector injector) {
+        this.injector = injector;
     }
 
     @Override

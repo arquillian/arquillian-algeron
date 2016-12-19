@@ -47,6 +47,11 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.arquillian.extension</groupId>
+            <artifactId>arquillian-recorder-reporter-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
