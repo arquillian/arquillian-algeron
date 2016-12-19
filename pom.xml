@@ -69,6 +69,7 @@
         <version.snakeyaml>1.17</version.snakeyaml>
         <version.wiremock>2.3.1</version.wiremock>
         <version.jcip-annotations>1.0</version.jcip-annotations>
+        <version.arquillian.recorder>1.1.5.Final</version.arquillian.recorder>
     </properties>
 
     <dependencyManagement>
@@ -256,6 +257,23 @@
                 <groupId>net.jcip</groupId>
                 <artifactId>jcip-annotations</artifactId>
                 <version>${version.jcip-annotations}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.extension</groupId>
+                <artifactId>arquillian-recorder-reporter-api</artifactId>
+                <version>${version.arquillian.recorder}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.arquillian.extension</groupId>
+                <artifactId>arquillian-recorder-reporter-spi</artifactId>
+                <version>${version.arquillian.recorder}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.extension</groupId>
+                <artifactId>arquillian-recorder-reporter-impl</artifactId>
+                <version>${version.arquillian.recorder}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
