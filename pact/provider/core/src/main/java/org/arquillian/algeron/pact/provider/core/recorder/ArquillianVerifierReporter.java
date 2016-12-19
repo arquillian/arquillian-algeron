@@ -30,19 +30,6 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     private GroupEntry stateGroup;
 
     @Override
-    public void setReportDir(File reportDir) {
-    }
-
-    @Override
-    public void setReportFile(File reportFile) {
-    }
-
-    @Override
-    public void initialise(ProviderInfo provider) {
-
-    }
-
-    @Override
     public void finaliseReport() {
         propertyReportEvent.fire(new PropertyReportEvent(verificationGroup));
     }
@@ -50,19 +37,6 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     @Override
     public void reportVerificationForConsumer(ConsumerInfo consumer, ProviderInfo provider) {
         verificationGroup.setName(String.format("Verifying a pact between %s and %s", consumer.getName(), provider.getName()));
-    }
-
-    @Override
-    public void verifyConsumerFromUrl(URL pactUrl, ConsumerInfo consumer) {
-    }
-
-    @Override
-    public void verifyConsumerFromFile(Object pactFile, ConsumerInfo consumer) {
-    }
-
-    @Override
-    public void pactLoadFailureForConsumer(ConsumerInfo consumerInfo, String message) {
-
     }
 
     @Override
@@ -156,11 +130,6 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     }
 
     @Override
-    public void errorHasNoAnnotatedMethodsFoundForInteraction(Interaction interaction) {
-
-    }
-
-    @Override
     public void verificationFailed(Interaction interaction, Exception e, boolean printStackTrace) {
         appendTextEntry(String.format("Verification Failed - %s", e.getMessage()), this.responseGroup);
     }
@@ -183,16 +152,6 @@ public class ArquillianVerifierReporter implements VerifierReporter {
         }
 
         this.verificationGroup.getPropertyEntries().add(failuresGroup);
-    }
-
-    @Override
-    public String getExt() {
-        return null;
-    }
-
-    @Override
-    public void setExt(String ext) {
-
     }
 
     private void appendTextEntry(String text, GroupEntry groupEntry) {
@@ -247,5 +206,49 @@ public class ArquillianVerifierReporter implements VerifierReporter {
                 .map(diff -> new TextEntry(diff.toString()))
                 .forEach(diff -> diffGroupEntry.getPropertyEntries().add(diff));
     }
+
+    @Override
+    public void setReportDir(File reportDir) {
+        // This is not valid since Arquillian Recorder Reporter is who writes the report
+    }
+
+    @Override
+    public void setReportFile(File reportFile) {
+        // This is not valid since Arquillian Recorder Reporter is who writes the report
+    }
+
+    @Override
+    public void initialise(ProviderInfo provider) {
+
+    }
+
+    @Override
+    public void verifyConsumerFromUrl(URL pactUrl, ConsumerInfo consumer) {
+    }
+
+    @Override
+    public void verifyConsumerFromFile(Object pactFile, ConsumerInfo consumer) {
+    }
+
+    @Override
+    public void pactLoadFailureForConsumer(ConsumerInfo consumerInfo, String message) {
+
+    }
+
+    @Override
+    public void errorHasNoAnnotatedMethodsFoundForInteraction(Interaction interaction) {
+
+    }
+
+    @Override
+    public String getExt() {
+        return null;
+    }
+
+    @Override
+    public void setExt(String ext) {
+
+    }
+
 
 }
