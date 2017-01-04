@@ -18,7 +18,7 @@ public @interface PactVerification {
     /**
      * the tested provider name.
      */
-    String value();
+    String value() default "";
 
     /**
      * Method to call to get the pact fragment. Defaults to empty string which results in using the first one found.
