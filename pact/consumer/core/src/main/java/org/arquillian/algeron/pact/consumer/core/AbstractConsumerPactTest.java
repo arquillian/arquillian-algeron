@@ -111,7 +111,7 @@ public abstract class AbstractConsumerPactTest {
     }
 
     private boolean isClassAnnotatedWithPact(TestClass testClass) {
-        return testClass.getAnnotation(Pact.class) != null ? true : false;
+        return testClass.getAnnotation(Pact.class) != null;
     }
 
     protected Optional<PactMethod> findPactMethod(String currentProvider, TestClass testClass, PactVerification pactVerification) {
