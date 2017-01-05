@@ -92,18 +92,26 @@ public abstract class AbstractConsumerPactTest {
         }
     }
 
-    private String getProvider(TestClass testClass, PactVerification pactVerification) {
+    protected String getProvider(TestClass testClass, PactVerification pactVerification) {
         if (!"".equals(pactVerification.value().trim())) {
             return pactVerification.value();
         } else {
-            PactConsumerConfiguration pactConsumerConfiguration = pactConsumerConfigurationInstance.get();
-            if (pactConsumerConfiguration.isProviderSet()) {
-                return pactConsumerConfiguration.getProvider();
+            if (isClassAnnotatedWithPact(testClass)) {
+                return testClass.getAnnotation(Pact.class).provider();
             } else {
-                throw new IllegalArgumentException(
-                        String.format("Provider name must be set either by using provider configuration property in arquillian.xml or annotating %s test with %s with a provider set.", testClass.getName(), PactVerification.class.getName()));
+                PactConsumerConfiguration pactConsumerConfiguration = pactConsumerConfigurationInstance.get();
+                if (pactConsumerConfiguration.isProviderSet()) {
+                    return pactConsumerConfiguration.getProvider();
+                } else {
+                    throw new IllegalArgumentException(
+                            String.format("Provider name must be set either by using provider configuration property in arquillian.xml or annotating %s test with %s with a provider set.", testClass.getName(), PactVerification.class.getName()));
+                }
             }
         }
+    }
+
+    private boolean isClassAnnotatedWithPact(TestClass testClass) {
+        return testClass.getAnnotation(Pact.class) != null;
     }
 
     protected Optional<PactMethod> findPactMethod(String currentProvider, TestClass testClass, PactVerification pactVerification) {
