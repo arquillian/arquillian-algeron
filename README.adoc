@@ -535,6 +535,8 @@ Also you need to add `org.arquillian.algeron:arquillian-algeron-provider-git-ret
 Possible attributes:
 
 |===
+| Parameter | Description
+
 |url
 |Mandatory field that sets git server url.
 
@@ -601,6 +603,8 @@ Also you need to add `org.arquillian.algeron:arquillian-algeron-provider-maven-r
 Possible attributes:
 
 |===
+| Parameter | Description
+
 |coordinates
 |Mandatory Maven coordinates of contracts. G:A:V format.
 
@@ -637,6 +641,8 @@ Also you need to add `org.arquillian.algeron:arquillian-algeron-pact-provider-pa
 Possible attributes:
 
 |===
+| Parameter | Description
+
 |host
 |Mandatory field that sets host of Pact Broker.
 
