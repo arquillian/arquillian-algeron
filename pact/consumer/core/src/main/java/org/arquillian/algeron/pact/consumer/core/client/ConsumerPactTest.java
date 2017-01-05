@@ -22,7 +22,7 @@ public class ConsumerPactTest extends AbstractConsumerPactTest {
         final TestClass testClass = event.getTestClass();
 
         // We need to check this because in case of embedded containers this class is executed too
-        if (RunModeUtils.isRunAsClient(deployment, testClass.getJavaClass(), event.getTestMethod())) {
+        if (RunModeUtils.isRunAsClient(deployment, testClass, event.getTestMethod())) {
 
             final PactVerification pactVerification = event.getTestMethod().getAnnotation(PactVerification.class);
 

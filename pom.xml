@@ -51,7 +51,7 @@
     </issueManagement>
 
     <properties>
-        <version.arquillian_core>1.1.11.Final</version.arquillian_core>
+        <version.arquillian_core>1.1.12.Final</version.arquillian_core>
         <version.junit>4.12</version.junit>
         <version.mockito>1.10.19</version.mockito>
         <version.assertj>3.6.0</version.assertj>
