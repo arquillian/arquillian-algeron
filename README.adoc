@@ -1,4 +1,4 @@
-= Arquillian Pact
+= Arquillian Algeron
 :numbered:
 :sectlink:
 :sectanchors:
@@ -43,7 +43,7 @@ But we have plans to extend it to other formats like _swagger_.
 
 https://github.com/DiUS/pact-jvm[Pact-JVM] is an implementation for JVM languages of Pact.
 
-Arquillian Pact is the integration of all Arquillian philosophy/extensions into Consumer Driven Contracts approach using Pact-JVM.
+Arquillian Algeron Pact is the integration of all Arquillian philosophy/extensions into Consumer Driven Contracts approach using Pact-JVM.
 
 
 https://docs.pact.io/[Pact] is a framework that provides support for Consumer Driven Contracts testing.
@@ -131,7 +131,7 @@ Then you need to add `arquillian-pact-consumer` dependency as well as `pact-jvm-
     </dependency>
 </dependencies>
 ----
-<1> Arquillian Pact has been tested with latest version, but it should work with any 3.X version.
+<1> Arquillian Algeron Pact has been tested with latest version, but it should work with any 3.X version.
 
 After dependencies you can write the test that defines the contract:
 
@@ -291,7 +291,7 @@ The attributes are:
 |
 
 |pactArtifactVersion
-|By default Arquillian Pact packages pact dependencies in container tests. To get the version of artifacts to package, checks the current pact version of classpath.
+|By default Arquillian Algeron Pact packages pact dependencies in container tests. To get the version of artifacts to package, checks the current pact version of classpath.
  If you want to use another one rather the one defined in your classpath, you can set it here the version.
 |
 
@@ -738,7 +738,7 @@ This is done by replaying all requests defined in contract against real provider
 Again you can write provider's part using in container or standalone mode.
 In this section, an in container mode example is developed.
 
-Apart from adding Arquillian bom dependencies as mentioned in <<arqdeps, consumer part>>, you need to add arquillian pact dependencies:
+Apart from adding Arquillian bom dependencies as mentioned in <<arqdeps, consumer part>>, you need to add arquillian algeron pact dependencies:
 
 [source, xml]
 .pom.xml
@@ -756,7 +756,7 @@ Apart from adding Arquillian bom dependencies as mentioned in <<arqdeps, consume
     <version>3.5.0-beta.2</version> <!--1-->
 </dependency>
 ----
-<1> Arquillian Pact has been tested with latest version, but it should work with any 3.X version.
+<1> Arquillian Algeron Pact has been tested with latest version, but it should work with any 3.X version.
 
 After dependencies you can write the test that replies all contracts against provider:
 
@@ -791,10 +791,10 @@ public class MyServiceProviderTest {
 <2> Configures where to get pact files
 <3> Deploys provider application to app server
 <4> Arquillian injection of URL where application is deployed
-<5> A target is a class that makes all requests to provider. In case of Arquillian Pact by default it uses an Http Client target
+<5> A target is a class that makes all requests to provider. In case of Arquillian Algeron Pact by default it uses an Http Client target
 <6> Makes the request to provider and validates that the response is the expected one
 
-When running this test Arquillian Pact Provider will do next things:
+When running this test Arquillian Algeron Pact Provider will do next things:
 
 . Deploy provider to chosen application server, as any other Arquillian test.
 . Read all contract files present in classpath folder `pacts` which the provider is `test_provider`. Of course there can be more than one since a provider might serve several consumers.
@@ -802,7 +802,7 @@ When running this test Arquillian Pact Provider will do next things:
 . For each request/response it sends the request specified in contract to provider and validate the response against expectations defined in contract.
 
 So as you can see the `should_provide_valid_answers` might be run several times depending on the number of consumers that depends on provider and the number of requests/responses defined.
-But this is something that it is managed automatically by Arquillian Pact.
+But this is something that it is managed automatically by Arquillian Algeron Pact.
 
 You can see full example at: https://github.com/arquillian/arquillian-algeron/tree/master/pact/provider/ftest-container[ftest-incontainer]
 
@@ -868,7 +868,7 @@ RequestResponseInteraction interaction;
 
 ==== Arquillian Algeron Pact Provider Configuration
 
-Arquillian Pact Provider can be configured using Arquillian configuration mechanism (`arquillian.xml` file or system properties).
+Arquillian Algeron Pact Provider can be configured using Arquillian configuration mechanism (`arquillian.xml` file or system properties).
 
 [source, xml]
 .arquillian.xml
