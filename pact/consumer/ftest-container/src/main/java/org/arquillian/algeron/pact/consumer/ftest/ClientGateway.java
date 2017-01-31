@@ -10,8 +10,7 @@ import java.net.URL;
 @Stateless
 public class ClientGateway {
 
-    public String getMessage() throws IOException {
-        URL obj = new URL("http://localhost:9090");
+    public String getMessage(URL obj) throws IOException {
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
         // optional default is GET

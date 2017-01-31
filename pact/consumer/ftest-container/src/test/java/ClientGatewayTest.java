@@ -1,5 +1,6 @@
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.PactFragment;
+import org.arquillian.algeron.consumer.StubServer;
 import org.arquillian.algeron.pact.consumer.ftest.ClientGateway;
 import org.arquillian.algeron.pact.consumer.spi.Pact;
 import org.arquillian.algeron.pact.consumer.spi.PactVerification;
@@ -12,6 +13,7 @@ import org.junit.runner.RunWith;
 
 import javax.ejb.EJB;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,9 +52,13 @@ public class ClientGatewayTest {
     @EJB
     ClientGateway clientGateway;
 
+
+    @StubServer
+    URL url;
+
     @Test
     @PactVerification("test_provider")
     public void should_return_message() throws IOException {
-        assertThat(clientGateway.getMessage(), is("{\"responsetest\": true, \"name\": \"harry\"}"));
+        assertThat(clientGateway.getMessage(url), is("{\"responsetest\": true, \"name\": \"harry\"}"));
     }
 }

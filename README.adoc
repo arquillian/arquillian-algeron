@@ -73,6 +73,22 @@ image::http://www.pact.io/media/pact_two_parts.png[]
 First thing to do is develop the *Consumer* part of the test.
 Consumer part of Consumer-Driven Contract defines requirements from the consumer of the API which are then used to develop the client interaction with the API as well as to validate provider implementation.
 
+=== Arquillian Algeron Pact Consumer Enrichers
+
+You can use in a test `@StubServer` annotation to inject URL where stub http server is started.
+
+[source, java]
+----
+@RunWith(Arquillian.class)
+@Pact(provider="test_provider", consumer="test_consumer")
+public class MyTest {
+
+  @StubServer
+  URL url;
+
+}
+----
+
 === Arquillian Algeron Pact Consumer In Container
 
 Arquillian has two modes of working *In Container* (which means having a `@Deployment` method) and Arquillian takes care of managing lifecycle of the server and deploy the archive, or *Standalone* (no `@Deployment` method) where Arquillian assumes that everything is already deployed.
@@ -171,10 +187,13 @@ public class ClientGatewayTest {
     @EJB // <5>
     ClientGateway clientGateway;
 
+    @StubServer // <6>
+    URL url;
+
     @Test
-    @PactVerification("test_provider") // <6>
+    @PactVerification("test_provider") // <7>
     public void should_return_message() throws IOException {
-        assertThat(clientGateway.getMessage(), is("{\"responsetest\": true, \"name\": \"harry\"}")); // <7>
+        assertThat(clientGateway.getMessage(url), is("{\"responsetest\": true, \"name\": \"harry\"}")); // <8>
     }
 }
 ----
@@ -183,8 +202,9 @@ public class ClientGatewayTest {
 <3> Defines what you want to deploy to defined container. In this case an EJB that acts as gateway to another service
 <4> A Pact method returns a fragment of the contract which might be the complete contract or not
 <5> Typical Arquillian enrichment
-<6> Defines which provider is validated when this test method is executed.
-<7> Asserts that the gateway can read the kind of messages sent by provider. Notice that now it is pretty simple, but in real test you'll test for example that message is correctly bound to an object.
+<6> `@StubServer` annotation is used for enrich test with stub http server Url.
+<7> Defines which provider is validated when this test method is executed.
+<8> Asserts that the gateway can read the kind of messages sent by provider. Notice that now it is pretty simple, but in real test you'll test for example that message is correctly bound to an object.
 
 After this test is executed, contract is placed at `target/pacts` directory.
 Then you can send contract to provider side.
@@ -233,10 +253,13 @@ public class ConsumerTest {
                 .toFragment();
     }
 
+    @StubServer
+    URL url;
+
     @Test
     @PactVerification("test_provider")
     public void runTest() throws IOException {
-        new ConsumerClient().get().body("name", equalTo("harry"));
+        new ConsumerClient().get(url).body("name", equalTo("harry"));
         assertThat(new File("target/pacts/test_consumer-test_provider.json")).exists();
     }
 

@@ -4,7 +4,7 @@
     <!-- Parent -->
     <parent>
         <groupId>org.arquillian.algeron</groupId>
-        <artifactId>arquillian-algeron-parent</artifactId>
+        <artifactId>arquillian-algeron-consumer-parent</artifactId>
         <version>1.0.0.Final-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -16,16 +16,8 @@
     </properties>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-algeron-consumer-parent</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>arquillian-algeron-consumer-api</artifactId>
 
-    <name>Arquillian Algeron Consumer Parent</name>
-
-    <modules>
-        <module>spi</module>
-        <module>api</module>
-        <module>core</module>
-        <module>git-publisher</module>
-    </modules>
+    <name>Arquillian Algeron Consumer API</name>
 
 </project>

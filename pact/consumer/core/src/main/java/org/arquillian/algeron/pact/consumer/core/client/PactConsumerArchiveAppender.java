@@ -1,8 +1,10 @@
 package org.arquillian.algeron.pact.consumer.core.client;
 
+import org.arquillian.algeron.consumer.StubServer;
 import org.arquillian.algeron.pact.consumer.core.PactFilesCommand;
 import org.arquillian.algeron.pact.consumer.core.client.container.ConsumerProviderPair;
 import org.arquillian.algeron.pact.consumer.core.client.container.PactConsumerRemoteExtension;
+import org.arquillian.algeron.pact.consumer.core.client.enricher.StubServerEnricher;
 import org.arquillian.algeron.pact.consumer.core.util.PactConsumerVersionExtractor;
 import org.arquillian.algeron.pact.consumer.core.util.ResolveClassAnnotation;
 import org.arquillian.algeron.pact.consumer.core.AbstractConsumerPactTest;
@@ -37,7 +39,7 @@ public class PactConsumerArchiveAppender implements AuxiliaryArchiveAppender {
                         RemoteConsumerPactTest.class, PactConsumerConfiguration.class,
                         MockProviderConfigCreator.class, PactConsumerConfigurator.class,
                         PactConsumerRemoteExtension.class, PactFilesCommand.class, ConsumerProviderPair.class,
-                        ResolveClassAnnotation.class)
+                        ResolveClassAnnotation.class, StubServer.class, StubServerEnricher.class)
                 .addPackages(true, Pact.class.getPackage())
                 .addAsServiceProvider(RemoteLoadableExtension.class, PactConsumerRemoteExtension.class);
 
