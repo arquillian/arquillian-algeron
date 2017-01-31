@@ -420,7 +420,7 @@ First of all you need to add git publisher dependency:
             key: ~/mykey # <6>
             remote: origin # <7>
             repository: /git/myrepo # <8>
-            pactDirectory: pacts/ # <9>
+            contractGitDirectory: pacts/ # <9>
             tag: v ${version:1.0.0-SNAPSHOT} # <10>
             branch: master # <11>
             email: my@email.com # <12>
