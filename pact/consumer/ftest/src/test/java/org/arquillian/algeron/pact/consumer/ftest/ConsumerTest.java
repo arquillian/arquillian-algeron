@@ -2,6 +2,7 @@ package org.arquillian.algeron.pact.consumer.ftest;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.PactFragment;
+import org.arquillian.algeron.consumer.StubServer;
 import org.arquillian.algeron.pact.consumer.spi.Pact;
 import org.arquillian.algeron.pact.consumer.spi.PactVerification;
 import org.jboss.arquillian.junit.Arquillian;
@@ -9,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,10 +39,13 @@ public class ConsumerTest {
                 .toFragment();
     }
 
+    @StubServer
+    URL url;
+
     @Test
     @PactVerification("test_provider")
     public void runTest() throws IOException {
-        new ConsumerClient().get().body("name", equalTo("harry"));
+        new ConsumerClient().get(url).body("name", equalTo("harry"));
     }
 
 }

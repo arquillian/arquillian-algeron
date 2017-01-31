@@ -163,6 +163,11 @@
             </dependency>
             <dependency>
                 <groupId>org.arquillian.algeron</groupId>
+                <artifactId>arquillian-algeron-consumer-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.algeron</groupId>
                 <artifactId>arquillian-algeron-consumer-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
