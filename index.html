@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<title>Arquillian Pact</title>
+<title>Arquillian Algeron</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -511,34 +511,58 @@ table.CodeRay td.code>pre{padding:0}
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Arquillian Pact</h1>
+<h1>Arquillian Algeron</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_what_is_pact">1. What is Pact?</a>
+<li><a href="#_what_is_arquillian_algeron">1. What is Arquillian Algeron?</a>
 <ul class="sectlevel2">
 <li><a href="#_consumer_driven_contracts">1.1. Consumer Driven Contracts</a></li>
-<li><a href="#_how_pact_works">1.2. How Pact works?</a></li>
 </ul>
 </li>
-<li><a href="#_arquillian_pact">2. Arquillian Pact</a>
+<li><a href="#_arquillian_algeron_pact">2. Arquillian Algeron Pact</a>
 <ul class="sectlevel2">
-<li><a href="#_arquillian_pact_consumer">2.1. Arquillian Pact Consumer</a>
-<ul class="sectlevel3">
-<li><a href="#_arquillian_pact_consumer_in_container">2.1.1. Arquillian Pact Consumer In Container</a></li>
-<li><a href="#_arquillian_pact_consumer_standalone">2.1.2. Arquillian Pact Consumer Standalone</a></li>
-<li><a href="#_arquillian_pact_consumer_configuration">2.1.3. Arquillian Pact Consumer Configuration</a></li>
-<li><a href="#_pact_publisher">2.1.4. Pact publisher</a></li>
+<li><a href="#_how_pact_works">2.1. How Pact works?</a></li>
 </ul>
 </li>
-<li><a href="#_arquillian_pact_provider">2.2. Arquillian Pact Provider</a>
+<li><a href="#_arquillian_algeron_pact_consumer">3. Arquillian Algeron Pact Consumer</a>
+<ul class="sectlevel2">
+<li><a href="#_arquillian_algeron_pact_consumer_enrichers">3.1. Arquillian Algeron Pact Consumer Enrichers</a></li>
+<li><a href="#_arquillian_algeron_pact_consumer_in_container">3.2. Arquillian Algeron Pact Consumer In Container</a></li>
+<li><a href="#_arquillian_algeron_pact_consumer_standalone">3.3. Arquillian Algeron Pact Consumer Standalone</a></li>
+<li><a href="#_arquillian_algeron_pact_consumer_configuration">3.4. Arquillian Algeron Pact Consumer Configuration</a></li>
+</ul>
+</li>
+<li><a href="#_arquillian_algeron_consumer_publisher">4. Arquillian Algeron Consumer Publisher</a>
+<ul class="sectlevel2">
+<li><a href="#_folder_publisher">4.1. Folder Publisher</a></li>
+<li><a href="#_url_publisher">4.2. URL Publisher</a></li>
+<li><a href="#_git_publisher">4.3. Git Publisher</a></li>
+<li><a href="#_spi">4.4. SPI</a></li>
+</ul>
+</li>
+<li><a href="#_arquillian_algeron_provider">5. Arquillian Algeron Provider</a>
+<ul class="sectlevel2">
+<li><a href="#_retrievers_as_annotation">5.1. Retrievers as Annotation</a></li>
+<li><a href="#_retrievers_as_configuration">5.2. Retrievers as Configuration</a>
 <ul class="sectlevel3">
-<li><a href="#_loaders">2.2.1. Loaders</a></li>
-<li><a href="#_arquillian_pact_provider_in_container">2.2.2. Arquillian Pact Provider In Container</a></li>
-<li><a href="#_arquillian_pact_provider_standalone">2.2.3. Arquillian Pact Provider Standalone</a></li>
-<li><a href="#_arquillian_pact_provider_enrichers">2.2.4. Arquillian Pact Provider Enrichers</a></li>
-<li><a href="#_arquillian_pact_provider_configuration">2.2.5. Arquillian Pact Provider Configuration</a></li>
-<li><a href="#_skipping_deployment">2.2.6. Skipping Deployment</a></li>
+<li><a href="#_folder_retriever">5.2.1. Folder Retriever</a></li>
+<li><a href="#_url_retriever">5.2.2. URL Retriever</a></li>
+<li><a href="#_git_retriever">5.2.3. Git Retriever</a></li>
+<li><a href="#_maven_retriever">5.2.4. Maven Retriever</a></li>
+<li><a href="#_pact_broker_retriever">5.2.5. Pact Broker Retriever</a></li>
+</ul>
+</li>
+<li><a href="#_skipping_deployment">5.3. Skipping Deployment</a></li>
+<li><a href="#_arquillian_algeron_pact_provider">5.4. Arquillian Algeron Pact Provider</a>
+<ul class="sectlevel3">
+<li><a href="#_arquillian_algeron_pact_provider_in_container">5.4.1. Arquillian Algeron Pact Provider In Container</a></li>
+<li><a href="#_arquillian_algeron_pact_provider_standalone">5.4.2. Arquillian Algeron Pact Provider Standalone</a></li>
+<li><a href="#_arquillian_algeron_pact_provider_enrichers">5.4.3. Arquillian Algeron Pact Provider Enrichers</a></li>
+<li><a href="#_arquillian_algeron_pact_provider_configuration">5.4.4. Arquillian Algeron Pact Provider Configuration</a></li>
+<li><a href="#_pact_states">5.4.5. Pact States</a></li>
+<li><a href="#_assertj_integration">5.4.6. AssertJ integration</a></li>
+<li><a href="#_arquillian_recorder_reporter_integration">5.4.7. Arquillian Recorder Reporter integration</a></li>
 </ul>
 </li>
 </ul>
@@ -552,10 +576,22 @@ table.CodeRay td.code>pre{padding:0}
 <div class="paragraph">
 <p><span class="image"><a class="image" href="https://travis-ci.org/arquillian/arquillian-pact"><img src="https://travis-ci.org/arquillian/arquillian-pact.svg?branch=master" alt="Build Status"></a></span></p>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Using Arquillian Algeron Pact Provider requires at least Arquillian Core 1.1.12.Final or above.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_is_pact"><a class="anchor" href="#_what_is_pact"></a>1. What is Pact?</h2>
+<h2 id="_what_is_arquillian_algeron"><a class="anchor" href="#_what_is_arquillian_algeron"></a>1. What is Arquillian Algeron?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>In microservices architecture you typically have one or more services that make remote calls to one or more services to get information from them.</p>
@@ -570,10 +606,6 @@ After <em>BeerService</em> receives all the comments for that beer, everything i
 </div>
 <div class="paragraph">
 <p>It seems obvious that it must exist some kind of agreement between them so they can understand each other correctly in all of their communications.</p>
-</div>
-<div class="paragraph">
-<p><a href="https://docs.pact.io/">Pact</a> is a framework that provides support for Consumer Driven Contracts testing.
-Pact is implemented in several languages such as Ruby, JVM, .NET, JavaScript, Go and Swift</p>
 </div>
 <div class="sect2">
 <h3 id="_consumer_driven_contracts"><a class="anchor" href="#_consumer_driven_contracts"></a>1.1. Consumer Driven Contracts</h3>
@@ -592,8 +624,27 @@ When the client validates that can consume what it is been defined in the contra
 <p>You can read more about Consumer-Driven contracts <a href="http://martinfowler.com/articles/consumerDrivenContracts.html">here</a> or at book <a href="https://www.manning.com/books/testing-java-microservices">Testing Java Microservices</a> chapter 6.</p>
 </div>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_arquillian_algeron_pact"><a class="anchor" href="#_arquillian_algeron_pact"></a>2. Arquillian Algeron Pact</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Currently Arquillian Algeron only supports one format of contracts (Pact).
+But we have plans to extend it to other formats like <em>swagger</em>.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/DiUS/pact-jvm">Pact-JVM</a> is an implementation for JVM languages of Pact.</p>
+</div>
+<div class="paragraph">
+<p>Arquillian Algeron Pact is the integration of all Arquillian philosophy/extensions into Consumer Driven Contracts approach using Pact-JVM.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.pact.io/">Pact</a> is a framework that provides support for Consumer Driven Contracts testing.
+Pact is implemented in several languages such as Ruby, JVM, .NET, JavaScript, Go and Swift.</p>
+</div>
 <div class="sect2">
-<h3 id="_how_pact_works"><a class="anchor" href="#_how_pact_works"></a>1.2. How Pact works?</h3>
+<h3 id="_how_pact_works"><a class="anchor" href="#_how_pact_works"></a>2.1. How Pact works?</h3>
 <div class="paragraph">
 <p>Obviously any Contract test is composed by two faces, one for the consumer and another one for the provider and a contract file that is sent from consumer to provider.
 Let&#8217;s see the steps to write contract tests using Pact.</p>
@@ -629,22 +680,32 @@ Then real responses from provider are checked against the expected responses def
 </div>
 </div>
 <div class="sect1">
-<h2 id="_arquillian_pact"><a class="anchor" href="#_arquillian_pact"></a>2. Arquillian Pact</h2>
+<h2 id="_arquillian_algeron_pact_consumer"><a class="anchor" href="#_arquillian_algeron_pact_consumer"></a>3. Arquillian Algeron Pact Consumer</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p><a href="https://github.com/DiUS/pact-jvm">Pact-JVM</a> is an implementation for JVM languages of Pact.</p>
-</div>
-<div class="paragraph">
-<p>Arquillian Pact is the integration of all Arquillian philosophy/extensions into Consumer Driven Contracts approach using Pact-JVM.</p>
-</div>
-<div class="sect2">
-<h3 id="_arquillian_pact_consumer"><a class="anchor" href="#_arquillian_pact_consumer"></a>2.1. Arquillian Pact Consumer</h3>
 <div class="paragraph">
 <p>First thing to do is develop the <strong>Consumer</strong> part of the test.
 Consumer part of Consumer-Driven Contract defines requirements from the consumer of the API which are then used to develop the client interaction with the API as well as to validate provider implementation.</p>
 </div>
-<div class="sect3">
-<h4 id="_arquillian_pact_consumer_in_container"><a class="anchor" href="#_arquillian_pact_consumer_in_container"></a>2.1.1. Arquillian Pact Consumer In Container</h4>
+<div class="sect2">
+<h3 id="_arquillian_algeron_pact_consumer_enrichers"><a class="anchor" href="#_arquillian_algeron_pact_consumer_enrichers"></a>3.1. Arquillian Algeron Pact Consumer Enrichers</h3>
+<div class="paragraph">
+<p>You can use in a test <code>@StubServer</code> annotation to inject URL where stub http server is started.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@RunWith</span>(Arquillian.class)
+<span class="annotation">@Pact</span>(provider=<span class="string"><span class="delimiter">&quot;</span><span class="content">test_provider</span><span class="delimiter">&quot;</span></span>, consumer=<span class="string"><span class="delimiter">&quot;</span><span class="content">test_consumer</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">MyTest</span> {
+
+  <span class="annotation">@StubServer</span>
+  <span class="predefined-type">URL</span> url;
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_arquillian_algeron_pact_consumer_in_container"><a class="anchor" href="#_arquillian_algeron_pact_consumer_in_container"></a>3.2. Arquillian Algeron Pact Consumer In Container</h3>
 <div class="paragraph">
 <p>Arquillian has two modes of working <strong>In Container</strong> (which means having a <code>@Deployment</code> method) and Arquillian takes care of managing lifecycle of the server and deploy the archive, or <strong>Standalone</strong> (no <code>@Deployment</code> method) where Arquillian assumes that everything is already deployed.</p>
 </div>
@@ -700,16 +761,16 @@ Nothing new here:</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependencies&gt;</span>
     <span class="tag">&lt;dependency&gt;</span>
-        <span class="tag">&lt;groupId&gt;</span>org.arquillian.pact<span class="tag">&lt;/groupId&gt;</span>
-        <span class="tag">&lt;artifactId&gt;</span>arquillian-pact-consumer-core<span class="tag">&lt;/artifactId&gt;</span>
-        <span class="tag">&lt;version&gt;</span>${version.arquillian_pact}<span class="tag">&lt;/version&gt;</span>
+        <span class="tag">&lt;groupId&gt;</span>org.arquillian.algeron<span class="tag">&lt;/groupId&gt;</span>
+        <span class="tag">&lt;artifactId&gt;</span>arquillian-algeron-pact-consumer-core<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;version&gt;</span>${version.arquillian_algeron}<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;scope&gt;</span>test<span class="tag">&lt;/scope&gt;</span>
     <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;dependency&gt;</span>
         <span class="tag">&lt;groupId&gt;</span>au.com.dius<span class="tag">&lt;/groupId&gt;</span>
         <span class="tag">&lt;artifactId&gt;</span>pact-jvm-consumer_2.11<span class="tag">&lt;/artifactId&gt;</span>
         <span class="tag">&lt;scope&gt;</span>test<span class="tag">&lt;/scope&gt;</span>
-        <span class="tag">&lt;version&gt;</span>3.5.0-beta.1<span class="tag">&lt;/version&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="tag">&lt;version&gt;</span>3.5.0-beta.2<span class="tag">&lt;/version&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;/dependency&gt;</span>
 <span class="tag">&lt;/dependencies&gt;</span></code></pre>
 </div>
@@ -718,7 +779,7 @@ Nothing new here:</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Arquillian Pact has been tested with latest version, but it should work with any 3.X version.</td>
+<td>Arquillian Algeron Pact has been tested with latest version, but it should work with any 3.X version.</td>
 </tr>
 </table>
 </div>
@@ -729,14 +790,14 @@ Nothing new here:</p>
 <div class="title">ClientGatewayTest.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@RunWith</span>(Arquillian.class) <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="annotation">@Pact</span>(provider=<span class="string"><span class="delimiter">&quot;</span><span class="content">test_provider</span><span class="delimiter">&quot;</span></span>, consumer=<span class="string"><span class="delimiter">&quot;</span><span class="content">test_consumer</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="2"></i><b>(2)</b>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">ClientGatewayTest</span> {
 
-    <span class="annotation">@Deployment</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="annotation">@Deployment</span> <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="directive">public</span> <span class="directive">static</span> JavaArchive createDeployment() {
         <span class="keyword">return</span> ShrinkWrap.create(JavaArchive.class).addClasses(ClientGateway.class);
     }
 
-    <span class="annotation">@Pact</span>(provider=<span class="string"><span class="delimiter">&quot;</span><span class="content">test_provider</span><span class="delimiter">&quot;</span></span>, consumer=<span class="string"><span class="delimiter">&quot;</span><span class="content">test_consumer</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="directive">public</span> PactFragment createFragment(PactDslWithProvider builder) {
 
         <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; header = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;&gt;();
@@ -757,10 +818,13 @@ Nothing new here:</p>
     <span class="annotation">@EJB</span> <i class="conum" data-value="5"></i><b>(5)</b>
     ClientGateway clientGateway;
 
+    <span class="annotation">@StubServer</span> <i class="conum" data-value="6"></i><b>(6)</b>
+    <span class="predefined-type">URL</span> url;
+
     <span class="annotation">@Test</span>
-    <span class="annotation">@PactVerification</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">test_provider</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="6"></i><b>(6)</b>
+    <span class="annotation">@PactVerification</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">test_provider</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="7"></i><b>(7)</b>
     <span class="directive">public</span> <span class="type">void</span> should_return_message() <span class="directive">throws</span> <span class="exception">IOException</span> {
-        assertThat(clientGateway.getMessage(), is(<span class="string"><span class="delimiter">&quot;</span><span class="content">{</span><span class="char">\&quot;</span><span class="content">responsetest</span><span class="char">\&quot;</span><span class="content">: true, </span><span class="char">\&quot;</span><span class="content">name</span><span class="char">\&quot;</span><span class="content">: </span><span class="char">\&quot;</span><span class="content">harry</span><span class="char">\&quot;</span><span class="content">}</span><span class="delimiter">&quot;</span></span>)); <i class="conum" data-value="7"></i><b>(7)</b>
+        assertThat(clientGateway.getMessage(url), is(<span class="string"><span class="delimiter">&quot;</span><span class="content">{</span><span class="char">\&quot;</span><span class="content">responsetest</span><span class="char">\&quot;</span><span class="content">: true, </span><span class="char">\&quot;</span><span class="content">name</span><span class="char">\&quot;</span><span class="content">: </span><span class="char">\&quot;</span><span class="content">harry</span><span class="char">\&quot;</span><span class="content">}</span><span class="delimiter">&quot;</span></span>)); <i class="conum" data-value="8"></i><b>(8)</b>
     }
 }</code></pre>
 </div>
@@ -773,11 +837,11 @@ Nothing new here:</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Defines what you want to deploy to defined container. In this case an EJB that acts as gateway to another service</td>
+<td>To define the contract you need to configure expectations of mock server. This is done by annotating a method or class with <code>@Pact</code> annotation and setting the provider and consumer name</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>To define the contract you need to configure expectations of mock server. This is done by annotating a method with <code>@Pact</code> annotation and setting the provider and consumer name</td>
+<td>Defines what you want to deploy to defined container. In this case an EJB that acts as gateway to another service</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -789,10 +853,14 @@ Nothing new here:</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>Defines which provider is validated when this test method is executed.</td>
+<td><code>@StubServer</code> annotation is used for enrich test with stub http server Url.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Defines which provider is validated when this test method is executed.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
 <td>Asserts that the gateway can read the kind of messages sent by provider. Notice that now it is pretty simple, but in real test you&#8217;ll test for example that message is correctly bound to an object.</td>
 </tr>
 </table>
@@ -814,7 +882,7 @@ You can read more about this DSL at <a href="https://github.com/DiUS/pact-jvm/tr
 <p>It is an Arquillian test so you can use anything that Arquillian provides.</p>
 </li>
 <li>
-<p>Methods annotated with <code>@Pact</code> defines a fragment of the contract that at same time is used by mock server for providing responses.</p>
+<p>Methods or classes annotated with <code>@Pact</code> defines a fragment of the contract that at same time is used by mock server for providing responses.</p>
 </li>
 <li>
 <p>In case of using several methods annotated with <code>@Pact</code> annotation, you need to use <code>fragment</code> attribute <code>@PactVerification(.. fragment="methodName")`to set which fragment is under test for each `@Test</code> method.</p>
@@ -834,11 +902,11 @@ You can use <code>@Pact</code> annotation at class level, so methods that define
 </table>
 </div>
 <div class="paragraph">
-<p>You can see the full example at: <a href="https://github.com/arquillian/arquillian-pact/tree/master/consumer/ftest-incontainer">ftest-incontainer</a></p>
+<p>You can see the full example at: <a href="https://github.com/arquillian/arquillian-algeron/tree/master/pact/consumer/ftest-container">ftest-incontainer</a></p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_arquillian_pact_consumer_standalone"><a class="anchor" href="#_arquillian_pact_consumer_standalone"></a>2.1.2. Arquillian Pact Consumer Standalone</h4>
+<div class="sect2">
+<h3 id="_arquillian_algeron_pact_consumer_standalone"><a class="anchor" href="#_arquillian_algeron_pact_consumer_standalone"></a>3.3. Arquillian Algeron Pact Consumer Standalone</h3>
 <div class="paragraph">
 <p><strong>Standalone</strong> mode (no <code>@Deployment</code> method), Arquillian assumes that everything is already deployed.</p>
 </div>
@@ -870,10 +938,13 @@ Obviously no <code>@Deployment</code> method is required:</p>
                 .toFragment();
     }
 
+    <span class="annotation">@StubServer</span>
+    <span class="predefined-type">URL</span> url;
+
     <span class="annotation">@Test</span>
     <span class="annotation">@PactVerification</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">test_provider</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">public</span> <span class="type">void</span> runTest() <span class="directive">throws</span> <span class="exception">IOException</span> {
-        <span class="keyword">new</span> ConsumerClient().get().body(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, equalTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">harry</span><span class="delimiter">&quot;</span></span>));
+        <span class="keyword">new</span> ConsumerClient().get(url).body(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, equalTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">harry</span><span class="delimiter">&quot;</span></span>));
         assertThat(<span class="keyword">new</span> <span class="predefined-type">File</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">target/pacts/test_consumer-test_provider.json</span><span class="delimiter">&quot;</span></span>)).exists();
     }
 
@@ -884,13 +955,13 @@ Obviously no <code>@Deployment</code> method is required:</p>
 <p>Code is pretty similar as <a href="#incontainer">previous test</a> but now the consumer client/gateway object is instantiated as plain java object instead of container managed.</p>
 </div>
 <div class="paragraph">
-<p>You can see the full example at: <a href="https://github.com/arquillian/arquillian-pact/tree/master/consumer/ftest">ftest</a></p>
+<p>You can see the full example at: <a href="https://github.com/arquillian/arquillian-algeron/tree/master/pact/consumer/ftest">ftest</a></p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_arquillian_pact_consumer_configuration"><a class="anchor" href="#_arquillian_pact_consumer_configuration"></a>2.1.3. Arquillian Pact Consumer Configuration</h4>
+<div class="sect2">
+<h3 id="_arquillian_algeron_pact_consumer_configuration"><a class="anchor" href="#_arquillian_algeron_pact_consumer_configuration"></a>3.4. Arquillian Algeron Pact Consumer Configuration</h3>
 <div class="paragraph">
-<p>Arquillian Pact Consumer can be configured using Arquillian configuration mechanism (<code>arquillian.xml</code> file or system properties).</p>
+<p>Arquillian Algeron Pact Consumer can be configured using Arquillian configuration mechanism (<code>arquillian.xml</code> file or system properties).</p>
 </div>
 <div class="listingblock">
 <div class="title">arquillian.xml</div>
@@ -952,7 +1023,7 @@ Obviously no <code>@Deployment</code> method is required:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pactArtifactVersion</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">By default Arquillian Pact packages pact dependencies in container tests. To get the version of artifacts to package, checks the current pact version of classpath.
+<td class="tableblock halign-left valign-top"><p class="tableblock">By default Arquillian Algeron Pact packages pact dependencies in container tests. To get the version of artifacts to package, checks the current pact version of classpath.
  If you want to use another one rather the one defined in your classpath, you can set it here the version.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -961,28 +1032,19 @@ Obviously no <code>@Deployment</code> method is required:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Directory where contracts are stored.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">target/pacts</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">publishContracts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enables publication of contracts after test suite execution. See <a href="#_pact_publisher">Pact publisher</a> section.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pactPublishConfiguration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yaml-like document for configuring different pact publishers. See <a href="#_pact_publisher">Pact publisher</a> section.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
 </tbody>
 </table>
 </div>
-<div class="sect3">
-<h4 id="_pact_publisher"><a class="anchor" href="#_pact_publisher"></a>2.1.4. Pact publisher</h4>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_arquillian_algeron_consumer_publisher"><a class="anchor" href="#_arquillian_algeron_consumer_publisher"></a>4. Arquillian Algeron Consumer Publisher</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Arquillian Pact also offers additional ways to of publishing "pact" contract files comparing to what Pact itself is providing.
-With Pact you usually need to relay on the build tool to publish "pact" files.
-Pact offers a Maven and Gradle plugin for publishing contracts to Pact Broker, but if you want to use Git repository or sharing contracts through an arbitrary folder, then you’ll need to start hacking the build tool which is not always as easy as it should be :)</p>
+<p>Arquillian Algeron also offers additional ways to of publishing contracts files comparing to what Pact itself is providing.</p>
 </div>
 <div class="paragraph">
-<p>In Arquillian Pact we have defined a Pact Publishing SPI so you can implement your own publisher.
+<p>In Arquillian Algeron we have defined a Pact Publishing SPI so you can implement your own publisher.
 We currently support three different publishers - Folder, URL[POST method] and Git.</p>
 </div>
 <div class="paragraph">
@@ -999,14 +1061,15 @@ This means that when you run any consumer contract test, contracts are not publi
 <td class="content">
 <div class="paragraph">
 <p>Arquillian can be configured using system properties or environment variables.
-If you want to enable pact publishing feature only in CI/CD, you can set environment variable <code>arq.extension.pact-consumer.publishContracts</code> to true.</p>
+If you want to enable pact publishing feature only in CI/CD, you can set environment variable <code>arq.extension.algeron-consumer.publishContracts</code> to true.
+Also you can use the form <code>&lt;property name="publishContracts"&gt;${env.publishcontracts:false}&lt;/property&gt;</code> and setting <code>publishContracts</code> environment variable with correct value.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
-<div class="sect4">
-<h5 id="_folder_publisher"><a class="anchor" href="#_folder_publisher"></a>Folder Publisher</h5>
+<div class="sect2">
+<h3 id="_folder_publisher"><a class="anchor" href="#_folder_publisher"></a>4.1. Folder Publisher</h3>
 <div class="paragraph">
 <p>Folder publisher copies "pact" files from configured output directory (by default <code>target/pacts</code>) to another directory.
 To configure folder publisher you need to configure <code>pactPublishConfiguration</code> with next configuration:</p>
@@ -1020,10 +1083,11 @@ To configure folder publisher you need to configure <code>pactPublishConfigurati
             <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://jboss.org/schema/arquillian</span>
     <span class="content">http://jboss.org/schema/arquillian/arquillian_1_0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 
-    <span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pact-consumer</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pactPublishConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">algeron-consumer</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">publishConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
             provider: folder <i class="conum" data-value="1"></i><b>(1)</b>
             outputFolder: /mypacts <i class="conum" data-value="2"></i><b>(2)</b>
+            contractsFolder: target/pacts <i class="conum" data-value="3"></i><b>(3)</b>
         <span class="tag">&lt;/property&gt;</span>
     <span class="tag">&lt;/extension&gt;</span>
 
@@ -1038,21 +1102,25 @@ To configure folder publisher you need to configure <code>pactPublishConfigurati
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>outputFolder</code> configures where to copy "pact" files.</td>
+<td><code>outputFolder</code> configures where to copy contract files.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>contractsFolder</code> configures folder where contract files are generated by the engine.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>You can set <code>outputFolder</code> value using Java system property or environment variable by using form <code>${name:defaultvalue}.
-For example `outputFolder: ${output:/mypacts}</code> will first check if there is a Java system property with name output and get the value, if there is no value, then checks for environment variable.
-If that is not defined too it will use the default value i.e. <code>/mypacts</code>.</p>
+<p>You can set <code>outputFolder</code> value using Java system property <code>${name:defaultvalue} or environment variable `${env.name:defaultvalue}.
+For example `outputFolder: ${output:/mypacts}</code> will first check if there is a Java system property with name output and get the value.
+If that is not defined it will use the default value i.e. <code>/mypacts</code>.</p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_url_publisher"><a class="anchor" href="#_url_publisher"></a>URL Publisher</h5>
+<div class="sect2">
+<h3 id="_url_publisher"><a class="anchor" href="#_url_publisher"></a>4.2. URL Publisher</h3>
 <div class="paragraph">
 <p>URL publisher sends a <code>POST</code> request to configured URL, appending at the end of the URL the "pact" filename and sending the contract content as body content.
-For example given <code><a href="http://myhost/pacts" class="bare">http://myhost/pacts</a></code> and a "pact" file called <code>consumer_provider.json</code>, the resulting URL would be: <code><a href="http://myhost/pacts/consumer_provider.json" class="bare">http://myhost/pacts/consumer_provider.json</a></code></p>
+For example given <code><a href="http://myhost/pacts" class="bare">http://myhost/pacts</a></code> and a "contract" file called <code>consumer_provider.json</code>, the resulting URL would be: <code><a href="http://myhost/pacts/consumer_provider.json" class="bare">http://myhost/pacts/consumer_provider.json</a></code></p>
 </div>
 <div class="listingblock">
 <div class="title">arquillian.xml</div>
@@ -1063,10 +1131,11 @@ For example given <code><a href="http://myhost/pacts" class="bare">http://myhost
             <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://jboss.org/schema/arquillian</span>
     <span class="content">http://jboss.org/schema/arquillian/arquillian_1_0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 
-    <span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pact-consumer</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pactPublishConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">algeron-consumer</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">publishConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
             provider: url <i class="conum" data-value="1"></i><b>(1)</b>
             url: http://localhost:8081/pacts <i class="conum" data-value="2"></i><b>(2)</b>
+            contractsFolder: target/pacts <i class="conum" data-value="3"></i><b>(3)</b>
         <span class="tag">&lt;/property&gt;</span>
     <span class="tag">&lt;/extension&gt;</span>
 
@@ -1083,20 +1152,24 @@ For example given <code><a href="http://myhost/pacts" class="bare">http://myhost
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td><code>url</code> configures to send as <code>POST</code> the contract content.</td>
 </tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>contractsFolder</code> configures folder where contract files are generated by the engine.</td>
+</tr>
 </table>
 </div>
 <div class="paragraph">
-<p>You can set <code>url</code> value using Java system property or environment variable by using form <code>${name:defaultvalue}</code>.</p>
+<p>You can set <code>url</code> value using Java system property <code>${name:defaultvalue}</code> or environment variable <code>${env.name:defaultvalue}</code>.</p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_git_publisher"><a class="anchor" href="#_git_publisher"></a>Git Publisher</h5>
+<div class="sect2">
+<h3 id="_git_publisher"><a class="anchor" href="#_git_publisher"></a>4.3. Git Publisher</h3>
 <div class="paragraph">
-<p>Git publisher publishes "pact" files to a git repository.
+<p>Git publisher publishes contract files to a git repository.
 Optionally they can be committed into a branch or tag the commit.</p>
 </div>
 <div class="paragraph">
-<p>This publisher just takes the generated "pact" files, copied to repository, commit them and push them to remote.</p>
+<p>This publisher just takes the generated contract files, copied to repository, commit them and push them to remote.</p>
 </div>
 <div class="paragraph">
 <p>First of all you need to add git publisher dependency:</p>
@@ -1105,8 +1178,8 @@ Optionally they can be committed into a branch or tag the commit.</p>
 <div class="title">pom.xml</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>org.arquillian.pact<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>arquillian-pact-consumer-git-publisher<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.arquillian.algeron<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>arquillian-algeron-consumer-git-publisher<span class="tag">&lt;/artifactId&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1119,8 +1192,8 @@ Optionally they can be committed into a branch or tag the commit.</p>
             <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://jboss.org/schema/arquillian</span>
     <span class="content">http://jboss.org/schema/arquillian/arquillian_1_0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 
-    <span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pact-consumer</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pactPublishConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">algeron-consumer</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">publishConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
             provider: git <i class="conum" data-value="1"></i><b>(1)</b>
             url: https://localhost:8080/contracts <i class="conum" data-value="2"></i><b>(2)</b>
             comment: This is a new version of contracts <i class="conum" data-value="3"></i><b>(3)</b>
@@ -1130,10 +1203,11 @@ Optionally they can be committed into a branch or tag the commit.</p>
             key: ~/mykey <i class="conum" data-value="6"></i><b>(6)</b>
             remote: origin <i class="conum" data-value="7"></i><b>(7)</b>
             repository: /git/myrepo <i class="conum" data-value="8"></i><b>(8)</b>
-            pactDirectory: pacts/ <i class="conum" data-value="9"></i><b>(9)</b>
+            contractGitDirectory: pacts/ <i class="conum" data-value="9"></i><b>(9)</b>
             tag: v ${version:1.0.0-SNAPSHOT} <i class="conum" data-value="10"></i><b>(10)</b>
             branch: master <i class="conum" data-value="11"></i><b>(11)</b>
             email: my@email.com <i class="conum" data-value="12"></i><b>(12)</b>
+            contractsFolder: target/pacts <i class="conum" data-value="13"></i><b>(13)</b>
         <span class="tag">&lt;/property&gt;</span>
     <span class="tag">&lt;/extension&gt;</span>
 
@@ -1190,32 +1264,33 @@ Optionally they can be committed into a branch or tag the commit.</p>
 <td><i class="conum" data-value="12"></i><b>12</b></td>
 <td><code>email</code> used for commit. By default it gets email from general configuration.</td>
 </tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td><code>contractsFolder</code> configures folder where contract files are generated by the engine.</td>
+</tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Any of the git attributes can be set using Java system property or environment variable by using form <code>${name:defaultvalue}</code>.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_spi"><a class="anchor" href="#_spi"></a>SPI</h5>
-<div class="paragraph">
-<p>You can also implement your own publisher.
-To make it so you need create a class that implements <code>org.arquillian.pact.consumer.spi.publisher.PactPublisher</code> and register this service inside <code>META-INF/services/org.arquillian.pact.consumer.spi.publisher.PactPublisher</code>.</p>
-</div>
-<div class="paragraph">
-<p>You can see an example at <a href="https://github.com/arquillian/arquillian-pact/tree/master/consumer/git-publisher" class="bare">https://github.com/arquillian/arquillian-pact/tree/master/consumer/git-publisher</a>.</p>
-</div>
-</div>
+<p>Any of the git attributes can be set using Java system property <code>${name:defaultvalue}</code> or environment variable <code>${env.name:defaultvalue}</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_arquillian_pact_provider"><a class="anchor" href="#_arquillian_pact_provider"></a>2.2. Arquillian Pact Provider</h3>
+<h3 id="_spi"><a class="anchor" href="#_spi"></a>4.4. SPI</h3>
 <div class="paragraph">
-<p>The next thing you need to do is sent the contract (aka "pact" file) to <strong>Provider</strong> project and validate that provider produces the expected responses to defined requests.
-This is done by replaying all requests defined in contract against real provider and validating that the response is the expected one.</p>
+<p>You can also implement your own publisher.
+To make it so you need create a class that implements <code>org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher</code> and register this service inside <code>META-INF/services/org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher</code>.</p>
 </div>
-<div class="sect3">
-<h4 id="_loaders"><a class="anchor" href="#_loaders"></a>2.2.1. Loaders</h4>
+<div class="paragraph">
+<p>You can see an example at <a href="https://github.com/arquillian/arquillian-algeron/tree/master/consumer/git-publisher" class="bare">https://github.com/arquillian/arquillian-algeron/tree/master/consumer/git-publisher</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_arquillian_algeron_provider"><a class="anchor" href="#_arquillian_algeron_provider"></a>5. Arquillian Algeron Provider</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_retrievers_as_annotation"><a class="anchor" href="#_retrievers_as_annotation"></a>5.1. Retrievers as Annotation</h3>
 <div class="paragraph">
 <p>One real important thing in provider tests is where contract files are located and how the test should load it.
 To specify this, Arquillian Provider provides some class annotations, but of course you can implement your own as well:</p>
@@ -1224,34 +1299,34 @@ To specify this, Arquillian Provider provides some class annotations, but of cou
 <dl>
 <dt class="hdlist1">From URL</dt>
 <dd>
-<p><code>@PactUrl(urls = {"http://build.server/zoo_app-animal_service.json"} )</code></p>
+<p><code>@ContractsUrl(urls = {"http://build.server/zoo_app-animal_service.json"} )</code></p>
 </dd>
 <dt class="hdlist1">From PactBroker</dt>
 <dd>
 <p><code>@PactBroker(host="${pactbroker.hostname:localhost}", port = "80")</code>
-Notice that in this case system properties with defaults are supported. Also you need to add <code>org.arquillian.pact:arquillian-pact-provider-pact-broker-loader:${version}</code> dependency.</p>
+Notice that in this case system properties with defaults are supported. Also you need to add <code>org.arquillian.algeron:arquillian-algeron-pact-provider-pact-broker-loader:${version}</code> dependency. This is only supported in case of using Pact provider.</p>
 </dd>
 <dt class="hdlist1">From Folder</dt>
 <dd>
-<p><code>@PactFolder("subfolder/in/resource/directory")</code>
+<p><code>@ContractsFolder("subfolder/in/resource/directory")</code>
 You can use absolute or relative path. The loader first checks if resource is in classpath and if not checks directory. As with <strong>PactBroker</strong>, you can use system properties.</p>
 </dd>
 <dt class="hdlist1">From Maven</dt>
 <dd>
-<p><code>@PactMavenDependency(value = "org.superbiz:contract:[1.0,]")</code>. Also you need to add <code>org.arquillian.pact:arquillian-pact-provider-maven-loader:${version}</code> dependency.
+<p><code>@ContractsMavenDependency(value = "org.superbiz:contract:[1.0,]")</code>. Also you need to add <code>org.arquillian.algeron:arquillian-algeron-provider-maven-retriever:${version}</code> dependency.
 In case of specifying a range of versions, this loader will take always the highest one.
 You can use system properties to set values too.</p>
 </dd>
 <dt class="hdlist1">From Git</dt>
 <dd>
-<p><code>@PactGit("https://github.com/lordofthejars/starwarspact.git")</code> Also you need to add <code>org.arquillian.pact:arquillian-pact-provider-git-loader:${version}</code> dependency.
-You can use system properties to set vales too. Inspect <code>@PactGit</code> annotation for all options that accept this loader such as authentication, use branch or tag or set a pact directory.</p>
+<p><code>@ContractsGit("https://github.com/lordofthejars/starwarspact.git")</code> Also you need to add <code>org.arquillian.algeron:arquillian-algeron-provider-git-retriever:${version}</code> dependency.
+You can use system properties to set vales too. Inspect <code>@ContractsGit</code> annotation for all options that accept this loader such as authentication, use branch or tag or set a pact directory.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>It&#8217;s possible to use a custom Pact source.
-For this, implement interface <code>org.arquillian.pact.provider.spi.loader.PactLoader</code> and annotate the test class with <code>@PactSource(MyOwnPactLoader.class)</code>.</p>
+<p>It&#8217;s possible to use a custom Contracts retriever.
+For this, implement interface <code>ContractsRetriever</code> and annotate the test class with <code>@ContractSource(MyOwnRetriever.class)</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1260,291 +1335,273 @@ For this, implement interface <code>org.arquillian.pact.provider.spi.loader.Pact
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-class <code>MyOwnPactLoader</code> must have a default empty constructor or a constructor with one argument of class Class which at runtime will be the test class so you can get custom annotations of test class.
+class <code>MyOwnRetriever</code> must have a default empty constructor or a constructor with one argument of class Class which at runtime will be the test class so you can get custom annotations of test class.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>You can see an example at: <a href="https://github.com/arquillian/arquillian-pact/blob/master/provider/core/src/main/java/org/arquillian/pact/provider/core/loader/PactUrlLoader.java">PactUrlLoader</a> java class.</p>
+<p>You can see an example at: <a href="https://github.com/arquillian/arquillian-algeron/blob/master/provider/core/src/main/java/org/arquillian/algeron/provider/core/retriever/ContractsUrlLoader.java">ContractsUrlLoader</a> java class.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_retrievers_as_configuration"><a class="anchor" href="#_retrievers_as_configuration"></a>5.2. Retrievers as Configuration</h3>
+<div class="paragraph">
+<p>As it happens with consumer part, Arquillian Algeron allows you to configure retrievers in <code>arquillian.xml</code>.</p>
 </div>
 <div class="sect3">
-<h4 id="_arquillian_pact_provider_in_container"><a class="anchor" href="#_arquillian_pact_provider_in_container"></a>2.2.2. Arquillian Pact Provider In Container</h4>
+<h4 id="_folder_retriever"><a class="anchor" href="#_folder_retriever"></a>5.2.1. Folder Retriever</h4>
 <div class="paragraph">
-<p>Again you can write provider&#8217;s part using in container or standalone mode.
-In this section, an in container mode example is developed.</p>
-</div>
-<div class="paragraph">
-<p>Apart from adding Arquillian bom dependencies as mentioned in <a href="#arqdeps">consumer part</a>, you need to add arquillian pact dependencies:</p>
-</div>
-<div class="listingblock">
-<div class="title">pom.xml</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>org.arquillian.pact<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>arquillian-pact-provider-core<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;scope&gt;</span>test<span class="tag">&lt;/scope&gt;</span>
-    <span class="tag">&lt;version&gt;</span>${version.arquillian_pact}<span class="tag">&lt;/version&gt;</span>
-<span class="tag">&lt;/dependency&gt;</span>
-<span class="tag">&lt;dependency&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>au.com.dius<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>pact-jvm-provider_2.11<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;scope&gt;</span>test<span class="tag">&lt;/scope&gt;</span>
-    <span class="tag">&lt;version&gt;</span>3.5.0-beta.1<span class="tag">&lt;/version&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
-<span class="tag">&lt;/dependency&gt;</span></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Arquillian Pact has been tested with latest version, but it should work with any 3.X version.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>After dependencies you can write the test that replies all contracts against provider:</p>
-</div>
-<div id="provincon" class="listingblock">
-<div class="title">MyServiceProviderTest.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@RunWith</span>(Arquillian.class)
-<span class="annotation">@Provider</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">test_provider</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="1"></i><b>(1)</b>
-<span class="annotation">@PactFolder</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pacts</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="2"></i><b>(2)</b>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">MyServiceProviderTest</span> {
-
-    <span class="annotation">@Deployment</span>(testable = <span class="predefined-constant">false</span>) <i class="conum" data-value="3"></i><b>(3)</b>
-    <span class="directive">public</span> <span class="directive">static</span> WebArchive createDeployment() {
-        <span class="keyword">return</span> ShrinkWrap.create(WebArchive.class).addClass(MyService.class);
-    }
-
-    <span class="annotation">@ArquillianResource</span> <i class="conum" data-value="4"></i><b>(4)</b>
-    <span class="predefined-type">URL</span> webapp;
-
-    <span class="annotation">@ArquillianResource</span> <i class="conum" data-value="5"></i><b>(5)</b>
-    <span class="predefined-type">Target</span> target;
-
-    <span class="annotation">@Test</span>
-    <span class="directive">public</span> <span class="type">void</span> should_provide_valid_answers() {
-        target.testInteraction(webapp <i class="conum" data-value="6"></i><b>(6)</b>
-                                );
-    }
-
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Sets the name of provider used in this test</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Configures where to get pact files</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Deploys provider application to app server</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Arquillian injection of URL where application is deployed</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>A target is a class that makes all requests to provider. In case of Arquillian Pact by default it uses an Http Client target</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>Makes the request to provider and validates that the response is the expected one</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>When running this test Arquillian Pact Provider will do next things:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Deploy provider to chosen application server, as any other Arquillian test.</p>
-</li>
-<li>
-<p>Read all contract files present in classpath folder <code>pacts</code> which the provider is <code>test_provider</code>. Of course there can be more than one since a provider might serve several consumers.</p>
-</li>
-<li>
-<p>For each contract, it will extract each of the request/response pair</p>
-</li>
-<li>
-<p>For each request/response it sends the request specified in contract to provider and validate the response against expectations defined in contract.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>So as you can see the <code>should_provide_valid_answers</code> might be run several times depending on the number of consumers that depends on provider and the number of requests/responses defined.
-But this is something that it is managed automatically by Arquillian Pact.</p>
-</div>
-<div class="paragraph">
-<p>You can see full example at: <a href="https://github.com/arquillian/arquillian-pact/tree/master/provider/ftest-incontainer">ftest-incontainer</a></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_arquillian_pact_provider_standalone"><a class="anchor" href="#_arquillian_pact_provider_standalone"></a>2.2.3. Arquillian Pact Provider Standalone</h4>
-<div class="paragraph">
-<p>The only difference between previous example is that you only need <code>arquillian-junit-standalone</code> instead of <code>arquilian-junit-container</code> and don&#8217;t need to define any container adapter.
-Obviously no <code>@Deployment</code> method is required:</p>
-</div>
-<div class="listingblock">
-<div class="title">StarWarsProviderTest</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@RunWith</span>(Arquillian.class)
-<span class="annotation">@Provider</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">planets_provider</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@PactFolder</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pacts</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">StarWarsProviderTest</span> {
-
-    <span class="annotation">@ClassRule</span> <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> ClientDriverRule embeddedService = <span class="keyword">new</span> ClientDriverRule(<span class="integer">8332</span>);
-
-    <span class="annotation">@ArquillianResource</span>
-    <span class="predefined-type">Target</span> target;
-
-    <span class="annotation">@BeforeClass</span> <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> recordServerInteractions() {
-        embeddedService.addExpectation(
-                onRequestTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/planet/orbital/average</span><span class="delimiter">&quot;</span></span>)
-                    .withMethod(ClientDriverRequest.Method.GET),
-                giveResponse(<span class="string"><span class="delimiter">&quot;</span><span class="content">1298.3</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>).withStatus(<span class="integer">200</span>));
-
-        embeddedService.addExpectation(
-                onRequestTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/planet/orbital/biggest</span><span class="delimiter">&quot;</span></span>)
-                        .withMethod(ClientDriverRequest.Method.GET),
-                giveResponseAsBytes(StarWarsProviderTest.class.getResourceAsStream(<span class="string"><span class="delimiter">&quot;</span><span class="content">/server.json</span><span class="delimiter">&quot;</span></span>), <span class="string"><span class="delimiter">&quot;</span><span class="content">application/json</span><span class="delimiter">&quot;</span></span>).withStatus(<span class="integer">200</span>));
-
-    }
-
-
-    <span class="annotation">@Test</span>
-    <span class="directive">public</span> <span class="type">void</span> validateProvider() {
-        target.testInteraction();
-    }
-
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Stub server to not having to having to deploy an application</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Expectations/Implementation of provider server</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>You can see full example at: <a href="https://github.com/arquillian/arquillian-pact/tree/master/provider/ftest">ftest</a></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_arquillian_pact_provider_enrichers"><a class="anchor" href="#_arquillian_pact_provider_enrichers"></a>2.2.4. Arquillian Pact Provider Enrichers</h4>
-<div class="paragraph">
-<p>You can enrich your test with current consumer and current request/response interaction by using <code>@CurrentConsumer</code> and <code>CurrentInteraction</code> annotations.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@CurrentConsumer</span>
-Consumer consumer;
-
-<span class="annotation">@CurrentInteraction</span>
-RequestResponseInteraction interaction;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_arquillian_pact_provider_configuration"><a class="anchor" href="#_arquillian_pact_provider_configuration"></a>2.2.5. Arquillian Pact Provider Configuration</h4>
-<div class="paragraph">
-<p>Arquillian Pact Provider can be configured using Arquillian configuration mechanism (<code>arquillian.xml</code> file or system properties).</p>
+<p>You can retrieve contracts from folder:</p>
 </div>
 <div class="listingblock">
 <div class="title">arquillian.xml</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
-<span class="tag">&lt;arquillian</span> <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
-            <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://jboss.org/schema/arquillian</span><span class="delimiter">&quot;</span></span>
-            <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://jboss.org/schema/arquillian</span>
-    <span class="content">http://jboss.org/schema/arquillian/arquillian_1_0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-
-    <span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pact-provider</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">port</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>8332<span class="tag">&lt;/property&gt;</span>
-    <span class="tag">&lt;/extension&gt;</span>
-
-<span class="tag">&lt;/arquillian&gt;</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">algeron-provider</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">retrieverConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+          provider: folder
+          contractsFolder: <span class="tag">&lt;folder</span> <span class="attribute-name">where</span> <span class="attribute-name">contracts</span> <span class="attribute-name">are</span> <span class="attribute-name">stored</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;/property&gt;</span>
+<span class="tag">&lt;/extension&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_url_retriever"><a class="anchor" href="#_url_retriever"></a>5.2.2. URL Retriever</h4>
+<div class="paragraph">
+<p>You can retrieve contracts from URL/s.</p>
+</div>
+<div class="listingblock">
+<div class="title">arquillian.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">algeron-provider</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">retrieverConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+          provider: url
+          url: url where contract is stored <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="tag">&lt;/property&gt;</span>
+<span class="tag">&lt;/extension&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>url where contracts are stored (this can be in form of string or yml list)</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_git_retriever"><a class="anchor" href="#_git_retriever"></a>5.2.3. Git Retriever</h4>
+<div class="paragraph">
+<p>You can retrieve contracts from Git repository.</p>
+</div>
+<div class="listingblock">
+<div class="title">arquillian.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">algeron-provider</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">retrieverConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+          provider: git
+          url: <span class="tag">&lt;giturl&gt;</span>
+          username: username
+          password: password
+  <span class="tag">&lt;/property&gt;</span>
+<span class="tag">&lt;/extension&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The attributes are:</p>
+<p>Also you need to add <code>org.arquillian.algeron:arquillian-algeron-provider-git-retriever:${version}</code> dependency.</p>
+</div>
+<div class="paragraph">
+<p>Possible attributes:</p>
 </div>
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Attribute Name</th>
+<th class="tableblock halign-left valign-top">Parameter</th>
 <th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default Value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">targetUrl</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Url to used by <code>target</code> to connect to provider</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">url</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory field that sets git server url.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">insecure</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">In case of https if test should skip https validations</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the username to access to git repository.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">protocol</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">protocol used to connect in case of not using <code>targetUrl</code> property</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">http</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the password to access to git repository.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">host</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">host used to connect in case of not using <code>targetUrl</code> property</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">localhost</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">passphrase</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the passphrase to open the private key.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">port</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">port used to connect in case of not using <code>targetUrl</code> property</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">8080</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">remote</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the remote name (algeron uses origin by default)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">path appended at the end of the host in case of not using <code>targetUrl</code> property</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the private key location. (Algeron uses ~/.ssh/id_rsa by default)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">skipDeployment</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">skips <code>@Deployment</code> methods and does not start/stop container.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">repository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets local location of git repository.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contractGitRepository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets inner folder where contracts are stored.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tag</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that checkouts given tag</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">branch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that checkouts given branch</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Notice that in case of using incontainer tests you don&#8217;t need to configure any of these parameters (except if <em>insecure</em> is required) since you can use the URL injected by Arquillian.
-See this at <a href="#provincon">provider in container</a> example.</p>
+<p>Notice that all these attributes can be set using system properties or environment variable as any other property in <code>arquillian.xml</code> such as:</p>
+</div>
+<div class="listingblock">
+<div class="title">arquillian.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">algeron-provider</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">retrieverConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+          provider: git
+          url: <span class="tag">&lt;giturl&gt;</span>
+          username: username
+          password: ${env.username}
+  <span class="tag">&lt;/property&gt;</span>
+<span class="tag">&lt;/extension&gt;</span></code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_skipping_deployment"><a class="anchor" href="#_skipping_deployment"></a>2.2.6. Skipping Deployment</h4>
+<h4 id="_maven_retriever"><a class="anchor" href="#_maven_retriever"></a>5.2.4. Maven Retriever</h4>
+<div class="paragraph">
+<p>You can retrieve contracts from Maven artifacts.</p>
+</div>
+<div class="listingblock">
+<div class="title">arquillian.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">algeron-provider</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">retrieverConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+          provider: maven
+          coordinates: <span class="tag">&lt;coordinates</span> <span class="attribute-name">of</span> <span class="attribute-name">artifact</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;/property&gt;</span>
+<span class="tag">&lt;/extension&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also you need to add <code>org.arquillian.algeron:arquillian-algeron-provider-maven-retriever:${version}</code> dependency.</p>
+</div>
+<div class="paragraph">
+<p>Possible attributes:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">coordinates</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory Maven coordinates of contracts. G:A:V format.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">offline</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional flag that sets Maven to work offline.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">customSettings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the location of custom settings.xml file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">remoteRepository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets URL of remote Maven repository</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Notice that all these attributes can be set using system properties or environment variable as any other property in <code>arquillian.xml</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_pact_broker_retriever"><a class="anchor" href="#_pact_broker_retriever"></a>5.2.5. Pact Broker Retriever</h4>
+<div class="paragraph">
+<p>You can retrieve contracts from Pact Broker artifacts.</p>
+</div>
+<div class="listingblock">
+<div class="title">arquillian.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">algeron-provider</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">retrieverConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+          provider: pactbroker
+          host: <span class="tag">&lt;host</span> <span class="attribute-name">of</span> <span class="attribute-name">pact</span> <span class="attribute-name">broker</span> <span class="attribute-name">server</span><span class="tag">&gt;</span>
+          port: <span class="tag">&lt;port</span> <span class="attribute-name">of</span> <span class="attribute-name">pact</span> <span class="attribute-name">broker</span> <span class="attribute-name">server</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;/property&gt;</span>
+<span class="tag">&lt;/extension&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also you need to add <code>org.arquillian.algeron:arquillian-algeron-pact-provider-pact-broker-loader:${version}</code> dependency. This is only supported in case of using Pact provider.</p>
+</div>
+<div class="paragraph">
+<p>Possible attributes:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">host</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory field that sets host of Pact Broker.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory field that sets the port of Pact Broker.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">protocol</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets protocol used. By default Algeron uses http.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tags</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the tags to retrieve from Pact Broker.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Notice that all these attributes can be set using system properties or environment variable as any other property in <code>arquillian.xml</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_skipping_deployment"><a class="anchor" href="#_skipping_deployment"></a>5.3. Skipping Deployment</h3>
 <div class="paragraph">
 <p>In case of consumer driven contracts, there are two kinds of tests - consumer tests and provider tests.
 Usually in your CI environment you want to run provider tests against two different scenarios:</p>
@@ -1569,7 +1626,15 @@ Usually in your CI environment you want to run provider tests against two differ
 There is only one slight difference in both cases which how you set up your test environments.
 In the first scenario, you want to deploy the latest provider code. One way of doing it is using Arquillian container control and <code>@Deployment</code> method to create the package, start the container and deploy it.
 But in the latter case, when you want to run contract test against provider that is already deployed on (pre)production environment, you don’t need to deploy anything nor control the lifecycle of any container.
-For this reason we provided <code>skipDeployment</code> flg.</p>
+For this reason we provided <code>skipDeployment</code> flag.</p>
+</div>
+<div class="listingblock">
+<div class="title">arquillian.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">algeron-provider</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">skipDeployment</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>${env.skipDeployment:false}<span class="tag">&lt;/property&gt;</span>
+<span class="tag">&lt;/extension&gt;</span></code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p><code>skipDeployment</code> default value by default is set to <code>false, which means that the test will behave as it usually does, but when it is set to @`true, Arquillian is going to ignore anything related to container lifecycle. `
@@ -1662,7 +1727,437 @@ Notice that with a simple attribute you can enable/disable how Arquillian behave
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-If you want to enable skipDeployment feature, you can set Java system property or environment variable <code>arq.extension.pact-provider.SkipDeployment</code> to true.
+If you want to enable skipDeployment feature, you can set Java system property or environment variable <code>arq.extension.algeron-provider.SkipDeployment</code> to true or by using <code>${env.skipDeployment:false}</code> form.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_arquillian_algeron_pact_provider"><a class="anchor" href="#_arquillian_algeron_pact_provider"></a>5.4. Arquillian Algeron Pact Provider</h3>
+<div class="paragraph">
+<p>The next thing you need to do is sent the contract (aka "pact" file) to <strong>Provider</strong> project and validate that provider produces the expected responses to defined requests.
+This is done by replaying all requests defined in contract against real provider and validating that the response is the expected one.</p>
+</div>
+<div class="sect3">
+<h4 id="_arquillian_algeron_pact_provider_in_container"><a class="anchor" href="#_arquillian_algeron_pact_provider_in_container"></a>5.4.1. Arquillian Algeron Pact Provider In Container</h4>
+<div class="paragraph">
+<p>Again you can write provider&#8217;s part using in container or standalone mode.
+In this section, an in container mode example is developed.</p>
+</div>
+<div class="paragraph">
+<p>Apart from adding Arquillian bom dependencies as mentioned in <a href="#arqdeps">consumer part</a>, you need to add arquillian algeron pact dependencies:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.arquillian.algeron<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>arquillian-algeron-pact-provider-core<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;scope&gt;</span>test<span class="tag">&lt;/scope&gt;</span>
+    <span class="tag">&lt;version&gt;</span>${version.arquillian_algeron}<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span>
+<span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>au.com.dius<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>pact-jvm-provider_2.11<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;scope&gt;</span>test<span class="tag">&lt;/scope&gt;</span>
+    <span class="tag">&lt;version&gt;</span>3.5.0-beta.2<span class="tag">&lt;/version&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Arquillian Algeron Pact has been tested with latest version, but it should work with any 3.X version.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After dependencies you can write the test that replies all contracts against provider:</p>
+</div>
+<div id="provincon" class="listingblock">
+<div class="title">MyServiceProviderTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@RunWith</span>(Arquillian.class)
+<span class="annotation">@Provider</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">test_provider</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="annotation">@PactFolder</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pacts</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">MyServiceProviderTest</span> {
+
+    <span class="annotation">@Deployment</span>(testable = <span class="predefined-constant">false</span>) <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="directive">public</span> <span class="directive">static</span> WebArchive createDeployment() {
+        <span class="keyword">return</span> ShrinkWrap.create(WebArchive.class).addClass(MyService.class);
+    }
+
+    <span class="annotation">@ArquillianResource</span> <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="predefined-type">URL</span> webapp;
+
+    <span class="annotation">@ArquillianResource</span> <i class="conum" data-value="5"></i><b>(5)</b>
+    <span class="predefined-type">Target</span> target;
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> should_provide_valid_answers() {
+        target.testInteraction(webapp); <i class="conum" data-value="6"></i><b>(6)</b>
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Sets the name of provider used in this test</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Configures where to get pact files</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Deploys provider application to app server</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Arquillian injection of URL where application is deployed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>A target is a class that makes all requests to provider. In case of Arquillian Algeron Pact by default it uses an Http Client target</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Makes the request to provider and validates that the response is the expected one</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When running this test Arquillian Algeron Pact Provider will do next things:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Deploy provider to chosen application server, as any other Arquillian test.</p>
+</li>
+<li>
+<p>Read all contract files present in classpath folder <code>pacts</code> which the provider is <code>test_provider</code>. Of course there can be more than one since a provider might serve several consumers.</p>
+</li>
+<li>
+<p>For each contract, it will extract each of the request/response pair</p>
+</li>
+<li>
+<p>For each request/response it sends the request specified in contract to provider and validate the response against expectations defined in contract.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>So as you can see the <code>should_provide_valid_answers</code> might be run several times depending on the number of consumers that depends on provider and the number of requests/responses defined.
+But this is something that it is managed automatically by Arquillian Algeron Pact.</p>
+</div>
+<div class="paragraph">
+<p>You can see full example at: <a href="https://github.com/arquillian/arquillian-algeron/tree/master/pact/provider/ftest-container">ftest-incontainer</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_arquillian_algeron_pact_provider_standalone"><a class="anchor" href="#_arquillian_algeron_pact_provider_standalone"></a>5.4.2. Arquillian Algeron Pact Provider Standalone</h4>
+<div class="paragraph">
+<p>The only difference between previous example is that you only need <code>arquillian-junit-standalone</code> instead of <code>arquilian-junit-container</code> and don&#8217;t need to define any container adapter.
+Obviously no <code>@Deployment</code> method is required:</p>
+</div>
+<div class="listingblock">
+<div class="title">StarWarsProviderTest</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@RunWith</span>(Arquillian.class)
+<span class="annotation">@Provider</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">planets_provider</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@PactFolder</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pacts</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">StarWarsProviderTest</span> {
+
+    <span class="annotation">@ClassRule</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> ClientDriverRule embeddedService = <span class="keyword">new</span> ClientDriverRule(<span class="integer">8332</span>);
+
+    <span class="annotation">@ArquillianResource</span>
+    <span class="predefined-type">Target</span> target;
+
+    <span class="annotation">@BeforeClass</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> recordServerInteractions() {
+        embeddedService.addExpectation(
+                onRequestTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/planet/orbital/average</span><span class="delimiter">&quot;</span></span>)
+                    .withMethod(ClientDriverRequest.Method.GET),
+                giveResponse(<span class="string"><span class="delimiter">&quot;</span><span class="content">1298.3</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>).withStatus(<span class="integer">200</span>));
+
+        embeddedService.addExpectation(
+                onRequestTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/planet/orbital/biggest</span><span class="delimiter">&quot;</span></span>)
+                        .withMethod(ClientDriverRequest.Method.GET),
+                giveResponseAsBytes(StarWarsProviderTest.class.getResourceAsStream(<span class="string"><span class="delimiter">&quot;</span><span class="content">/server.json</span><span class="delimiter">&quot;</span></span>), <span class="string"><span class="delimiter">&quot;</span><span class="content">application/json</span><span class="delimiter">&quot;</span></span>).withStatus(<span class="integer">200</span>));
+
+    }
+
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> validateProvider() {
+        target.testInteraction();
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Stub server to not having to having to deploy an application</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Expectations/Implementation of provider server</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can see full example at: <a href="https://github.com/arquillian/arquillian-algeron/tree/master/pact/provider/ftest">ftest</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_arquillian_algeron_pact_provider_enrichers"><a class="anchor" href="#_arquillian_algeron_pact_provider_enrichers"></a>5.4.3. Arquillian Algeron Pact Provider Enrichers</h4>
+<div class="paragraph">
+<p>You can enrich your test with current consumer and current request/response interaction by using <code>@CurrentConsumer</code> and <code>CurrentInteraction</code> annotations.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@CurrentConsumer</span>
+Consumer consumer;
+
+<span class="annotation">@CurrentInteraction</span>
+RequestResponseInteraction interaction;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_arquillian_algeron_pact_provider_configuration"><a class="anchor" href="#_arquillian_algeron_pact_provider_configuration"></a>5.4.4. Arquillian Algeron Pact Provider Configuration</h4>
+<div class="paragraph">
+<p>Arquillian Algeron Pact Provider can be configured using Arquillian configuration mechanism (<code>arquillian.xml</code> file or system properties).</p>
+</div>
+<div class="listingblock">
+<div class="title">arquillian.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="tag">&lt;arquillian</span> <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://jboss.org/schema/arquillian</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://jboss.org/schema/arquillian</span>
+    <span class="content">http://jboss.org/schema/arquillian/arquillian_1_0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+    <span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pact-provider</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">port</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>8332<span class="tag">&lt;/property&gt;</span>
+    <span class="tag">&lt;/extension&gt;</span>
+
+<span class="tag">&lt;/arquillian&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The attributes are:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">targetUrl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Url to used by <code>target</code> to connect to provider</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">insecure</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">In case of https if test should skip https validations</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">protocol</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">protocol used to connect in case of not using <code>targetUrl</code> property</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">http</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">host</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">host used to connect in case of not using <code>targetUrl</code> property</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">localhost</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">port used to connect in case of not using <code>targetUrl</code> property</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8080</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">path appended at the end of the host in case of not using <code>targetUrl</code> property</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Notice that in case of using incontainer tests you don&#8217;t need to configure any of these parameters (except if <em>insecure</em> is required) since you can use the URL injected by Arquillian.
+See this at <a href="#provincon">provider in container</a> example.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_pact_states"><a class="anchor" href="#_pact_states"></a>5.4.5. Pact States</h4>
+<div class="paragraph">
+<p>Each interaction in a pact should be verified in isolation, with no context maintained from the previous interactions.
+Provider states allow you to set up data on the provider by injecting it straight into the datasource before the interaction is run, so that it can make a response that matches what the consumer expects.</p>
+</div>
+<div class="paragraph">
+<p>Provider states also allow the consumer to make the same request with different expected responses.</p>
+</div>
+<div class="paragraph">
+<p>Provider state is all about the state of the provider, not about the state of the consumer, or about what is in the request.</p>
+</div>
+<div class="paragraph">
+<p>In consumer side you set an state using <code>given</code> section.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="paragraph">
+<p><code>builder.given("test state")&#8230;&#8203;</code> sets state as plain String.</p>
+</div>
+<div class="paragraph">
+<p>Or in case you want to set some parameters you can do:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">Map</span> parameters = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;&gt;();
+builder.given(<span class="string"><span class="delimiter">&quot;</span><span class="content">test state</span><span class="delimiter">&quot;</span></span>, parameters)...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which in this case sets an state name with some key/value pairs.</p>
+</div>
+<div class="paragraph">
+<p>But in <strong>Arquillian Algeron Pact Provider</strong> we also give support for states in the form of <em>Cucumber</em> expression.
+You can define an state with the form:</p>
+</div>
+<div class="paragraph">
+<p><code>builder.given("I have 36 cukes in my belly")&#8230;&#8203;</code></p>
+</div>
+<div class="paragraph">
+<p>So the next question is how can I respond to states in provider side?
+Let&#8217;s see an example in each case:</p>
+</div>
+<div class="paragraph">
+<p>In first example you only set a state with a name, without any parameter, so in your provider side you are going to do:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@State</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">test state</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">void</span> testStateMethod(<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; params) {
+    <span class="comment">// Do some data preparation</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This method is executed if and only if given interaction has defined the state <code>test state</code>.</p>
+</div>
+<div class="paragraph">
+<p>Obviously in previous example you have no way to pass parameters from consumer to provider.
+In second example you are passing a map with some parameters.
+To recover them you need to add as method parameter a <code>Map</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@State</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">test state</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">void</span> testStateMethod(<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; params) {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This method is executed if and only if given interaction has defined the state <code>test state</code> and injects the defined parameters in consumer as method parameter.</p>
+</div>
+<div class="paragraph">
+<p>Also the third case uses Cucumber-lik expression, so you need similar way to take parameters.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@State</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">I have (</span><span class="char">\\</span><span class="content">d+) cukes in my belly</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">void</span> stateMethod(<span class="type">int</span> numberOfCukes) {
+    <span class="local-variable">this</span>.numberOfCukes = numberOfCukes;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that now as happens with Cucumber you need to specify the regular expression and you get the values as method parameters.
+Native values and list are supported.
+Lists are set in consumer side as comma-separated values and scanned as <code>\\s+</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_assertj_integration"><a class="anchor" href="#_assertj_integration"></a>5.4.6. AssertJ integration</h4>
+<div class="paragraph">
+<p>Arquillian Algeron Pact Provider implements custom matcher of AssertJ for validating contracts against provider.</p>
+</div>
+<div class="paragraph">
+<p>First thing to do to use AssertJ matcher is add <code>arquillian-algeron-pact-provider-assertj</code> dependency, and the <strong>AssertJ</strong> you want to use.</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.arquillian.algeron<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>arquillian-algeron-pact-provider-assertj<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;scope&gt;</span>test<span class="tag">&lt;/scope&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span>
+<span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.assertj<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>assertj-core<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;scope&gt;</span>test<span class="tag">&lt;/scope&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally in your test you can use the overloaded <code>assertThat</code> static method receiving a <code>Target</code> type.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ArquillianResource</span>
+<span class="predefined-type">URL</span> webapp;
+
+<span class="annotation">@ArquillianResource</span>
+<span class="predefined-type">Target</span> target;
+
+<span class="annotation">@Test</span>
+<span class="directive">public</span> <span class="type">void</span> should_provide_valid_answers() {
+    assertThat(target).withUrl(webapp).satisfiesContract();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that now instead of writing <code>target.testInteraction(webapp);</code> you are using a more readable way of asserting test.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_arquillian_recorder_reporter_integration"><a class="anchor" href="#_arquillian_recorder_reporter_integration"></a>5.4.7. Arquillian Recorder Reporter integration</h4>
+<div class="paragraph">
+<p>Currently pact generates report from contract tests in several formats, including Markdown or JSON.
+You can also report using Arquillian Recorder Reporter (<a href="https://github.com/arquillian/arquillian-recorder" class="bare">https://github.com/arquillian/arquillian-recorder</a>) extension.</p>
+</div>
+<div class="paragraph">
+<p>To use it you need to annotate at test class level with <code>VerificationReports</code> and set type to <code>recorder</code> and add Arquillian Recorder Reporter dependency <code>org.arquillian.extension:arquillian-recorder-reporter-impl:&lt;version&gt;</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+you can set more than reporter at once so you can do <code>@VerificationReports(value = {"console", "recorder"})</code>.
 </td>
 </tr>
 </table>
@@ -1674,7 +2169,7 @@ If you want to enable skipDeployment feature, you can set Java system property o
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-11-11 15:58:28 CET
+Last updated 2017-02-06 12:13:51 CET
 </div>
 </div>
 </body>
