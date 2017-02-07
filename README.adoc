@@ -206,7 +206,7 @@ public class ClientGatewayTest {
 <7> Defines which provider is validated when this test method is executed.
 <8> Asserts that the gateway can read the kind of messages sent by provider. Notice that now it is pretty simple, but in real test you'll test for example that message is correctly bound to an object.
 
-After this test is executed, contract is placed at `target/pacts` directory.
+After this test is executed, contract is placed at `target/pacts` directory or `build/pacts` in case of using Gradle.
 Then you can send contract to provider side.
 
 Notice that contract and/or mock responses are defined using Pact DSL.

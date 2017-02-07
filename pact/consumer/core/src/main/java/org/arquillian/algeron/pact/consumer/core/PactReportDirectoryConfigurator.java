@@ -3,6 +3,9 @@ package org.arquillian.algeron.pact.consumer.core;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.api.event.ManagerStopping;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class PactReportDirectoryConfigurator {
 
     public static final String PACT_ROOT_DIR = "pact.rootDir";
@@ -16,6 +19,11 @@ public class PactReportDirectoryConfigurator {
                 System.setProperty(PACT_ROOT_DIR, pactConsumerConfiguration.getPactReportDir());
                 customReportDirectory = true;
             }
+        } else {
+            if (isGradle()) {
+                System.setProperty(PACT_ROOT_DIR, "build/pacts");
+                customReportDirectory = true;
+            }
         }
     }
 
@@ -23,6 +31,10 @@ public class PactReportDirectoryConfigurator {
         if (customReportDirectory) {
             System.clearProperty(PACT_ROOT_DIR);
         }
+    }
+
+    public boolean isGradle() {
+        return Files.exists(Paths.get("build.gradle"));
     }
 
 }
