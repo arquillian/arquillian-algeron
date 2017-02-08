@@ -35,7 +35,7 @@ public class ConsumerTest {
                 .willRespondWith()
                 .status(200)
                 .headers(header)
-                .body("{\"responsetest\": true, \"name\": \"harry\"}")
+                .bodyWithSingleQuotes(("{'responsetest': true, 'name': 'harry'}"))
                 .toFragment();
     }
 
