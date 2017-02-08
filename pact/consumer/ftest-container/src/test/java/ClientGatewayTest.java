@@ -34,24 +34,20 @@ public class ClientGatewayTest {
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
 
-        Map<String, Object> stateParams = new HashMap<>();
-        stateParams.put("name", "Alexandra");
-
         return builder
-                .given("test state", stateParams)
+                .given("test state", "name", "Alexandra")
                 .uponReceiving("ConsumerTest test interaction")
                 .path("/")
                 .method("GET")
                 .willRespondWith()
                 .status(200)
                 .headers(header)
-                .body("{\"responsetest\": true, \"name\": \"harry\"}")
+                .bodyWithSingleQuotes("{'responsetest': true, 'name': 'harry'}")
                 .toFragment();
     }
 
     @EJB
     ClientGateway clientGateway;
-
 
     @StubServer
     URL url;
