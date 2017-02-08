@@ -1,6 +1,6 @@
 package org.arquillian.algeron.pact.provider.core;
 
-import org.arquillian.algeron.pact.provider.core.httptarget.Target;
+import org.arquillian.algeron.pact.provider.spi.Target;
 import org.arquillian.algeron.pact.provider.core.httptarget.HttpTarget;
 import org.jboss.arquillian.core.api.Injector;
 import org.jboss.arquillian.core.api.Instance;

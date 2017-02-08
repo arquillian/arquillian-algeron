@@ -4,7 +4,7 @@ import au.com.dius.pact.model.Consumer;
 import au.com.dius.pact.model.RequestResponseInteraction;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRule;
-import org.arquillian.algeron.pact.provider.core.httptarget.Target;
+import org.arquillian.algeron.pact.provider.spi.Target;
 import org.arquillian.algeron.pact.provider.loader.git.ContractsGit;
 import org.arquillian.algeron.pact.provider.spi.CurrentConsumer;
 import org.arquillian.algeron.pact.provider.spi.CurrentInteraction;

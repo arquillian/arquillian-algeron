@@ -2,7 +2,7 @@ package org.arquillian.algeron.pact.provider.skip;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRule;
-import org.arquillian.algeron.pact.provider.core.httptarget.Target;
+import org.arquillian.algeron.pact.provider.spi.Target;
 import org.arquillian.algeron.pact.provider.spi.Provider;
 import org.arquillian.algeron.pact.provider.spi.State;
 import org.arquillian.algeron.provider.api.deployment.Environment;
