@@ -1,6 +1,6 @@
 package org.arquillian.algeron.pact.provider.assertj;
 
-import org.arquillian.algeron.pact.provider.core.httptarget.Target;
+import org.arquillian.algeron.pact.provider.spi.Target;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

@@ -1,6 +1,6 @@
 package org.arquillian.algeron.pact.provider.assertj;
 
-import org.arquillian.algeron.pact.provider.core.httptarget.Target;
+import org.arquillian.algeron.pact.provider.spi.Target;
 import org.assertj.core.api.Assertions;
 
 import java.net.MalformedURLException;

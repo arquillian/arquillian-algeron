@@ -4,7 +4,7 @@ import au.com.dius.pact.model.Consumer;
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.ProviderState;
 import au.com.dius.pact.model.RequestResponseInteraction;
-import org.arquillian.algeron.pact.provider.core.httptarget.Target;
+import org.arquillian.algeron.pact.provider.spi.Target;
 import org.arquillian.algeron.pact.provider.api.Pacts;
 import org.arquillian.algeron.pact.provider.spi.CurrentConsumer;
 import org.arquillian.algeron.pact.provider.spi.CurrentInteraction;
@@ -93,7 +93,7 @@ public class InteractionRunnerTest {
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> interactionRunner.executePacts(eventContext))
-                .withMessage("Field annotated with org.jboss.arquillian.test.api.ArquillianResource should implement org.arquillian.algeron.pact.provider.core.httptarget.Target and didn't found any");
+                .withMessage("Field annotated with org.jboss.arquillian.test.api.ArquillianResource should implement org.arquillian.algeron.pact.provider.spi.Target and didn't found any");
 
     }
 

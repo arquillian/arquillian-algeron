@@ -13,6 +13,7 @@ import org.arquillian.algeron.pact.provider.core.recorder.ArquillianVerifierRepo
 import org.arquillian.algeron.pact.provider.spi.ArquillianTestClassAwareTarget;
 import org.arquillian.algeron.pact.provider.spi.PactProviderExecutionAwareTarget;
 import org.arquillian.algeron.pact.provider.spi.Provider;
+import org.arquillian.algeron.pact.provider.spi.Target;
 import org.arquillian.algeron.pact.provider.spi.TargetRequestFilter;
 import org.arquillian.algeron.pact.provider.spi.VerificationReports;
 

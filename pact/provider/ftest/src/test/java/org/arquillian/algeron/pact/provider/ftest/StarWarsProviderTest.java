@@ -2,7 +2,7 @@ package org.arquillian.algeron.pact.provider.ftest;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRule;
-import org.arquillian.algeron.pact.provider.core.httptarget.Target;
+import org.arquillian.algeron.pact.provider.spi.Target;
 import org.arquillian.algeron.pact.provider.spi.Provider;
 import org.arquillian.algeron.pact.provider.spi.VerificationReports;
 import org.arquillian.algeron.provider.core.retriever.ContractsFolder;

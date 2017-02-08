@@ -1,15 +1,12 @@
-package org.arquillian.algeron.pact.provider.core.httptarget;
+package org.arquillian.algeron.pact.provider.spi;
 
 import au.com.dius.pact.model.RequestResponseInteraction;
-import org.arquillian.algeron.pact.provider.spi.PactProviderExecutionAwareTarget;
-import org.arquillian.algeron.pact.provider.core.PactProviderConfiguration;
 
 import java.net.URL;
 
 /**
  * Run {@link au.com.dius.pact.model.RequestResponseInteraction} and perform response verification
  *
- * @see HttpTarget out-of-the-box implementation
  */
 public interface Target {
 
@@ -22,7 +19,7 @@ public interface Target {
      *
      * Important: Implementators must implements {@link PactProviderExecutionAwareTarget}
      *
-     * URL configuration is retrieved from {@link PactProviderConfiguration}
+     * URL configuration is retrieved from PactProviderConfiguration
      *
      */
     void testInteraction();

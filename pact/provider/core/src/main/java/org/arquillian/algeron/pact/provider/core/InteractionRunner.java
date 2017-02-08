@@ -6,7 +6,7 @@ import au.com.dius.pact.model.ProviderState;
 import au.com.dius.pact.model.RequestResponseInteraction;
 import au.com.dius.pact.model.RequestResponsePact;
 import org.apache.http.HttpRequest;
-import org.arquillian.algeron.pact.provider.core.httptarget.Target;
+import org.arquillian.algeron.pact.provider.spi.Target;
 import org.arquillian.algeron.pact.provider.api.Pacts;
 import org.arquillian.algeron.pact.provider.spi.ArquillianTestClassAwareTarget;
 import org.arquillian.algeron.pact.provider.spi.CurrentConsumer;
