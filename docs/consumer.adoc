@@ -1,0 +1,277 @@
+= Arquillian Algeron Pact Consumer
+
+First thing to do is develop the *Consumer* part of the test.
+Consumer part of Consumer-Driven Contract defines requirements from the consumer of the API which are then used to develop the client interaction with the API as well as to validate provider implementation.
+
+== Pact Consumer Enrichers
+
+You can use in a test `@StubServer` annotation to inject URL where stub http server is started.
+
+[source, java]
+----
+@RunWith(Arquillian.class)
+@Pact(provider="test_provider", consumer="test_consumer")
+public class MyTest {
+
+  @StubServer
+  URL url;
+
+}
+----
+
+== Pact Consumer In Container
+
+Arquillian has two modes of working *In Container* (which means having a `@Deployment` method) and Arquillian takes care of managing lifecycle of the server and deploy the archive, or *Standalone* (no `@Deployment` method) where Arquillian assumes that everything is already deployed.
+
+Let's see how to write the consumer part in In Container mode.
+
+First thing to do is add typical Arquillian dependencies such as Arquillian bom and the dependency of the container you want to use.
+Nothing new here:
+
+[[arqdeps]]
+[source, xml]
+.pom.xml
+----
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-bom</artifactId>
+            <version>${version.arquillian_core}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+<dependencies>
+    <dependency>
+        <groupId>org.jboss.arquillian.junit</groupId>
+        <artifactId>arquillian-junit-container</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.arquillian.container</groupId>
+        <artifactId>arquillian-container-chameleon</artifactId> <!--1-->
+        <version>1.0.0.Alpha7</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+----
+<1> Notice that I am using Chameleon generic container, you can read more http://www.lordofthejars.com/2016/09/arquillian-chameleon-for-sake-of.html[here].
+
+Then you need to add `arquillian-pact-consumer` dependency as well as `pact-jvm-consumer` dependency:
+
+[source, xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>org.arquillian.algeron</groupId>
+        <artifactId>arquillian-algeron-pact-consumer-core</artifactId>
+        <version>${version.arquillian_algeron}</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>au.com.dius</groupId>
+        <artifactId>pact-jvm-consumer_2.11</artifactId>
+        <scope>test</scope>
+        <version>3.5.0-beta.2</version> <!--1-->
+    </dependency>
+</dependencies>
+----
+<1> Arquillian Algeron Pact has been tested with latest version, but it should work with any 3.X version.
+
+After dependencies you can write the test that defines the contract:
+
+
+[[incontainer]]
+[source, java]
+.ClientGatewayTest.java
+----
+@RunWith(Arquillian.class) // <1>
+@Pact(provider="test_provider", consumer="test_consumer") // <2>
+public class ClientGatewayTest {
+
+    @Deployment // <3>
+    public static JavaArchive createDeployment() {
+        return ShrinkWrap.create(JavaArchive.class).addClasses(ClientGateway.class);
+    }
+
+    public PactFragment createFragment(PactDslWithProvider builder) {
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+
+        return builder
+                .given("test state")
+                .uponReceiving("ConsumerTest test interaction")
+                .path("/")
+                .method("GET")
+                .willRespondWith()
+                .status(200)
+                .headers(header)
+                .body("{\"responsetest\": true, \"name\": \"harry\"}")
+                .toFragment(); // <4>
+    }
+
+    @EJB // <5>
+    ClientGateway clientGateway;
+
+    @StubServer // <6>
+    URL url;
+
+    @Test
+    @PactVerification("test_provider") // <7>
+    public void should_return_message() throws IOException {
+        assertThat(clientGateway.getMessage(url), is("{\"responsetest\": true, \"name\": \"harry\"}")); // <8>
+    }
+}
+----
+<1> Arquillian Runner
+<2> To define the contract you need to configure expectations of mock server. This is done by annotating a method or class with `@Pact` annotation and setting the provider and consumer name
+<3> Defines what you want to deploy to defined container. In this case an EJB that acts as gateway to another service
+<4> A Pact method returns a fragment of the contract which might be the complete contract or not
+<5> Typical Arquillian enrichment
+<6> `@StubServer` annotation is used for enrich test with stub http server Url.
+<7> Defines which provider is validated when this test method is executed.
+<8> Asserts that the gateway can read the kind of messages sent by provider. Notice that now it is pretty simple, but in real test you'll test for example that message is correctly bound to an object.
+
+After this test is executed, contract is placed at `target/pacts` directory or `build/pacts` in case of using Gradle.
+Then you can send contract to provider side.
+
+Notice that contract and/or mock responses are defined using Pact DSL.
+You can read more about this DSL at https://github.com/DiUS/pact-jvm/tree/master/pact-jvm-consumer-junit#using-the-pact-dsl-directly[Using the Pact DSL directly].
+
+Important things to retain from consumer part:
+
+* It is an Arquillian test so you can use anything that Arquillian provides.
+* Methods or classes annotated with `@Pact` defines a fragment of the contract that at same time is used by mock server for providing responses.
+* In case of using several methods annotated with `@Pact` annotation, you need to use `fragment` attribute `@PactVerification(.. fragment="methodName")`to set which fragment is under test for each `@Test` method.
+
+TIP: You can use `@Pact` annotation at class level, so methods that defines a pact fragment, just need to return `PactFragment` class. Information will be picked from class level. In case of setting annotation at class and method level too, the one defined on the method will take precedence.
+
+You can see the full example at: https://github.com/arquillian/arquillian-algeron/tree/master/pact/consumer/ftest-container[ftest-incontainer]
+
+== Pact Consumer Standalone
+
+*Standalone* mode (no `@Deployment` method), Arquillian assumes that everything is already deployed.
+
+The only difference between previous example is that you only need `arquillian-junit-standalone` instead of `arquilian-junit-container` and don't need to define any container adapter.
+Obviously no `@Deployment` method is required:
+
+[source, java]
+.ConsumerTest.java
+----
+@RunWith(Arquillian.class)
+public class ConsumerTest {
+
+    @Pact(provider = "test_provider", consumer = "test_consumer")
+    public PactFragment createFragment(PactDslWithProvider builder) {
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+
+        return builder
+                .given("test state")
+                .uponReceiving("ConsumerTest test interaction")
+                .path("/")
+                .method("GET")
+                .willRespondWith()
+                .status(200)
+                .headers(header)
+                .body("{\"responsetest\": true, \"name\": \"harry\"}")
+                .toFragment();
+    }
+
+    @StubServer
+    URL url;
+
+    @Test
+    @PactVerification("test_provider")
+    public void runTest() throws IOException {
+        new ConsumerClient().get(url).body("name", equalTo("harry"));
+        assertThat(new File("target/pacts/test_consumer-test_provider.json")).exists();
+    }
+
+}
+----
+
+Code is pretty similar as <<incontainer, previous test>> but now the consumer client/gateway object is instantiated as plain java object instead of container managed.
+
+You can see the full example at: https://github.com/arquillian/arquillian-algeron/tree/master/pact/consumer/ftest[ftest]
+
+== Pact Consumer Configuration
+
+Arquillian Algeron Pact Consumer can be configured using Arquillian configuration mechanism (`arquillian.xml` file or system properties).
+
+[source, xml]
+.arquillian.xml
+----
+<?xml version="1.0"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://jboss.org/schema/arquillian"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian
+    http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <extension qualifier="pact-consumer">
+        <property name="pactSpecVersion">1</property>
+    </extension>
+
+</arquillian>
+----
+
+The attributes are:
+
+|===
+| Attribute Name | Description | Default Value
+
+|host
+|Bind host for mock server
+|localhost
+
+|port
+|Listening port for mock server
+|9090
+
+|pactSpecVesion
+|Pact specification version as integer
+|3
+
+|https
+|If mock server should start using https instead of http
+|false
+
+|provider
+|If you want to set provider globally
+|
+
+|pactArtifactVersion
+|By default Arquillian Algeron Pact packages pact dependencies in container tests. To get the version of artifacts to package, checks the current pact version of classpath.
+ If you want to use another one rather the one defined in your classpath, you can set it here the version.
+|
+
+|pactReportDir
+|Directory where contracts are stored.
+|target/pacts
+|===
+
+[[JBoss_Forge_Arquillian_Algeron_Consumer_Addon]]
+== JBoss Forge Arquillian Addon
+
+http://forge.jboss.org[Forge] Arquillian Addon offers an integration with Arquillian Algeron Consumer.
+
+To use it apart from having the Forge Arquillian Addon installed in Forge, you need to have arquillian dependencies registered on build tool.
+
+To register Arquillian Consumer dependencies in build tool just run next command:
+
+`arquillian-algeron-setup-consumer --contracts-library pact`
+
+After that you can enrich a given Arquillian test with consumer annotations and contract scaffolding with next command:
+
+`arquillian-algeron-create-contract-fragment --consumer myconsumer --provider myprovider --fragment myFragment --test-class org.superbiz.MyContractTest`
+
+It is important to note that test class should be already created (for example using `arquillian-create-test --named MyContractTest --target-package org.superbiz` command).
+
+See it alive in next terminal cast:
+
+image::https://asciinema.org/a/104383.png[link="https://asciinema.org/a/104383"]

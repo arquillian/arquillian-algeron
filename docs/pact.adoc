@@ -1,0 +1,29 @@
+= Arquillian Algeron Pact
+
+Currently Arquillian Algeron only supports one format of contracts (Pact).
+But we have plans to extend it to other formats like _swagger_.
+
+https://github.com/DiUS/pact-jvm[Pact-JVM] is an implementation for JVM languages of Pact.
+
+Arquillian Algeron Pact is the integration of all Arquillian philosophy/extensions into Consumer Driven Contracts approach using Pact-JVM.
+
+
+https://docs.pact.io/[Pact] is a framework that provides support for Consumer Driven Contracts testing.
+Pact is implemented in several languages such as Ruby, JVM, .NET, JavaScript, Go and Swift.
+
+== How Pact works?
+
+Obviously any Contract test is composed by two faces, one for the consumer and another one for the provider and a contract file that is sent from consumer to provider.
+Let's see the steps to write contract tests using Pact.
+
+. Consumer expectations are set up on a mock server.
+In this way consumer doesn't need to know how to deploy a provider (since it might not be trivial to do it, and probably at the end you'll end up writing end-to-end tests instead of contract tests).
+So consumer tests its client/gateway code to communicate against a mock server.
+. When consumer tests are run, mocked requests and responses are written into a "pact" file, which in fact it is the contract that has been defined in consumer part.
+. The "pact" file are sent to provider project to be replayed against the provider service.
+Then real responses from provider are checked against the expected responses defined in contract.
+. If consumer is able to produce a "pact" file and provider meets all the expectations, then you can say that contract is verified by both parties and will be able to communicate.
+
+These steps can be summarized in next diagram:
+
+image::http://www.pact.io/media/pact_two_parts.png[]

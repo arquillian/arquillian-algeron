@@ -1,0 +1,222 @@
+= Retrievers
+
+== Retrievers as Annotation
+
+One real important thing in provider tests is where contract files are located and how the test should load it.
+To specify this, Arquillian Provider provides some class annotations, but of course you can implement your own as well:
+
+From URL:: `@ContractsUrl(urls = {"http://build.server/zoo_app-animal_service.json"} )`
+From PactBroker:: `@PactBroker(host="${pactbroker.hostname:localhost}", port = "80")`
+Notice that in this case system properties with defaults are supported. Also you need to add `org.arquillian.algeron:arquillian-algeron-pact-provider-pact-broker-loader:${version}` dependency. This is only supported in case of using Pact provider.
+From Folder:: `@ContractsFolder("subfolder/in/resource/directory")`
+You can use absolute or relative path. The loader first checks if resource is in classpath and if not checks directory. As with *PactBroker*, you can use system properties.
+From Maven:: `@ContractsMavenDependency(value = "org.superbiz:contract:[1.0,]")`. Also you need to add `org.arquillian.algeron:arquillian-algeron-provider-maven-retriever:${version}` dependency.
+In case of specifying a range of versions, this loader will take always the highest one.
+You can use system properties to set values too.
+From Git:: `@ContractsGit("https://github.com/lordofthejars/starwarspact.git")` Also you need to add `org.arquillian.algeron:arquillian-algeron-provider-git-retriever:${version}` dependency.
+You can use system properties to set vales too. Inspect `@ContractsGit` annotation for all options that accept this loader such as authentication, use branch or tag or set a pact directory.
+
+It's possible to use a custom Contracts retriever.
+For this, implement interface `ContractsRetriever` and annotate the test class with `@ContractSource(MyOwnRetriever.class)`.
+
+NOTE: class `MyOwnRetriever` must have a default empty constructor or a constructor with one argument of class Class which at runtime will be the test class so you can get custom annotations of test class.
+
+You can see an example at: https://github.com/arquillian/arquillian-algeron/blob/master/provider/core/src/main/java/org/arquillian/algeron/provider/core/retriever/ContractsUrlLoader.java[ContractsUrlLoader] java class.
+
+== Retrievers as Configuration
+
+As it happens with consumer part, Arquillian Algeron allows you to configure retrievers in `arquillian.xml`.
+
+=== Folder Retriever
+
+You can retrieve contracts from folder:
+
+[source, xml]
+.arquillian.xml
+----
+<extension qualifier="algeron-provider">
+  <property name="retrieverConfiguration">
+          provider: folder
+          contractsFolder: <folder where contracts are stored>
+    </property>
+</extension>
+----
+
+=== URL Retriever
+
+You can retrieve contracts from URL/s.
+
+[source, xml]
+.arquillian.xml
+----
+<extension qualifier="algeron-provider">
+  <property name="retrieverConfiguration">
+          provider: url
+          url: url where contract is stored # <1>
+    </property>
+</extension>
+----
+<1> url where contracts are stored (this can be in form of string or yml list)
+
+=== Git Retriever
+
+You can retrieve contracts from Git repository.
+
+[source, xml]
+.arquillian.xml
+----
+<extension qualifier="algeron-provider">
+  <property name="retrieverConfiguration">
+          provider: git
+          url: <giturl>
+          username: username
+          password: password
+  </property>
+</extension>
+----
+
+Also you need to add `org.arquillian.algeron:arquillian-algeron-provider-git-retriever:${version}` dependency.
+
+Possible attributes:
+
+|===
+| Parameter | Description
+
+|url
+|Mandatory field that sets git server url.
+
+|username
+|Optional field that sets the username to access to git repository.
+
+|password
+|Optional field that sets the password to access to git repository.
+
+|passphrase
+|Optional field that sets the passphrase to open the private key.
+
+|remote
+|Optional field that sets the remote name (algeron uses origin by default)
+
+|key
+|Optional field that sets the private key location. (Algeron uses ~/.ssh/id_rsa by default)
+
+|repository
+|Optional field that sets local location of git repository.
+
+|contractGitRepository
+|Optional field that sets inner folder where contracts are stored.
+
+|tag
+|Optional field that checkouts given tag
+
+|branch
+|Optional field that checkouts given branch
+|===
+
+Notice that all these attributes can be set using system properties or environment variable as any other property in `arquillian.xml` such as:
+
+[source, xml]
+.arquillian.xml
+----
+<extension qualifier="algeron-provider">
+  <property name="retrieverConfiguration">
+          provider: git
+          url: <giturl>
+          username: username
+          password: ${env.username}
+  </property>
+</extension>
+----
+
+=== Maven Retriever
+
+You can retrieve contracts from Maven artifacts.
+
+[source, xml]
+.arquillian.xml
+----
+<extension qualifier="algeron-provider">
+  <property name="retrieverConfiguration">
+          provider: maven
+          coordinates: <coordinates of artifact>
+  </property>
+</extension>
+----
+
+Also you need to add `org.arquillian.algeron:arquillian-algeron-provider-maven-retriever:${version}` dependency.
+
+Possible attributes:
+
+|===
+| Parameter | Description
+
+|coordinates
+|Mandatory Maven coordinates of contracts. G:A:V format.
+
+|offline
+|Optional flag that sets Maven to work offline.
+
+|customSettings
+|Optional field that sets the location of custom settings.xml file.
+
+|remoteRepository
+|Optional field that sets URL of remote Maven repository
+|===
+
+Notice that all these attributes can be set using system properties or environment variable as any other property in `arquillian.xml`.
+
+=== Pact Broker Retriever
+
+You can retrieve contracts from Pact Broker artifacts.
+
+[source, xml]
+.arquillian.xml
+----
+<extension qualifier="algeron-provider">
+  <property name="retrieverConfiguration">
+          provider: pactbroker
+          host: <host of pact broker server>
+          port: <port of pact broker server>
+  </property>
+</extension>
+----
+
+Also you need to add `org.arquillian.algeron:arquillian-algeron-pact-provider-pact-broker-loader:${version}` dependency. This is only supported in case of using Pact provider.
+
+Possible attributes:
+
+|===
+| Parameter | Description
+
+|host
+|Mandatory field that sets host of Pact Broker.
+
+|port
+|Mandatory field that sets the port of Pact Broker.
+
+|protocol
+|Optional field that sets protocol used. By default Algeron uses http.
+
+|tags
+|Optional field that sets the tags to retrieve from Pact Broker.
+|===
+
+Notice that all these attributes can be set using system properties or environment variable as any other property in `arquillian.xml`.
+
+== JBoss Forge Arquillian Addon
+
+http://forge.jboss.org[Forge] Arquillian Addon offers an integration with Arquillian Algeron Retrievers.
+
+To use it apart from having the Forge Arquillian Addon installed in Forge, you also need to have Arquillian Algeron Provider dependencies registered on build tool (for example using command `arquillian-algeron-setup-provider --contracts-library pact` <<JBoss_Forge_Arquillian_Algeron_Provider_Addon, JBoss Forge Arquillian Provider Addon>> ).
+
+Each of the publishers have its own command to be registered where you can set its specific configuration parameters.
+
+folder:: `arquillian-algeron-setup-retriever --retriever folder --contract-folder /tmp`
+url:: `arquillian-algeron-setup-retriever --retriever url --url http://localhost`
+git:: `arquillian-algeron-setup-retriever --retriever git --url http://localhost:3000`
+maven:: `arquillian-algeron-setup-retriever --retriever maven --maven-coordinates org.superbiz:foo:1.0.0`
+pactbroker:: `arquillian-algeron-setup-retriever --retriever pactbroker --host http://localhost --port 8081`
+
+See it alive in next terminal cast:
+
+image::https://asciinema.org/a/104390.png[link="https://asciinema.org/a/104390"]
