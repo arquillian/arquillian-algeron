@@ -1,0 +1,79 @@
+= Skipping Deployment
+
+In case of consumer driven contracts, there are two kinds of tests - consumer tests and provider tests.
+Usually in your CI environment you want to run provider tests against two different scenarios:
+
+against a master branch of provider:: to detect if provider team has already implemented all the functionalities defined in contracts.
+against (pre)production:: if you support deploying consumer independently of a provider, then you need to ensure that if you deploy new consumer with the new contracts to (pre)production everything will be still working and you haven't introduced any regressions.
+
+So before deploying a new consumer you need to verify that from provider side everything will continue working.
+
+In both cases, the test itself is exactly the same.
+There is only one slight difference in both cases which how you set up your test environments.
+In the first scenario, you want to deploy the latest provider code. One way of doing it is using Arquillian container control and `@Deployment` method to create the package, start the container and deploy it.
+But in the latter case, when you want to run contract test against provider that is already deployed on (pre)production environment, you don’t need to deploy anything nor control the lifecycle of any container.
+For this reason we provided `skipDeployment` flag.
+
+[source, xml]
+.arquillian.xml
+----
+<extension qualifier="algeron-provider">
+    <property name="skipDeployment">${env.skipDeployment:false}</property>
+</extension>
+----
+
+`skipDeployment` default value by default is set to `false, which means that the test will behave as it usually does, but when it is set to @`true, Arquillian is going to ignore anything related to container lifecycle. `
+To use this strategy your test needs to be defined as `@RunAsClient`. You can think of it as a dynamic way of converting an Arquillian container test into Arquillian standalone test.
+
+Let's see an example:
+
+[source, java]
+.MyServiceProviderTest.java
+----
+@RunWith(Arquillian.class)
+@Provider("test_provider")
+@PactFolder("pacts")
+@RunAsClient
+public class MyServiceProviderTest {
+
+    @Deployment(testable = false)
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class).addClass(MyService.class);
+    }
+
+    @ArquillianResource
+    @Environment("myservice.url") // <1>
+    URL webapp;
+
+    @ArquillianResource
+    Target target;
+
+    @Test
+    public void should_provide_valid_answers() {
+        target.testInteraction(webapp);
+    }
+
+}
+----
+<1> Environment annotation to set URL in case of skipping deployment
+
+Given previous test, if `skipDeployment` is *false*, this test will behave like:
+
+. Start chosen application server (Wildfly, TomEE, Tomcat, ...).
+. Package and Deploy `MyService`.
+. Enrich `webapp` URL with the one provided by application server.
+`@Environment` variable is ignored.
+. Executes contract test against deployed application.
+. Undeploy and stop everything.
+
+But if you set `skipDeployment` to *true*, lifecycle is slightly different:
+
+. Enrich `webapp` URL with Java system property or environment variable named `myservice.url` set in `@Environment`.
+. Executes contract tests against URL provided by `@Environment`.
+
+There is no additional "behind the scenes" Arquillian magic involved.
+Notice that with a simple attribute you can enable/disable how Arquillian behaves regarding the deployment lifecycle, and how you can reuse same test (DRY) for different scenarios.
+
+TIP: If you want to enable skipDeployment feature, you can set Java system property or environment variable `arq.extension.algeron-provider.skipDeployment` to true or by using `${env.skipDeployment:false}` form.
+
+

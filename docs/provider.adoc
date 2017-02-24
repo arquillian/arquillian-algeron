@@ -1,0 +1,332 @@
+= Arquillian Algeron Pact Provider
+
+The next thing you need to do is sent the contract (aka "pact" file) to *Provider* project and validate that provider produces the expected responses to defined requests.
+This is done by replaying all requests defined in contract against real provider and validating that the response is the expected one.
+
+== Pact Provider In Container
+
+Again you can write provider's part using in container or standalone mode.
+In this section, an in container mode example is developed.
+
+Apart from adding Arquillian bom dependencies as mentioned in <<arqdeps, consumer part>>, you need to add arquillian algeron pact dependencies:
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+    <groupId>org.arquillian.algeron</groupId>
+    <artifactId>arquillian-algeron-pact-provider-core</artifactId>
+    <scope>test</scope>
+    <version>${version.arquillian_algeron}</version>
+</dependency>
+<dependency>
+    <groupId>au.com.dius</groupId>
+    <artifactId>pact-jvm-provider_2.11</artifactId>
+    <scope>test</scope>
+    <version>3.5.0-beta.2</version> <!--1-->
+</dependency>
+----
+<1> Arquillian Algeron Pact has been tested with latest version, but it should work with any 3.X version.
+
+After dependencies you can write the test that replies all contracts against provider:
+
+[[provincon]]
+[source, java]
+.MyServiceProviderTest.java
+----
+@RunWith(Arquillian.class)
+@Provider("test_provider") // <1>
+@PactFolder("pacts") // <2>
+public class MyServiceProviderTest {
+
+    @Deployment(testable = false) // <3>
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class).addClass(MyService.class);
+    }
+
+    @ArquillianResource // <4>
+    URL webapp;
+
+    @ArquillianResource // <5>
+    Target target;
+
+    @Test
+    public void should_provide_valid_answers() {
+        target.testInteraction(webapp); // <6>
+    }
+
+}
+----
+<1> Sets the name of provider used in this test
+<2> Configures where to get pact files
+<3> Deploys provider application to app server
+<4> Arquillian injection of URL where application is deployed
+<5> A target is a class that makes all requests to provider. In case of Arquillian Algeron Pact by default it uses an Http Client target
+<6> Makes the request to provider and validates that the response is the expected one
+
+When running this test Arquillian Algeron Pact Provider will do next things:
+
+. Deploy provider to chosen application server, as any other Arquillian test.
+. Read all contract files present in classpath folder `pacts` which the provider is `test_provider`. Of course there can be more than one since a provider might serve several consumers.
+. For each contract, it will extract each of the request/response pair
+. For each request/response it sends the request specified in contract to provider and validate the response against expectations defined in contract.
+
+So as you can see the `should_provide_valid_answers` might be run several times depending on the number of consumers that depends on provider and the number of requests/responses defined.
+But this is something that it is managed automatically by Arquillian Algeron Pact.
+
+You can see full example at: https://github.com/arquillian/arquillian-algeron/tree/master/pact/provider/ftest-container[ftest-incontainer]
+
+== Pact Provider Standalone
+
+The only difference between previous example is that you only need `arquillian-junit-standalone` instead of `arquilian-junit-container` and don't need to define any container adapter.
+Obviously no `@Deployment` method is required:
+
+[source, java]
+.StarWarsProviderTest
+----
+
+@RunWith(Arquillian.class)
+@Provider("planets_provider")
+@PactFolder("pacts")
+public class StarWarsProviderTest {
+
+    @ClassRule // <1>
+    public static final ClientDriverRule embeddedService = new ClientDriverRule(8332);
+
+    @ArquillianResource
+    Target target;
+
+    @BeforeClass // <2>
+    public static void recordServerInteractions() {
+        embeddedService.addExpectation(
+                onRequestTo("/rest/planet/orbital/average")
+                    .withMethod(ClientDriverRequest.Method.GET),
+                giveResponse("1298.3", "text/plain").withStatus(200));
+
+        embeddedService.addExpectation(
+                onRequestTo("/rest/planet/orbital/biggest")
+                        .withMethod(ClientDriverRequest.Method.GET),
+                giveResponseAsBytes(StarWarsProviderTest.class.getResourceAsStream("/server.json"), "application/json").withStatus(200));
+
+    }
+
+
+    @Test
+    public void validateProvider() {
+        target.testInteraction();
+    }
+
+}
+----
+<1> Stub server to not having to having to deploy an application
+<2> Expectations/Implementation of provider server
+
+You can see full example at: https://github.com/arquillian/arquillian-algeron/tree/master/pact/provider/ftest[ftest]
+
+== Pact Provider Enrichers
+
+You can enrich your test with current consumer and current request/response interaction by using `@CurrentConsumer` and `CurrentInteraction` annotations.
+
+[source, java]
+----
+@CurrentConsumer
+Consumer consumer;
+
+@CurrentInteraction
+RequestResponseInteraction interaction;
+----
+
+== Pact Provider Configuration
+
+Arquillian Algeron Pact Provider can be configured using Arquillian configuration mechanism (`arquillian.xml` file or system properties).
+
+[source, xml]
+.arquillian.xml
+----
+<?xml version="1.0"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://jboss.org/schema/arquillian"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian
+    http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <extension qualifier="pact-provider">
+        <property name="port">8332</property>
+    </extension>
+
+</arquillian>
+----
+
+The attributes are:
+
+|===
+| Attribute Name | Description | Default Value
+
+|targetUrl
+|Url to used by `target` to connect to provider
+|
+
+|insecure
+|In case of https if test should skip https validations
+|false
+
+|protocol
+|protocol used to connect in case of not using `targetUrl` property
+|http
+
+|host
+|host used to connect in case of not using `targetUrl` property
+|localhost
+
+|port
+|port used to connect in case of not using `targetUrl` property
+|8080
+
+|path
+|path appended at the end of the host in case of not using `targetUrl` property
+|/
+
+|===
+
+Notice that in case of using incontainer tests you don't need to configure any of these parameters (except if _insecure_ is required) since you can use the URL injected by Arquillian.
+See this at <<provincon, provider in container>> example.
+
+== Pact States
+
+Each interaction in a pact should be verified in isolation, with no context maintained from the previous interactions.
+Provider states allow you to set up data on the provider by injecting it straight into the datasource before the interaction is run, so that it can make a response that matches what the consumer expects.
+
+Provider states also allow the consumer to make the same request with different expected responses.
+
+Provider state is all about the state of the provider, not about the state of the consumer, or about what is in the request.
+
+In consumer side you set an state using `given` section.
+
+For example:
+
+`builder.given("test state")...` sets state as plain String.
+
+Or in case you want to set some parameters you can do:
+
+[source, java]
+----
+Map parameters = new HashMap<>();
+builder.given("test state", parameters)...
+----
+
+which in this case sets an state name with some key/value pairs.
+
+But in *Arquillian Algeron Pact Provider* we also give support for states in the form of _Cucumber_ expression.
+You can define an state with the form:
+
+`builder.given("I have 36 cukes in my belly")...`
+
+So the next question is how can I respond to states in provider side?
+Let's see an example in each case:
+
+In first example you only set a state with a name, without any parameter, so in your provider side you are going to do:
+
+[source, java]
+----
+@State("test state")
+public void testStateMethod(Map<String, Object> params) {
+    // Do some data preparation
+}
+----
+
+This method is executed if and only if given interaction has defined the state `test state`.
+
+Obviously in previous example you have no way to pass parameters from consumer to provider.
+In second example you are passing a map with some parameters.
+To recover them you need to add as method parameter a `Map`.
+
+[source, java]
+----
+@State("test state")
+public void testStateMethod(Map<String, Object> params) {
+}
+----
+
+This method is executed if and only if given interaction has defined the state `test state` and injects the defined parameters in consumer as method parameter.
+
+Also the third case uses Cucumber-lik expression, so you need similar way to take parameters.
+
+[source, java]
+----
+@State("I have (\\d+) cukes in my belly")
+public void stateMethod(int numberOfCukes) {
+    this.numberOfCukes = numberOfCukes;
+}
+----
+
+Notice that now as happens with Cucumber you need to specify the regular expression and you get the values as method parameters.
+Native values and list are supported.
+Lists are set in consumer side as comma-separated values and scanned as `\\s+`.
+
+== AssertJ integration
+
+Arquillian Algeron Pact Provider implements custom matcher of AssertJ for validating contracts against provider.
+
+First thing to do to use AssertJ matcher is add `arquillian-algeron-pact-provider-assertj` dependency, and the *AssertJ* you want to use.
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+    <groupId>org.arquillian.algeron</groupId>
+    <artifactId>arquillian-algeron-pact-provider-assertj</artifactId>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>org.assertj</groupId>
+    <artifactId>assertj-core</artifactId>
+    <scope>test</scope>
+</dependency>
+----
+
+Finally in your test you can use the overloaded `assertThat` static method receiving a `Target` type.
+
+[source, java]
+----
+@ArquillianResource
+URL webapp;
+
+@ArquillianResource
+Target target;
+
+@Test
+public void should_provide_valid_answers() {
+    assertThat(target).withUrl(webapp).satisfiesContract();
+}
+----
+
+Notice that now instead of writing `target.testInteraction(webapp);` you are using a more readable way of asserting test.
+
+== Arquillian Recorder Reporter integration
+
+Currently pact generates report from contract tests in several formats, including Markdown or JSON.
+You can also report using Arquillian Recorder Reporter (https://github.com/arquillian/arquillian-recorder) extension.
+
+To use it you need to annotate at test class level with `VerificationReports` and set type to `recorder` and add Arquillian Recorder Reporter dependency `org.arquillian.extension:arquillian-recorder-reporter-impl:<version>`.
+
+TIP: you can set more than reporter at once so you can do `@VerificationReports(value = {"console", "recorder"})`.
+
+[[JBoss_Forge_Arquillian_Algeron_Provider_Addon]]
+== JBoss Forge Arquillian Addon
+
+http://forge.jboss.org[Forge] Arquillian Addon offers an integration with Arquillian Algeron Provider.
+
+To use it apart from having the Forge Arquillian Addon installed in Forge, you need to have arquillian dependencies registered on build tool.
+
+To register Arquillian Provider dependencies in build tool just run next command:
+
+`arquillian-algeron-setup-provider --contracts-library pact`
+
+After that you can enrich a given Arquillian test with provider annotations:
+
+`arquillian-algeron-create-provider-test --provider myprovider --test-class org.superbiz.MyContractTest`
+
+It is important to note that test class should be already created (for example using `arquillian-create-test --named MyContractTest --target-package org.superbiz` command).
+
+See it alive in next terminal cast:
+
+image::https://asciinema.org/a/104387.png[link="https://asciinema.org/a/104387"]
