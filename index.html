@@ -530,10 +530,11 @@ table.CodeRay td.code>pre{padding:0}
 <ul class="sectlevel2">
 <li><a href="#_arquillian_algeron_pact_consumer">4.1. Arquillian Algeron Pact Consumer</a>
 <ul class="sectlevel3">
-<li><a href="#_arquillian_algeron_pact_consumer_enrichers">4.1.1. Arquillian Algeron Pact Consumer Enrichers</a></li>
-<li><a href="#_arquillian_algeron_pact_consumer_in_container">4.1.2. Arquillian Algeron Pact Consumer In Container</a></li>
-<li><a href="#_arquillian_algeron_pact_consumer_standalone">4.1.3. Arquillian Algeron Pact Consumer Standalone</a></li>
-<li><a href="#_arquillian_algeron_pact_consumer_configuration">4.1.4. Arquillian Algeron Pact Consumer Configuration</a></li>
+<li><a href="#_pact_consumer_enrichers">4.1.1. Pact Consumer Enrichers</a></li>
+<li><a href="#_pact_consumer_in_container">4.1.2. Pact Consumer In Container</a></li>
+<li><a href="#_pact_consumer_standalone">4.1.3. Pact Consumer Standalone</a></li>
+<li><a href="#_pact_consumer_configuration">4.1.4. Pact Consumer Configuration</a></li>
+<li><a href="#JBoss_Forge_Arquillian_Algeron_Consumer_Addon">4.1.5. JBoss Forge Arquillian Addon</a></li>
 </ul>
 </li>
 <li><a href="#_arquillian_algeron_consumer_publisher">4.2. Arquillian Algeron Consumer Publisher</a>
@@ -542,6 +543,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_url_publisher">4.2.2. URL Publisher</a></li>
 <li><a href="#_git_publisher">4.2.3. Git Publisher</a></li>
 <li><a href="#_spi">4.2.4. SPI</a></li>
+<li><a href="#_jboss_forge_arquillian_addon">4.2.5. JBoss Forge Arquillian Addon</a></li>
 </ul>
 </li>
 </ul>
@@ -552,17 +554,19 @@ table.CodeRay td.code>pre{padding:0}
 <ul class="sectlevel3">
 <li><a href="#_retrievers_as_annotation">5.1.1. Retrievers as Annotation</a></li>
 <li><a href="#_retrievers_as_configuration">5.1.2. Retrievers as Configuration</a></li>
+<li><a href="#_jboss_forge_arquillian_addon_2">5.1.3. JBoss Forge Arquillian Addon</a></li>
 </ul>
 </li>
 <li><a href="#_arquillian_algeron_pact_provider">5.2. Arquillian Algeron Pact Provider</a>
 <ul class="sectlevel3">
-<li><a href="#_arquillian_algeron_pact_provider_in_container">5.2.1. Arquillian Algeron Pact Provider In Container</a></li>
-<li><a href="#_arquillian_algeron_pact_provider_standalone">5.2.2. Arquillian Algeron Pact Provider Standalone</a></li>
-<li><a href="#_arquillian_algeron_pact_provider_enrichers">5.2.3. Arquillian Algeron Pact Provider Enrichers</a></li>
-<li><a href="#_arquillian_algeron_pact_provider_configuration">5.2.4. Arquillian Algeron Pact Provider Configuration</a></li>
+<li><a href="#_pact_provider_in_container">5.2.1. Pact Provider In Container</a></li>
+<li><a href="#_pact_provider_standalone">5.2.2. Pact Provider Standalone</a></li>
+<li><a href="#_pact_provider_enrichers">5.2.3. Pact Provider Enrichers</a></li>
+<li><a href="#_pact_provider_configuration">5.2.4. Pact Provider Configuration</a></li>
 <li><a href="#_pact_states">5.2.5. Pact States</a></li>
 <li><a href="#_assertj_integration">5.2.6. AssertJ integration</a></li>
 <li><a href="#_arquillian_recorder_reporter_integration">5.2.7. Arquillian Recorder Reporter integration</a></li>
+<li><a href="#JBoss_Forge_Arquillian_Algeron_Provider_Addon">5.2.8. JBoss Forge Arquillian Addon</a></li>
 </ul>
 </li>
 <li><a href="#_skipping_deployment">5.3. Skipping Deployment</a></li>
@@ -698,7 +702,7 @@ Then real responses from provider are checked against the expected responses def
 Consumer part of Consumer-Driven Contract defines requirements from the consumer of the API which are then used to develop the client interaction with the API as well as to validate provider implementation.</p>
 </div>
 <div class="sect3">
-<h4 id="_arquillian_algeron_pact_consumer_enrichers"><a class="anchor" href="#_arquillian_algeron_pact_consumer_enrichers"></a>4.1.1. Arquillian Algeron Pact Consumer Enrichers</h4>
+<h4 id="_pact_consumer_enrichers"><a class="anchor" href="#_pact_consumer_enrichers"></a>4.1.1. Pact Consumer Enrichers</h4>
 <div class="paragraph">
 <p>You can use in a test <code>@StubServer</code> annotation to inject URL where stub http server is started.</p>
 </div>
@@ -716,7 +720,7 @@ Consumer part of Consumer-Driven Contract defines requirements from the consumer
 </div>
 </div>
 <div class="sect3">
-<h4 id="_arquillian_algeron_pact_consumer_in_container"><a class="anchor" href="#_arquillian_algeron_pact_consumer_in_container"></a>4.1.2. Arquillian Algeron Pact Consumer In Container</h4>
+<h4 id="_pact_consumer_in_container"><a class="anchor" href="#_pact_consumer_in_container"></a>4.1.2. Pact Consumer In Container</h4>
 <div class="paragraph">
 <p>Arquillian has two modes of working <strong>In Container</strong> (which means having a <code>@Deployment</code> method) and Arquillian takes care of managing lifecycle of the server and deploy the archive, or <strong>Standalone</strong> (no <code>@Deployment</code> method) where Arquillian assumes that everything is already deployed.</p>
 </div>
@@ -826,7 +830,7 @@ Nothing new here:</p>
                 .toFragment(); <i class="conum" data-value="4"></i><b>(4)</b>
     }
 
-    <span class="annotation">@EJB</span> <i class="conum" data-value="5"></i><b>(5)</b>
+    <span class="annotation">@Inject</span> <i class="conum" data-value="5"></i><b>(5)</b>
     ClientGateway clientGateway;
 
     <span class="annotation">@StubServer</span> <i class="conum" data-value="6"></i><b>(6)</b>
@@ -917,7 +921,7 @@ You can use <code>@Pact</code> annotation at class level, so methods that define
 </div>
 </div>
 <div class="sect3">
-<h4 id="_arquillian_algeron_pact_consumer_standalone"><a class="anchor" href="#_arquillian_algeron_pact_consumer_standalone"></a>4.1.3. Arquillian Algeron Pact Consumer Standalone</h4>
+<h4 id="_pact_consumer_standalone"><a class="anchor" href="#_pact_consumer_standalone"></a>4.1.3. Pact Consumer Standalone</h4>
 <div class="paragraph">
 <p><strong>Standalone</strong> mode (no <code>@Deployment</code> method), Arquillian assumes that everything is already deployed.</p>
 </div>
@@ -970,7 +974,7 @@ Obviously no <code>@Deployment</code> method is required:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_arquillian_algeron_pact_consumer_configuration"><a class="anchor" href="#_arquillian_algeron_pact_consumer_configuration"></a>4.1.4. Arquillian Algeron Pact Consumer Configuration</h4>
+<h4 id="_pact_consumer_configuration"><a class="anchor" href="#_pact_consumer_configuration"></a>4.1.4. Pact Consumer Configuration</h4>
 <div class="paragraph">
 <p>Arquillian Algeron Pact Consumer can be configured using Arquillian configuration mechanism (<code>arquillian.xml</code> file or system properties).</p>
 </div>
@@ -1045,6 +1049,38 @@ Obviously no <code>@Deployment</code> method is required:</p>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect3">
+<h4 id="JBoss_Forge_Arquillian_Algeron_Consumer_Addon"><a class="anchor" href="#JBoss_Forge_Arquillian_Algeron_Consumer_Addon"></a>4.1.5. JBoss Forge Arquillian Addon</h4>
+<div class="paragraph">
+<p><a href="http://forge.jboss.org">Forge</a> Arquillian Addon offers an integration with Arquillian Algeron Consumer.</p>
+</div>
+<div class="paragraph">
+<p>To use it apart from having the Forge Arquillian Addon installed in Forge, you need to have arquillian dependencies registered on build tool.</p>
+</div>
+<div class="paragraph">
+<p>To register Arquillian Consumer dependencies in build tool just run next command:</p>
+</div>
+<div class="paragraph">
+<p><code>arquillian-algeron-setup-consumer --contracts-library pact</code></p>
+</div>
+<div class="paragraph">
+<p>After that you can enrich a given Arquillian test with consumer annotations and contract scaffolding with next command:</p>
+</div>
+<div class="paragraph">
+<p><code>arquillian-algeron-create-contract-fragment --consumer myconsumer --provider myprovider --fragment myFragment --test-class org.superbiz.MyContractTest</code></p>
+</div>
+<div class="paragraph">
+<p>It is important to note that test class should be already created (for example using <code>arquillian-create-test --named MyContractTest --target-package org.superbiz</code> command).</p>
+</div>
+<div class="paragraph">
+<p>See it alive in next terminal cast:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="https://asciinema.org/a/104383"><img src="https://asciinema.org/a/104383.png" alt="104383"></a>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1291,6 +1327,42 @@ To make it so you need create a class that implements <code>org.arquillian.alger
 </div>
 <div class="paragraph">
 <p>You can see an example at <a href="https://github.com/arquillian/arquillian-algeron/tree/master/consumer/git-publisher" class="bare">https://github.com/arquillian/arquillian-algeron/tree/master/consumer/git-publisher</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_jboss_forge_arquillian_addon"><a class="anchor" href="#_jboss_forge_arquillian_addon"></a>4.2.5. JBoss Forge Arquillian Addon</h4>
+<div class="paragraph">
+<p><a href="http://forge.jboss.org">Forge</a> Arquillian Addon offers an integration with Arquillian Algeron Publishers.</p>
+</div>
+<div class="paragraph">
+<p>To use it apart from having the Forge Arquillian Addon installed in Forge, you also need to have Arquillian Algeron Consumer dependencies registered on build tool (for example using command <code>arquillian-algeron-setup-consumer --contracts-library pact</code> <a href="#JBoss_Forge_Arquillian_Algeron_Consumer_Addon">JBoss Forge Arquillian Consumer Addon</a> ).</p>
+</div>
+<div class="paragraph">
+<p>Each of the publishers have its own command to be registered where you can set its specific configuration parameters.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">folder</dt>
+<dd>
+<p><code>arquillian-algeron-setup-publisher --publisher folder --output-folder /tmp/pacts</code></p>
+</dd>
+<dt class="hdlist1">url</dt>
+<dd>
+<p><code>arquillian-algeron-setup-publisher --publisher url --url <a href="http://localhost" class="bare">http://localhost</a></code></p>
+</dd>
+<dt class="hdlist1">git</dt>
+<dd>
+<p><code>arquillian-algeron-setup-publisher --publisher git --url <a href="http://localhost" class="bare">http://localhost</a> --comment newcomment</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>See it alive in next terminal cast:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="https://asciinema.org/a/104386"><img src="https://asciinema.org/a/104386.png" alt="104386"></a>
+</div>
 </div>
 </div>
 </div>
@@ -1612,6 +1684,50 @@ class <code>MyOwnRetriever</code> must have a default empty constructor or a con
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_jboss_forge_arquillian_addon_2"><a class="anchor" href="#_jboss_forge_arquillian_addon_2"></a>5.1.3. JBoss Forge Arquillian Addon</h4>
+<div class="paragraph">
+<p><a href="http://forge.jboss.org">Forge</a> Arquillian Addon offers an integration with Arquillian Algeron Retrievers.</p>
+</div>
+<div class="paragraph">
+<p>To use it apart from having the Forge Arquillian Addon installed in Forge, you also need to have Arquillian Algeron Provider dependencies registered on build tool (for example using command <code>arquillian-algeron-setup-provider --contracts-library pact</code> <a href="#JBoss_Forge_Arquillian_Algeron_Provider_Addon">JBoss Forge Arquillian Provider Addon</a> ).</p>
+</div>
+<div class="paragraph">
+<p>Each of the publishers have its own command to be registered where you can set its specific configuration parameters.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">folder</dt>
+<dd>
+<p><code>arquillian-algeron-setup-retriever --retriever folder --contract-folder /tmp</code></p>
+</dd>
+<dt class="hdlist1">url</dt>
+<dd>
+<p><code>arquillian-algeron-setup-retriever --retriever url --url <a href="http://localhost" class="bare">http://localhost</a></code></p>
+</dd>
+<dt class="hdlist1">git</dt>
+<dd>
+<p><code>arquillian-algeron-setup-retriever --retriever git --url <a href="http://localhost:3000" class="bare">http://localhost:3000</a></code></p>
+</dd>
+<dt class="hdlist1">maven</dt>
+<dd>
+<p><code>arquillian-algeron-setup-retriever --retriever maven --maven-coordinates org.superbiz:foo:1.0.0</code></p>
+</dd>
+<dt class="hdlist1">pactbroker</dt>
+<dd>
+<p><code>arquillian-algeron-setup-retriever --retriever pactbroker --host <a href="http://localhost" class="bare">http://localhost</a> --port 8081</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>See it alive in next terminal cast:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="https://asciinema.org/a/104390"><img src="https://asciinema.org/a/104390.png" alt="104390"></a>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_arquillian_algeron_pact_provider"><a class="anchor" href="#_arquillian_algeron_pact_provider"></a>5.2. Arquillian Algeron Pact Provider</h3>
@@ -1620,7 +1736,7 @@ class <code>MyOwnRetriever</code> must have a default empty constructor or a con
 This is done by replaying all requests defined in contract against real provider and validating that the response is the expected one.</p>
 </div>
 <div class="sect3">
-<h4 id="_arquillian_algeron_pact_provider_in_container"><a class="anchor" href="#_arquillian_algeron_pact_provider_in_container"></a>5.2.1. Arquillian Algeron Pact Provider In Container</h4>
+<h4 id="_pact_provider_in_container"><a class="anchor" href="#_pact_provider_in_container"></a>5.2.1. Pact Provider In Container</h4>
 <div class="paragraph">
 <p>Again you can write provider&#8217;s part using in container or standalone mode.
 In this section, an in container mode example is developed.</p>
@@ -1739,7 +1855,7 @@ But this is something that it is managed automatically by Arquillian Algeron Pac
 </div>
 </div>
 <div class="sect3">
-<h4 id="_arquillian_algeron_pact_provider_standalone"><a class="anchor" href="#_arquillian_algeron_pact_provider_standalone"></a>5.2.2. Arquillian Algeron Pact Provider Standalone</h4>
+<h4 id="_pact_provider_standalone"><a class="anchor" href="#_pact_provider_standalone"></a>5.2.2. Pact Provider Standalone</h4>
 <div class="paragraph">
 <p>The only difference between previous example is that you only need <code>arquillian-junit-standalone</code> instead of <code>arquilian-junit-container</code> and don&#8217;t need to define any container adapter.
 Obviously no <code>@Deployment</code> method is required:</p>
@@ -1798,7 +1914,7 @@ Obviously no <code>@Deployment</code> method is required:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_arquillian_algeron_pact_provider_enrichers"><a class="anchor" href="#_arquillian_algeron_pact_provider_enrichers"></a>5.2.3. Arquillian Algeron Pact Provider Enrichers</h4>
+<h4 id="_pact_provider_enrichers"><a class="anchor" href="#_pact_provider_enrichers"></a>5.2.3. Pact Provider Enrichers</h4>
 <div class="paragraph">
 <p>You can enrich your test with current consumer and current request/response interaction by using <code>@CurrentConsumer</code> and <code>CurrentInteraction</code> annotations.</p>
 </div>
@@ -1813,7 +1929,7 @@ RequestResponseInteraction interaction;</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_arquillian_algeron_pact_provider_configuration"><a class="anchor" href="#_arquillian_algeron_pact_provider_configuration"></a>5.2.4. Arquillian Algeron Pact Provider Configuration</h4>
+<h4 id="_pact_provider_configuration"><a class="anchor" href="#_pact_provider_configuration"></a>5.2.4. Pact Provider Configuration</h4>
 <div class="paragraph">
 <p>Arquillian Algeron Pact Provider can be configured using Arquillian configuration mechanism (<code>arquillian.xml</code> file or system properties).</p>
 </div>
@@ -2043,6 +2159,38 @@ you can set more than reporter at once so you can do <code>@VerificationReports(
 </table>
 </div>
 </div>
+<div class="sect3">
+<h4 id="JBoss_Forge_Arquillian_Algeron_Provider_Addon"><a class="anchor" href="#JBoss_Forge_Arquillian_Algeron_Provider_Addon"></a>5.2.8. JBoss Forge Arquillian Addon</h4>
+<div class="paragraph">
+<p><a href="http://forge.jboss.org">Forge</a> Arquillian Addon offers an integration with Arquillian Algeron Provider.</p>
+</div>
+<div class="paragraph">
+<p>To use it apart from having the Forge Arquillian Addon installed in Forge, you need to have arquillian dependencies registered on build tool.</p>
+</div>
+<div class="paragraph">
+<p>To register Arquillian Provider dependencies in build tool just run next command:</p>
+</div>
+<div class="paragraph">
+<p><code>arquillian-algeron-setup-provider --contracts-library pact</code></p>
+</div>
+<div class="paragraph">
+<p>After that you can enrich a given Arquillian test with provider annotations:</p>
+</div>
+<div class="paragraph">
+<p><code>arquillian-algeron-create-provider-test --provider myprovider --test-class org.superbiz.MyContractTest</code></p>
+</div>
+<div class="paragraph">
+<p>It is important to note that test class should be already created (for example using <code>arquillian-create-test --named MyContractTest --target-package org.superbiz</code> command).</p>
+</div>
+<div class="paragraph">
+<p>See it alive in next terminal cast:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="https://asciinema.org/a/104387"><img src="https://asciinema.org/a/104387.png" alt="104387"></a>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_skipping_deployment"><a class="anchor" href="#_skipping_deployment"></a>5.3. Skipping Deployment</h3>
@@ -2171,7 +2319,7 @@ Notice that with a simple attribute you can enable/disable how Arquillian behave
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-If you want to enable skipDeployment feature, you can set Java system property or environment variable <code>arq.extension.algeron-provider.SkipDeployment</code> to true or by using <code>${env.skipDeployment:false}</code> form.
+If you want to enable skipDeployment feature, you can set Java system property or environment variable <code>arq.extension.algeron-provider.skipDeployment</code> to true or by using <code>${env.skipDeployment:false}</code> form.
 </td>
 </tr>
 </table>
@@ -2182,7 +2330,7 @@ If you want to enable skipDeployment feature, you can set Java system property o
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-02-23 14:16:18 CET
+Last updated 2017-02-24 12:37:13 CET
 </div>
 </div>
 </body>
