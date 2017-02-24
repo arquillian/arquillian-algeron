@@ -114,7 +114,7 @@ public class ClientGatewayTest {
                 .toFragment(); // <4>
     }
 
-    @EJB // <5>
+    @Inject // <5>
     ClientGateway clientGateway;
 
     @StubServer // <6>

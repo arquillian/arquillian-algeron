@@ -74,6 +74,6 @@ But if you set `skipDeployment` to *true*, lifecycle is slightly different:
 There is no additional "behind the scenes" Arquillian magic involved.
 Notice that with a simple attribute you can enable/disable how Arquillian behaves regarding the deployment lifecycle, and how you can reuse same test (DRY) for different scenarios.
 
-TIP: If you want to enable skipDeployment feature, you can set Java system property or environment variable `arq.extension.algeron-provider.SkipDeployment` to true or by using `${env.skipDeployment:false}` form.
+TIP: If you want to enable skipDeployment feature, you can set Java system property or environment variable `arq.extension.algeron-provider.skipDeployment` to true or by using `${env.skipDeployment:false}` form.
 
 
