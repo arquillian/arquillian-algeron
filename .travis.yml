@@ -16,7 +16,7 @@ cache:
     - $HOME/.m2
 
 before_install:
-  - BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+  - BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
   - BUILD_DOCS=$(git diff --name-only $TRAVIS_COMMIT_RANGE | grep -E 'README.adoc|^docs/.*.adoc$' | wc -l)
   - '[ $BRANCH == "master" ] && [ $BUILD_DOCS -ge 1 ] && GENERATE_DOC=0|| GENERATE_DOC=1'
   - echo $BRANCH 
