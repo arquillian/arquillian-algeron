@@ -19,6 +19,9 @@ before_install:
   - BRANCH=$(git rev-parse --abbrev-ref HEAD)
   - BUILD_DOCS=$(git diff --name-only $TRAVIS_COMMIT_RANGE | grep -E 'README.adoc|^docs/.*.adoc$' | wc -l)
   - '[ $BRANCH == "master" ] && [ $BUILD_DOCS -ge 1 ] && GENERATE_DOC=0|| GENERATE_DOC=1'
+  - echo $BRANCH 
+  - echo $BUILD_DOCS
+  - echo $GENERATE_DOC
   - 'if [ $GENERATE_DOC == 0 ]; then
       git config user.name "${GH_USER}";
       git config user.email "${GH_EMAIL}";
