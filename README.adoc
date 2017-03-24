@@ -15,7 +15,9 @@ image:https://travis-ci.org/arquillian/arquillian-pact.svg?branch=master["Build 
 
 IMPORTANT: Using Arquillian Algeron Pact Provider requires at least Arquillian Core 1.1.12.Final or above.
 
-You can read full rendered documentation at: http://arquillian.org/arquillian-algeron/
+ifndef::generated-doc[]
+To read complete documentation visit http://arquillian.org/arquillian-algeron/
+endif::generated-doc[]
 
 == What is Arquillian Algeron?
 
@@ -41,6 +43,7 @@ Also notice that thanks of these tests, if anyone changes the client or the serv
 
 You can read more about Consumer-Driven contracts http://martinfowler.com/articles/consumerDrivenContracts.html[here] or at book https://www.manning.com/books/testing-java-microservices[Testing Java Microservices] chapter 6.
 
+ifdef::generated-doc[]
 == Pact
 
 include::{asciidoctor-source}/pact.adoc[leveloffset=+2]
@@ -59,3 +62,4 @@ include::{asciidoctor-source}/provider.adoc[leveloffset=+2]
 
 include::{asciidoctor-source}/skipDeployment.adoc[leveloffset=+2]
 
+endif::generated-doc[]
