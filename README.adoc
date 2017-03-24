@@ -11,7 +11,7 @@
 :toc: left
 :toclevels: 3
 
-image:https://travis-ci.org/arquillian/arquillian-pact.svg?branch=master["Build Status", link="https://travis-ci.org/arquillian/arquillian-pact"]
+image:https://travis-ci.org/arquillian/arquillian-pact.svg?branch=master["Build Status", link="https://travis-ci.org/arquillian/arquillian-algeron"]
 
 IMPORTANT: Using Arquillian Algeron Pact Provider requires at least Arquillian Core 1.1.12.Final or above.
 
