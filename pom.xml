@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.jboss</groupId>
     <artifactId>jboss-parent</artifactId>
-    <version>21</version>
+    <version>22</version>
     <relativePath/>
   </parent>
 
@@ -53,11 +53,11 @@
   </issueManagement>
 
   <properties>
-    <version.arquillian_core>1.1.12.Final</version.arquillian_core>
+    <version.arquillian_core>1.1.13.Final</version.arquillian_core>
     <version.junit>4.12</version.junit>
     <version.mockito>1.10.19</version.mockito>
-    <version.assertj>3.6.0</version.assertj>
-    <version.shrinkwrap.resolvers>2.2.4</version.shrinkwrap.resolvers>
+    <version.assertj>3.6.2</version.assertj>
+    <version.shrinkwrap.resolvers>2.2.6</version.shrinkwrap.resolvers>
     <version.pact>3.5.0-beta.3</version.pact>
     <!-- Requirement from pact to run-->
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -68,7 +68,7 @@
     <version.rest-assured>3.0.1</version.rest-assured>
     <version.jgit>4.5.0.201609210915-r</version.jgit>
     <version.slf4j-api>1.7.21</version.slf4j-api>
-    <version.snakeyaml>1.17</version.snakeyaml>
+    <version.snakeyaml>1.18</version.snakeyaml>
     <version.wiremock>2.3.1</version.wiremock>
     <version.jcip-annotations>1.0</version.jcip-annotations>
     <version.arquillian.recorder>1.1.5.Final</version.arquillian.recorder>
