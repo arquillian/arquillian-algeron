@@ -151,15 +151,15 @@ public class ContractsGitLoaderTest {
     private static class TestWithPactRandomDirectory {
     }
 
-    @ContractsGit(value= "", repository = "/tmp")
+    @ContractsGit(value = "", repository = "/tmp")
     private static class TestWithPactRepositoryDirectory {
     }
 
-    @ContractsGit(value= "", repository = "/tmp", tag = "mytag", branch = "mybranch")
+    @ContractsGit(value = "", repository = "/tmp", tag = "mytag", branch = "mybranch")
     private static class TestWithPactRepositoryDirectoryAndTag {
     }
 
-    @ContractsGit(value= "", repository = "/tmp", contractsDirectory = "pacts")
+    @ContractsGit(value = "", repository = "/tmp", contractsDirectory = "pacts")
     private static class TestWithPactRepositoryDirectoryAndSubfolder {
     }
 

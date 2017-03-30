@@ -29,6 +29,7 @@ public class GitOperations {
 
     /**
      * Checks if given folder is a git repository
+     *
      * @param folder to check
      * @return true if it is a git repository, false otherwise.
      */
@@ -51,6 +52,7 @@ public class GitOperations {
 
     /**
      * Opens local git repository.
+     *
      * @param path of git repository
      * @return Git instance
      * @throws IOException
@@ -61,6 +63,7 @@ public class GitOperations {
 
     /**
      * Checkout existing tag.
+     *
      * @param git instance.
      * @param tag to move
      * @return Ref to current branch
@@ -76,7 +79,8 @@ public class GitOperations {
 
     /**
      * Checks if given branch has been checkedout locally too.
-     * @param git instance.
+     *
+     * @param git    instance.
      * @param branch to check.
      * @return True if it is local, false otherwise.
      */
@@ -84,7 +88,7 @@ public class GitOperations {
         try {
             final List<Ref> refs = git.branchList().call();
             return refs.stream()
-                    .anyMatch( ref -> ref.getName().endsWith(branch));
+                    .anyMatch(ref -> ref.getName().endsWith(branch));
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -93,7 +97,8 @@ public class GitOperations {
 
     /**
      * Checks if given branch is remote.
-     * @param git instance.
+     *
+     * @param git    instance.
      * @param branch to check.
      * @param remote name.
      * @return True if it is remote, false otherwise.
@@ -104,7 +109,7 @@ public class GitOperations {
                     .setListMode(ListBranchCommand.ListMode.REMOTE).call();
 
             final String remoteBranch = remote + "/" + branch;
-            return refs.stream().anyMatch( ref -> ref.getName().endsWith(remoteBranch));
+            return refs.stream().anyMatch(ref -> ref.getName().endsWith(remoteBranch));
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -112,7 +117,8 @@ public class GitOperations {
 
     /**
      * Checkout existing branch.
-     * @param git instance.
+     *
+     * @param git    instance.
      * @param branch to move
      * @return Ref to current branch
      */
@@ -128,7 +134,8 @@ public class GitOperations {
 
     /**
      * Checkout existing branch.
-     * @param git instance.
+     *
+     * @param git    instance.
      * @param branch to move
      * @param remote repository name
      * @return Ref to current branch
@@ -148,11 +155,12 @@ public class GitOperations {
 
     /**
      * Executes a checkout -b command using given branch.
-     * @param git instance.
+     *
+     * @param git    instance.
      * @param branch to create and checkout.
      * @return Ref to current branch.
      */
-    public Ref createBranchAndCheckout(Git git, String branch)  {
+    public Ref createBranchAndCheckout(Git git, String branch) {
         try {
             return git.checkout()
                     .setCreateBranch(true)
@@ -166,7 +174,8 @@ public class GitOperations {
 
     /**
      * Add all files and commit them with given message. This is equivalent as doing git add . git commit -m "message".
-     * @param git instance.
+     *
+     * @param git     instance.
      * @param message of the commit.
      * @return RevCommit of this commit.
      */
@@ -185,10 +194,11 @@ public class GitOperations {
 
     /**
      * Add all files and commit them with given message. This is equivalent as doing git add . git commit -m "message".
-     * @param git instance.
+     *
+     * @param git     instance.
      * @param message of the commit.
-     * @param author of the commit.
-     * @param email of author of the commit.
+     * @param author  of the commit.
+     * @param email   of author of the commit.
      * @return RevCommit of this commit.
      */
     public RevCommit addAndCommit(Git git, String message, String author, String email) {
@@ -207,8 +217,9 @@ public class GitOperations {
 
     /**
      * Pull repository from current branch and remote branch with same name as current
-     * @param git instance.
-     * @param remote to be used.
+     *
+     * @param git          instance.
+     * @param remote       to be used.
      * @param remoteBranch to use.
      */
     public PullResult pullFromRepository(Git git, String remote, String remoteBranch) {
@@ -224,7 +235,8 @@ public class GitOperations {
 
     /**
      * Push all changes and tags to given remote.
-     * @param git instance.
+     *
+     * @param git    instance.
      * @param remote to be used.
      * @return List of all results of given push.
      */
@@ -242,8 +254,9 @@ public class GitOperations {
 
     /**
      * Push all changes and tags to given remote.
-     * @param git instance.
-     * @param remote to be used.
+     *
+     * @param git      instance.
+     * @param remote   to be used.
      * @param username to login.
      * @param password to login.
      * @return List of all results of given push.
@@ -263,7 +276,8 @@ public class GitOperations {
 
     /**
      * Creates a tag.
-     * @param git instance.
+     *
+     * @param git  instance.
      * @param name of the tag.
      * @return Ref created to tag.
      */
@@ -279,8 +293,9 @@ public class GitOperations {
 
     /**
      * Push all changes and tags to given remote.
-     * @param git instance.
-     * @param remote to be used.
+     *
+     * @param git        instance.
+     * @param remote     to be used.
      * @param passphrase to access private key.
      * @param privateKey file location.
      * @return List of all results of given push.
@@ -293,7 +308,7 @@ public class GitOperations {
             }
 
             @Override
-            protected JSch createDefaultJSch( FS fs ) throws JSchException {
+            protected JSch createDefaultJSch(FS fs) throws JSchException {
                 if (privateKey != null) {
                     JSch defaultJSch = super.createDefaultJSch(fs);
                     defaultJSch.addIdentity(privateKey.toFile().getAbsolutePath());
@@ -310,8 +325,8 @@ public class GitOperations {
                     .setPushAll()
                     .setPushTags()
                     .setTransportConfigCallback(transport -> {
-                        SshTransport sshTransport = ( SshTransport )transport;
-                        sshTransport.setSshSessionFactory( sshSessionFactory );
+                        SshTransport sshTransport = (SshTransport) transport;
+                        sshTransport.setSshSessionFactory(sshSessionFactory);
                     })
                     .call();
         } catch (GitAPIException e) {
@@ -321,11 +336,12 @@ public class GitOperations {
 
     /**
      * Pull repository from current branch and remote branch with same name as current
-     * @param git instance.
-     * @param remote to be used.
+     *
+     * @param git          instance.
+     * @param remote       to be used.
      * @param remoteBranch to use.
-     * @param username to connect
-     * @param password to connect
+     * @param username     to connect
+     * @param password     to connect
      */
     public PullResult pullFromRepository(Git git, String remote, String remoteBranch, String username, String password) {
         try {
@@ -341,11 +357,12 @@ public class GitOperations {
 
     /**
      * Pull repository from current branch and remote branch with same name as current
-     * @param git instance.
-     * @param remote to be used.
+     *
+     * @param git          instance.
+     * @param remote       to be used.
      * @param remoteBranch to use.
-     * @param passphrase to access private key.
-     * @param privateKey file location.
+     * @param passphrase   to access private key.
+     * @param privateKey   file location.
      */
     public PullResult pullFromRepository(final Git git, final String remote, String remoteBranch, final String passphrase, final Path privateKey) {
         SshSessionFactory sshSessionFactory = new JschConfigSessionFactory() {
@@ -355,7 +372,7 @@ public class GitOperations {
             }
 
             @Override
-            protected JSch createDefaultJSch( FS fs ) throws JSchException {
+            protected JSch createDefaultJSch(FS fs) throws JSchException {
                 if (privateKey != null) {
                     JSch defaultJSch = super.createDefaultJSch(fs);
                     defaultJSch.addIdentity(privateKey.toFile().getAbsolutePath());
@@ -371,8 +388,8 @@ public class GitOperations {
                     .setRemote(remote)
                     .setRemoteBranchName(remoteBranch)
                     .setTransportConfigCallback(transport -> {
-                        SshTransport sshTransport = ( SshTransport )transport;
-                        sshTransport.setSshSessionFactory( sshSessionFactory );
+                        SshTransport sshTransport = (SshTransport) transport;
+                        sshTransport.setSshSessionFactory(sshSessionFactory);
                     })
                     .call();
         } catch (GitAPIException e) {
@@ -382,6 +399,7 @@ public class GitOperations {
 
     /**
      * Clones a public remote git repository. Caller is responsible of closing git repository.
+     *
      * @param remoteUrl to connect.
      * @param localPath where to clone the repo.
      * @return Git instance. Caller is responsible to close the connection.
@@ -399,10 +417,11 @@ public class GitOperations {
 
     /**
      * Clones a private remote git repository. Caller is responsible of closing git repository.
+     *
      * @param remoteUrl to connect.
      * @param localPath where to clone the repo.
-     * @param username to connect
-     * @param password to connect
+     * @param username  to connect
+     * @param password  to connect
      * @return Git instance. Caller is responsible to close the connection.
      */
     public Git cloneRepository(String remoteUrl, Path localPath, String username, String password) {
@@ -419,8 +438,9 @@ public class GitOperations {
 
     /**
      * Clones a private remote git repository. Caller is responsible of closing git repository.
-     * @param remoteUrl to connect.
-     * @param localPath where to clone the repo.
+     *
+     * @param remoteUrl  to connect.
+     * @param localPath  where to clone the repo.
      * @param passphrase to access private key.
      * @param privateKey file location. If null default (~.ssh/id_rsa) location is used.
      * @return Git instance. Caller is responsible to close the connection.
@@ -434,7 +454,7 @@ public class GitOperations {
             }
 
             @Override
-            protected JSch createDefaultJSch( FS fs ) throws JSchException {
+            protected JSch createDefaultJSch(FS fs) throws JSchException {
                 if (privateKey != null) {
                     JSch defaultJSch = super.createDefaultJSch(fs);
                     defaultJSch.addIdentity(privateKey.toFile().getAbsolutePath());
@@ -449,8 +469,8 @@ public class GitOperations {
             return Git.cloneRepository()
                     .setURI(remoteUrl)
                     .setTransportConfigCallback(transport -> {
-                        SshTransport sshTransport = ( SshTransport )transport;
-                        sshTransport.setSshSessionFactory( sshSessionFactory );
+                        SshTransport sshTransport = (SshTransport) transport;
+                        sshTransport.setSshSessionFactory(sshSessionFactory);
                     })
                     .setDirectory(localPath.toFile())
                     .call();
@@ -461,6 +481,7 @@ public class GitOperations {
 
     /**
      * Checks if a repo has been cloned correctly.
+     *
      * @param repo to check
      * @return true if has been cloned correctly, false otherwise
      */

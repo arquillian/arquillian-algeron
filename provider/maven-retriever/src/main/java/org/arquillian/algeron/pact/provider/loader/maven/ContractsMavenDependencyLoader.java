@@ -79,10 +79,10 @@ public class ContractsMavenDependencyLoader implements ContractsRetriever {
         final Node rootDir = file.get("/");
         final Set<Node> contractFiles = rootDir.getChildren();
 
-        for(Node contractFile : contractFiles) {
+        for (Node contractFile : contractFiles) {
             final String filename = contractFile.getPath().get().substring(1);
             final Asset asset = contractFile.getAsset();
-            try(final InputStream in = asset.openStream()) {
+            try (final InputStream in = asset.openStream()) {
                 Files.copy(in, new File(destination, filename).toPath());
             }
         }
@@ -104,7 +104,7 @@ public class ContractsMavenDependencyLoader implements ContractsRetriever {
 
         if (!"".equals(contractsMavenDependency.remoteRepository())) {
             final String[] remoteRepository = getRemoteRepository(RunnerExpressionParser.parseExpressions(contractsMavenDependency.remoteRepository()));
-            configurableMavenResolverSystem.withRemoteRepo(remoteRepository[NAME],remoteRepository[URL], remoteRepository[LAYOUT]);
+            configurableMavenResolverSystem.withRemoteRepo(remoteRepository[NAME], remoteRepository[URL], remoteRepository[LAYOUT]);
         }
 
         String[] coordinates = contractsMavenDependency.value();

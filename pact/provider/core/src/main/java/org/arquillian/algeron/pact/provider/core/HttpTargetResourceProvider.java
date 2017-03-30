@@ -22,7 +22,7 @@ public class HttpTargetResourceProvider implements ResourceProvider {
     public Object lookup(ArquillianResource resource, Annotation... qualifiers) {
         Target target = this.instance.get();
 
-        if(target == null) {
+        if (target == null) {
             throw new IllegalStateException("Target instance was not found");
         }
 

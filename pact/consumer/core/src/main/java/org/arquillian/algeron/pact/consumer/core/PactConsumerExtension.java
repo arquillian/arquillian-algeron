@@ -18,7 +18,7 @@ public class PactConsumerExtension implements LoadableExtension {
                 .observer(PactReportDirectoryConfigurator.class)
                 .service(TestEnricher.class, StubServerEnricher.class);
 
-        if(Validate.classExists("org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender")) {
+        if (Validate.classExists("org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender")) {
             builder.service(AuxiliaryArchiveAppender.class, PactConsumerArchiveAppender.class)
                     .observer(ConsumerPactTest.class)
                     .observer(PactDataReceiver.class);

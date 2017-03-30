@@ -56,7 +56,7 @@ public class PactsRetriever {
 
         final Provider providerInfo = testClass.getAnnotation(Provider.class);
         if (providerInfo == null) {
-            throw new IllegalArgumentException(String.format("Provider name should be set by using %s",Provider.class.getName()));
+            throw new IllegalArgumentException(String.format("Provider name should be set by using %s", Provider.class.getName()));
         }
 
         final String serviceName = providerInfo.value();
@@ -119,7 +119,7 @@ public class PactsRetriever {
                     final Constructor<? extends ContractsRetriever> contructorWithClass = pactLoaderClass.getDeclaredConstructor(Class.class);
                     contructorWithClass.setAccessible(true);
                     return contructorWithClass.newInstance(testClass.getJavaClass());
-                } catch(NoSuchMethodException e) {
+                } catch (NoSuchMethodException e) {
                     return pactLoaderClass.newInstance();
                 }
             } else {

@@ -8,6 +8,7 @@ import au.com.dius.pact.model.*;
 public interface PactProviderExecutionAwareTarget {
 
     void setConsumer(au.com.dius.pact.model.Consumer consumer);
+
     void setRequestResponseInteraction(RequestResponseInteraction requestResponseInteraction);
 
 }

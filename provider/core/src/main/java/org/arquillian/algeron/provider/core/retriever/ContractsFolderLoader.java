@@ -47,7 +47,7 @@ public class ContractsFolderLoader implements ContractsRetriever {
 
     @Override
     public List<URI> retrieve() throws IOException {
-        File rootDirectory =  resolvePath();
+        File rootDirectory = resolvePath();
         return Arrays.stream(rootDirectory.listFiles())
                 .map(file -> "file://" + file.getAbsolutePath())
                 .map(URI::create)
@@ -61,11 +61,11 @@ public class ContractsFolderLoader implements ContractsRetriever {
 
     @Override
     public void configure(Map<String, Object> configuration) {
-        if (! configuration.containsKey(CONTRACTS_FOLDER)) {
+        if (!configuration.containsKey(CONTRACTS_FOLDER)) {
             throw new IllegalArgumentException(String.format("Folder Retriever requires %s configuration property", CONTRACTS_FOLDER));
         }
 
-        if (! (configuration.get(CONTRACTS_FOLDER) instanceof String)) {
+        if (!(configuration.get(CONTRACTS_FOLDER) instanceof String)) {
             throw new IllegalArgumentException(String.format("Folder Retriever requires %s configuration property to be an String", CONTRACTS_FOLDER));
         }
 

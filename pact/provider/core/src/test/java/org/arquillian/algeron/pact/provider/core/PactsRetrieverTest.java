@@ -94,6 +94,7 @@ public class PactsRetrieverTest {
     }
 
     @Provider("planets_provider")
-    public static class NonePactDefinition {}
+    public static class NonePactDefinition {
+    }
 
 }

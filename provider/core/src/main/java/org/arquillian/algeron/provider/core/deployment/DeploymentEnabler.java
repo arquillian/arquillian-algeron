@@ -18,11 +18,11 @@ public class DeploymentEnabler {
         proceedIfEnabled(eventContext, algeronProviderConfiguration);
     }
 
-    void skipStartContainer(@Observes(precedence = -1000)EventContext<StartContainer> eventContext, AlgeronProviderConfiguration algeronProviderConfiguration) {
+    void skipStartContainer(@Observes(precedence = -1000) EventContext<StartContainer> eventContext, AlgeronProviderConfiguration algeronProviderConfiguration) {
         proceedIfEnabled(eventContext, algeronProviderConfiguration);
     }
 
-    void skipStopContainer(@Observes(precedence = -1000)EventContext<StopContainer> eventContext, AlgeronProviderConfiguration algeronProviderConfiguration) {
+    void skipStopContainer(@Observes(precedence = -1000) EventContext<StopContainer> eventContext, AlgeronProviderConfiguration algeronProviderConfiguration) {
         proceedIfEnabled(eventContext, algeronProviderConfiguration);
     }
 
@@ -33,7 +33,7 @@ public class DeploymentEnabler {
     }
 
     public static boolean shouldEnableDeployment(AlgeronProviderConfiguration algeronProviderConfiguration) {
-        return ! algeronProviderConfiguration.isSkipDeployment();
+        return !algeronProviderConfiguration.isSkipDeployment();
     }
 
 }

@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <!-- Parent -->
-    <parent>
-        <groupId>org.arquillian.algeron</groupId>
-        <artifactId>arquillian-algeron-pact-provider-parent</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+  <!-- Parent -->
+  <parent>
+    <groupId>org.arquillian.algeron</groupId>
+    <artifactId>arquillian-algeron-pact-provider-parent</artifactId>
+    <version>1.0.0.Final-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-    <!-- Model Version -->
-    <modelVersion>4.0.0</modelVersion>
+  <!-- Model Version -->
+  <modelVersion>4.0.0</modelVersion>
 
-    <properties>
-    </properties>
+  <properties>
+  </properties>
 
-    <!-- Artifact Configuration -->
-    <artifactId>arquillian-algeron-pact-provider-api</artifactId>
+  <!-- Artifact Configuration -->
+  <artifactId>arquillian-algeron-pact-provider-api</artifactId>
 
-    <name>Arquillian Algeron Pact Provider API</name>
+  <name>Arquillian Algeron Pact Provider API</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>au.com.dius</groupId>
-            <artifactId>pact-jvm-model</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.arquillian.algeron</groupId>
-            <artifactId>arquillian-algeron-provider-api</artifactId>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>au.com.dius</groupId>
+      <artifactId>pact-jvm-model</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.arquillian.algeron</groupId>
+      <artifactId>arquillian-algeron-provider-api</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>

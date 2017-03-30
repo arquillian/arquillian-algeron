@@ -31,7 +31,7 @@ public class StarWarsProviderTest {
     public static void recordServerInteractions() {
         embeddedService.addExpectation(
                 onRequestTo("/rest/planet/orbital/average")
-                    .withMethod(ClientDriverRequest.Method.GET),
+                        .withMethod(ClientDriverRequest.Method.GET),
                 giveResponse("1298.3", "text/plain").withStatus(200));
 
         embeddedService.addExpectation(

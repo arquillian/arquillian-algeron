@@ -66,8 +66,8 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     }
 
     /**
-     * @param host host of tested service
-     * @param port port of tested service
+     * @param host     host of tested service
+     * @param port     port of tested service
      * @param protocol protocol of tested service
      */
     public HttpTarget(final String protocol, final String host, final int port) {
@@ -75,24 +75,23 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     }
 
     /**
-     * @param host host of tested service
-     * @param port port of tested service
+     * @param host     host of tested service
+     * @param port     port of tested service
      * @param protocol protocol of tested service
-     * @param path protocol of the tested service
+     * @param path     protocol of the tested service
      */
     public HttpTarget(final String protocol, final String host, final int port, final String path) {
         this(protocol, host, port, path, false);
     }
 
     /**
-     *
-     * @param host host of tested service
-     * @param port port of tested service
+     * @param host     host of tested service
+     * @param port     port of tested service
      * @param protocol protocol of the tested service
-     * @param path path of the tested service
+     * @param path     path of the tested service
      * @param insecure true if certificates should be ignored
      */
-    public HttpTarget(final String protocol, final String host, final int port, final String path, final boolean insecure){
+    public HttpTarget(final String protocol, final String host, final int port, final String path, final boolean insecure) {
         this.host = host;
         this.port = port;
         this.protocol = protocol;
@@ -108,8 +107,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     }
 
     /**
-     *
-     * @param url url of the tested service
+     * @param url      url of the tested service
      * @param insecure true if certificates should be ignored
      */
     public HttpTarget(final URL url, final boolean insecure) {
@@ -303,7 +301,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
             messageError.append(firstElement)
                     .append(System.lineSeparator());
 
-            for (int i = 1 ; i < split.length; i++) {
+            for (int i = 1; i < split.length; i++) {
                 messageError.append(padString)
                         .append(split[i])
                         .append(System.lineSeparator());
@@ -339,7 +337,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
 
     private String mapToString(Map comparison) {
         return comparison.entrySet().stream()
-                .map(e -> String.valueOf(((Map.Entry)e).getKey()) + " -> " + ((Map.Entry)e).getValue())
+                .map(e -> String.valueOf(((Map.Entry) e).getKey()) + " -> " + ((Map.Entry) e).getValue())
                 .collect(Collectors.joining(System.lineSeparator())).toString();
     }
 

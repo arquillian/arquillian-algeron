@@ -89,8 +89,8 @@ public class ArquillianVerifierReporter implements VerifierReporter {
 
     @Override
     public void returnsAResponseWhich() {
-       this.responseGroup = new GroupEntry("With Response");
-       this.interactionGroup.getPropertyEntries().add(this.responseGroup);
+        this.responseGroup = new GroupEntry("With Response");
+        this.interactionGroup.getPropertyEntries().add(this.responseGroup);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class ArquillianVerifierReporter implements VerifierReporter {
 
         final Set<Map.Entry<?, ?>> errors = failures.entrySet();
 
-        for (Map.Entry<?,?> error : errors) {
+        for (Map.Entry<?, ?> error : errors) {
             final GroupEntry failureGroup = new GroupEntry(error.getKey().toString());
             failureGroup.getPropertyEntries().add(getErrorMessage(error.getValue()));
             failuresGroup.getPropertyEntries().add(failureGroup);

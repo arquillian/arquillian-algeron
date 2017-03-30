@@ -252,7 +252,6 @@ public class InteractionRunner {
     }
 
 
-
     private boolean isStateMethodWithMapParameter(Method method) {
         return method.getParameterCount() == 1 &&
                 Map.class.isAssignableFrom(method.getParameterTypes()[0]);

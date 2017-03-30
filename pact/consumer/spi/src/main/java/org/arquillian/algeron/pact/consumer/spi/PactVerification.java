@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
 /**
  * Before each test, a mock server will be setup at given port/host that will provide mocked responses.
  * after each test, it will be teared down.
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

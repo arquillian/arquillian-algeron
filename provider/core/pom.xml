@@ -1,90 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <!-- Parent -->
-    <parent>
-        <groupId>org.arquillian.algeron</groupId>
-        <artifactId>arquillian-algeron-provider-parent</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+  <!-- Parent -->
+  <parent>
+    <groupId>org.arquillian.algeron</groupId>
+    <artifactId>arquillian-algeron-provider-parent</artifactId>
+    <version>1.0.0.Final-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-    <!-- Model Version -->
-    <modelVersion>4.0.0</modelVersion>
+  <!-- Model Version -->
+  <modelVersion>4.0.0</modelVersion>
 
-    <properties>
-    </properties>
+  <properties>
+  </properties>
 
-    <!-- Artifact Configuration -->
-    <artifactId>arquillian-algeron-provider-core</artifactId>
+  <!-- Artifact Configuration -->
+  <artifactId>arquillian-algeron-provider-core</artifactId>
 
-    <name>Arquillian Algeron Provider Core</name>
+  <name>Arquillian Algeron Provider Core</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.arquillian.algeron</groupId>
-            <artifactId>arquillian-algeron-provider-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.arquillian.algeron</groupId>
-            <artifactId>arquillian-algeron-configuration</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.core</groupId>
-            <artifactId>arquillian-core-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.arquillian.algeron</groupId>
-            <artifactId>arquillian-algeron-provider-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.config</groupId>
-            <artifactId>arquillian-config-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-spi</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-test-spi</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-test-impl-base</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.arquillian.extension</groupId>
-            <artifactId>arquillian-recorder-reporter-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.arquillian.algeron</groupId>
+      <artifactId>arquillian-algeron-provider-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.arquillian.algeron</groupId>
+      <artifactId>arquillian-algeron-configuration</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.core</groupId>
+      <artifactId>arquillian-core-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.arquillian.algeron</groupId>
+      <artifactId>arquillian-algeron-provider-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.config</groupId>
+      <artifactId>arquillian-config-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.container</groupId>
+      <artifactId>arquillian-container-spi</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.container</groupId>
+      <artifactId>arquillian-container-test-spi</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.container</groupId>
+      <artifactId>arquillian-container-test-impl-base</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.arquillian.extension</groupId>
+      <artifactId>arquillian-recorder-reporter-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.arquillian.extension</groupId>
-            <artifactId>arquillian-recorder-reporter-spi</artifactId>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>org.arquillian.extension</groupId>
+      <artifactId>arquillian-recorder-reporter-spi</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
 </project>

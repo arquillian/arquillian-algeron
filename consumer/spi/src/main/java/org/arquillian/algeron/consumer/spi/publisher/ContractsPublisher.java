@@ -17,12 +17,14 @@ public interface ContractsPublisher {
 
     /**
      * Returns the name to identify this published in configuration file.
+     *
      * @return name of the published
      */
     String getName();
 
     /**
      * Method used for passing configuration parameters to publisher.
+     *
      * @param configuration key-values
      */
     void configure(Map<String, Object> configuration);

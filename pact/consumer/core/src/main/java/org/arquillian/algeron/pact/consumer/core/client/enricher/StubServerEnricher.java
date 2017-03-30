@@ -20,93 +20,93 @@ import java.util.logging.Logger;
 
 public class StubServerEnricher implements TestEnricher {
 
-   private static final Logger logger = Logger.getLogger(StubServerEnricher.class.getName());
+    private static final Logger logger = Logger.getLogger(StubServerEnricher.class.getName());
 
-   @Inject
-   Instance<PactConsumerConfiguration> pactConsumerConfigurationInstance;
+    @Inject
+    Instance<PactConsumerConfiguration> pactConsumerConfigurationInstance;
 
-   @Override
-   public void enrich(Object testCase) {
-      final PactConsumerConfiguration pactConsumerConfiguration = pactConsumerConfigurationInstance.get();
-      if(pactConsumerConfiguration != null) {
-         List<Field> fieldsWithAnnotation = getFieldsWithAnnotation(testCase.getClass(), StubServer.class);
-         for (Field stubServer : fieldsWithAnnotation) {
+    @Override
+    public void enrich(Object testCase) {
+        final PactConsumerConfiguration pactConsumerConfiguration = pactConsumerConfigurationInstance.get();
+        if (pactConsumerConfiguration != null) {
+            List<Field> fieldsWithAnnotation = getFieldsWithAnnotation(testCase.getClass(), StubServer.class);
+            for (Field stubServer : fieldsWithAnnotation) {
 
-            if (!stubServer.isAccessible()) {
-               stubServer.setAccessible(true);
-            }
+                if (!stubServer.isAccessible()) {
+                    stubServer.setAccessible(true);
+                }
 
-            if(URL.class.isAssignableFrom(stubServer.getType())) {
-               try {
-                  String httpScheme = pactConsumerConfiguration.isHttps() ? "https" : "http";
-                  URL url = new URL(httpScheme, pactConsumerConfiguration.getHost(), pactConsumerConfiguration.getPort(), "");
-                  stubServer.set(testCase, url);
-               } catch (IllegalAccessException e) {
-                  throw new IllegalArgumentException(e);
-               } catch (MalformedURLException e) {
-                  throw new IllegalArgumentException(e);
-               }
-            }
-         }
-      }
-   }
-
-   @Override
-   public Object[] resolve(Method method) {
-      Object[] values = new Object[method.getParameterTypes().length];
-      final PactConsumerConfiguration pactConsumerConfiguration = pactConsumerConfigurationInstance.get();
-      if (pactConsumerConfiguration != null) {
-         Integer[] annotatedParameters = annotatedParameters(method);
-         Class<?>[] parameterTypes = method.getParameterTypes();
-         for (Integer i : annotatedParameters) {
-            if (URL.class.isAssignableFrom(parameterTypes[i])) {
-               String httpScheme = pactConsumerConfiguration.isHttps() ? "https" : "http";
-               try {
-                  URL url = new URL(httpScheme, pactConsumerConfiguration.getHost(), pactConsumerConfiguration.getPort(), "");
-                  values[i] = url;
-               } catch (MalformedURLException e) {
-                  throw new IllegalArgumentException(e);
-               }
-            }
-         }
-      }
-      return values;
-   }
-
-   private Integer[] annotatedParameters(Method method) {
-      List<Integer> parametersWithAnnotations = new ArrayList<>();
-      final Annotation[][] paramAnnotations = method.getParameterAnnotations();
-      for (int i = 0; i < paramAnnotations.length; i++) {
-         for (Annotation a: paramAnnotations[i]) {
-            if (a instanceof StubServer) {
-               parametersWithAnnotations.add(i);
-            }
-         }
-      }
-      return parametersWithAnnotations.toArray(new Integer[parametersWithAnnotations.size()]);
-   }
-
-   private static List<Field> getFieldsWithAnnotation(final Class<?> source,
-                                                     final Class<? extends Annotation> annotationClass) {
-      List<Field> declaredAccessableFields = AccessController
-              .doPrivileged(new PrivilegedAction<List<Field>>() {
-                 public List<Field> run() {
-                    List<Field> foundFields = new ArrayList<Field>();
-                    Class<?> nextSource = source;
-                    while (nextSource != Object.class) {
-                       for (Field field : nextSource.getDeclaredFields()) {
-                          if (field.isAnnotationPresent(annotationClass)) {
-                             if (!field.isAccessible()) {
-                                field.setAccessible(true);
-                             }
-                             foundFields.add(field);
-                          }
-                       }
-                       nextSource = nextSource.getSuperclass();
+                if (URL.class.isAssignableFrom(stubServer.getType())) {
+                    try {
+                        String httpScheme = pactConsumerConfiguration.isHttps() ? "https" : "http";
+                        URL url = new URL(httpScheme, pactConsumerConfiguration.getHost(), pactConsumerConfiguration.getPort(), "");
+                        stubServer.set(testCase, url);
+                    } catch (IllegalAccessException e) {
+                        throw new IllegalArgumentException(e);
+                    } catch (MalformedURLException e) {
+                        throw new IllegalArgumentException(e);
                     }
-                    return foundFields;
-                 }
-              });
-      return declaredAccessableFields;
-   }
+                }
+            }
+        }
+    }
+
+    @Override
+    public Object[] resolve(Method method) {
+        Object[] values = new Object[method.getParameterTypes().length];
+        final PactConsumerConfiguration pactConsumerConfiguration = pactConsumerConfigurationInstance.get();
+        if (pactConsumerConfiguration != null) {
+            Integer[] annotatedParameters = annotatedParameters(method);
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            for (Integer i : annotatedParameters) {
+                if (URL.class.isAssignableFrom(parameterTypes[i])) {
+                    String httpScheme = pactConsumerConfiguration.isHttps() ? "https" : "http";
+                    try {
+                        URL url = new URL(httpScheme, pactConsumerConfiguration.getHost(), pactConsumerConfiguration.getPort(), "");
+                        values[i] = url;
+                    } catch (MalformedURLException e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                }
+            }
+        }
+        return values;
+    }
+
+    private Integer[] annotatedParameters(Method method) {
+        List<Integer> parametersWithAnnotations = new ArrayList<>();
+        final Annotation[][] paramAnnotations = method.getParameterAnnotations();
+        for (int i = 0; i < paramAnnotations.length; i++) {
+            for (Annotation a : paramAnnotations[i]) {
+                if (a instanceof StubServer) {
+                    parametersWithAnnotations.add(i);
+                }
+            }
+        }
+        return parametersWithAnnotations.toArray(new Integer[parametersWithAnnotations.size()]);
+    }
+
+    private static List<Field> getFieldsWithAnnotation(final Class<?> source,
+                                                       final Class<? extends Annotation> annotationClass) {
+        List<Field> declaredAccessableFields = AccessController
+                .doPrivileged(new PrivilegedAction<List<Field>>() {
+                    public List<Field> run() {
+                        List<Field> foundFields = new ArrayList<Field>();
+                        Class<?> nextSource = source;
+                        while (nextSource != Object.class) {
+                            for (Field field : nextSource.getDeclaredFields()) {
+                                if (field.isAnnotationPresent(annotationClass)) {
+                                    if (!field.isAccessible()) {
+                                        field.setAccessible(true);
+                                    }
+                                    foundFields.add(field);
+                                }
+                            }
+                            nextSource = nextSource.getSuperclass();
+                        }
+                        return foundFields;
+                    }
+                });
+        return declaredAccessableFields;
+    }
 }

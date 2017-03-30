@@ -21,7 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Arquillian.class)
-@Pact(provider="test_provider", consumer="test_consumer")
+@Pact(provider = "test_provider", consumer = "test_consumer")
 public class ClientGatewayTest {
 
     @Deployment

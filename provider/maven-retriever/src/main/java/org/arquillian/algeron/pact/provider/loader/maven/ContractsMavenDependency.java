@@ -21,7 +21,7 @@ public @interface ContractsMavenDependency {
 
     /**
      * List of Maven coordinates in form of group:artifact:(package:classifier:)version
-     *
+     * <p>
      * version can be specified as http://maven.apache.org/enforcer/enforcer-rules/versionRanges.html and loader will use the highest version
      *
      * @return List of maven coordinates
@@ -30,18 +30,21 @@ public @interface ContractsMavenDependency {
 
     /**
      * If Maven should run offline
+     *
      * @return True if offline.
      */
     boolean offline() default false;
 
     /**
      * Sets classpath location of a settings.xml file
+     *
      * @return Classptah location of a settings.xml to be used during the artifact resolution
      */
     String customSettings() default "";
 
     /**
      * Sets a remote repository to be used instead of ones defined in settings.xml or default ones in form of name:url:layout
+     *
      * @return remote repository.
      */
     String remoteRepository() default "";

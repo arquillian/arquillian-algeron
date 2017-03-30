@@ -38,8 +38,8 @@ public class UrlContractsPublisher implements ContractsPublisher {
         try (Stream<Path> stream = Files.walk(contractsSource)) {
             stream.forEach(path -> {
                 try {
-                    if (! Files.isDirectory(path)) {
-                        URL fullUrl = new URL(url + '/' +path.getFileName().toString());
+                    if (!Files.isDirectory(path)) {
+                        URL fullUrl = new URL(url + '/' + path.getFileName().toString());
                         sendPost(fullUrl, path);
                     }
                 } catch (IOException e) {
@@ -60,7 +60,7 @@ public class UrlContractsPublisher implements ContractsPublisher {
 
             con.setDoOutput(true);
 
-            try(BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(con.getOutputStream())) {
+            try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(con.getOutputStream())) {
                 Files.copy(content, bufferedOutputStream);
             }
 

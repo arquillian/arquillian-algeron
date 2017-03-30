@@ -35,6 +35,7 @@ public class ContractsMavenDependencyLoaderTest {
     }
 
     @ContractsMavenDependency(value = "org.superbiz:contract:[1.0,]")
-    private static class MavenLoaderTest {}
+    private static class MavenLoaderTest {
+    }
 
 }

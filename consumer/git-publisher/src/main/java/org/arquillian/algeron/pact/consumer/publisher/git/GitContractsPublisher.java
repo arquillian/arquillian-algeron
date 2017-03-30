@@ -67,8 +67,8 @@ public class GitContractsPublisher implements ContractsPublisher {
 
             logger.log(Level.INFO, String.format("Contract files %s pushed to %s repository.",
                     contractFiles.stream()
-                        .map(path -> path.getFileName().toString())
-                        .collect(Collectors.joining(System.lineSeparator(), "[", "]")),
+                            .map(path -> path.getFileName().toString())
+                            .collect(Collectors.joining(System.lineSeparator(), "[", "]")),
                     configuration.get(URL)));
 
         } finally {
@@ -179,13 +179,13 @@ public class GitContractsPublisher implements ContractsPublisher {
                     .filter(path -> !Files.isDirectory(path))
                     .peek(path -> contractFiles.add(path))
                     .forEach(path -> {
-                try {
-                    final Path contractFile = outputPath.resolve(path.getFileName());
-                    Files.copy(path, contractFile, StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    throw new IllegalArgumentException(e);
-                }
-            });
+                        try {
+                            final Path contractFile = outputPath.resolve(path.getFileName());
+                            Files.copy(path, contractFile, StandardCopyOption.REPLACE_EXISTING);
+                        } catch (IOException e) {
+                            throw new IllegalArgumentException(e);
+                        }
+                    });
         }
 
         return contractFiles;

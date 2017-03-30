@@ -222,7 +222,7 @@ public class ContractsGitLoader implements ContractsRetriever {
 
 
         private String url = "";
-        private String username= "";
+        private String username = "";
         private String password = "";
         private String passphrase = "";
         private String key = "";

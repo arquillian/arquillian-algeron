@@ -20,7 +20,8 @@ public class RunnerExpressionParser {
     public static final String START_EXPRESSION = "${";
     public static final char END_EXPRESSION = '}';
 
-    private RunnerExpressionParser() {}
+    private RunnerExpressionParser() {
+    }
 
     public static String parseExpressions(final String value) {
         return parseExpressions(value, new SystemPropertyResolver());

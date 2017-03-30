@@ -60,11 +60,11 @@ public class RemoteConsumerPactTest extends AbstractConsumerPactTest {
 
     private CommandService getCommandService() {
         ServiceLoader loader = serviceLoader.get();
-        if(loader == null) {
+        if (loader == null) {
             throw new IllegalStateException("No " + ServiceLoader.class.getName() + " found in context");
         }
         CommandService service = loader.onlyOne(CommandService.class);
-        if(service == null) {
+        if (service == null) {
             throw new IllegalStateException("No " + CommandService.class.getName() + " found in context");
         }
         return service;

@@ -170,7 +170,7 @@ public class PactBrokerLoader implements ContractsRetriever {
         public ExternallyConfiguredPactBroker(Map<String, Object> configuration) {
             this.host = getMandatoryField(configuration, HOST);
             this.port = getMandatoryField(configuration, PORT);
-            this.protocol = getOptionalField(configuration, PROTOCOL,"http");
+            this.protocol = getOptionalField(configuration, PROTOCOL, "http");
             this.tags = getFromStringOrListOfString(configuration, TAGS, "latest");
         }
 
@@ -207,7 +207,7 @@ public class PactBrokerLoader implements ContractsRetriever {
                 if (tags instanceof String) {
                     values.add(getResolvedValue((String) tags));
                 } else {
-                    if(tags instanceof Collection) {
+                    if (tags instanceof Collection) {
                         Collection<String> listOfTags = (Collection) tags;
                         values.addAll(
                                 listOfTags.stream()

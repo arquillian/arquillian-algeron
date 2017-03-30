@@ -48,12 +48,12 @@ public class ContractsUrlLoader implements ContractsRetriever {
 
     @Override
     public void configure(Map<String, Object> configuration) {
-        if (! configuration.containsKey(URL)) {
+        if (!configuration.containsKey(URL)) {
             throw new IllegalArgumentException(String.format("Url Retriever requires %s configuration property", URL));
         }
 
         final Object url = configuration.get(URL);
-        if (! (url instanceof String || url instanceof Collection)) {
+        if (!(url instanceof String || url instanceof Collection)) {
             throw new IllegalArgumentException(String.format("Url Retriever requires %s configuration property to be an String or List of Strings", URL));
         }
 
