@@ -9,9 +9,8 @@ public class PactConsumerRemoteExtension implements RemoteLoadableExtension {
     @Override
     public void register(ExtensionBuilder builder) {
         builder.observer(MockProviderConfigCreator.class)
-                .observer(RemoteConsumerPactTest.class)
-                .observer(PactConsumerConfigurator.class)
-                .service(TestEnricher.class, StubServerEnricher.class);
-
+            .observer(RemoteConsumerPactTest.class)
+            .observer(PactConsumerConfigurator.class)
+            .service(TestEnricher.class, StubServerEnricher.class);
     }
 }

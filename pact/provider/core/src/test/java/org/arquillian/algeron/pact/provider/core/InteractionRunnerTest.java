@@ -60,7 +60,6 @@ public class InteractionRunnerTest {
         pactsInstance = () -> new Pacts(pacts);
 
         when(eventContext.getEvent()).thenReturn(test);
-
     }
 
     @org.junit.Test
@@ -78,7 +77,6 @@ public class InteractionRunnerTest {
         assertThat(pactDefinition.interaction).isNotNull();
 
         verify(eventContext, times(2)).proceed();
-
     }
 
     @org.junit.Test
@@ -92,9 +90,9 @@ public class InteractionRunnerTest {
         interactionRunner.targetInstance = () -> target;
 
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> interactionRunner.executePacts(eventContext))
-                .withMessage("Field annotated with org.jboss.arquillian.test.api.ArquillianResource should implement org.arquillian.algeron.pact.provider.spi.Target and didn't found any");
-
+            .isThrownBy(() -> interactionRunner.executePacts(eventContext))
+            .withMessage(
+                "Field annotated with org.jboss.arquillian.test.api.ArquillianResource should implement org.arquillian.algeron.pact.provider.spi.Target and didn't found any");
     }
 
     @org.junit.Test
@@ -112,8 +110,7 @@ public class InteractionRunnerTest {
         interactionRunner.executeStateChanges(requestResponseInteraction, testClass, test);
 
         assertThat(test.getNumberOfCukes())
-                .isEqualTo(36);
-
+            .isEqualTo(36);
     }
 
     @org.junit.Test
@@ -131,8 +128,7 @@ public class InteractionRunnerTest {
         interactionRunner.executeStateChanges(requestResponseInteraction, testClass, test);
 
         assertThat(test.getAnimals())
-                .contains("cow", "pig", "bug");
-
+            .contains("cow", "pig", "bug");
     }
 
     @Provider("planets_provider")
@@ -144,7 +140,6 @@ public class InteractionRunnerTest {
 
         @CurrentInteraction
         RequestResponseInteraction interaction;
-
     }
 
     @Provider("planets_provider")
@@ -159,7 +154,6 @@ public class InteractionRunnerTest {
 
         @ArquillianResource
         Target target;
-
     }
 
     @Provider("planets_provider")
@@ -211,5 +205,4 @@ public class InteractionRunnerTest {
             return animals;
         }
     }
-
 }

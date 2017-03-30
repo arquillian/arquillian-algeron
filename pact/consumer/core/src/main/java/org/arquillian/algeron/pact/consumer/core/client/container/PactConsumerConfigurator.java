@@ -21,12 +21,14 @@ public class PactConsumerConfigurator {
 
     public void configure(@Observes(precedence = 50) BeforeClass beforeClass) throws IOException {
 
-        final InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("/pact-consumer-configuration.properties");
+        final InputStream resourceAsStream =
+            Thread.currentThread().getContextClassLoader().getResourceAsStream("/pact-consumer-configuration.properties");
         Properties properties = new Properties();
         properties.load(resourceAsStream);
 
-        final Map<String, String> config = properties.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toString(), e -> e.getValue().toString()));
+        final Map<String, String> config = properties.entrySet()
+            .stream()
+            .collect(Collectors.toMap(e -> e.getKey().toString(), e -> e.getValue().toString()));
         pactConsumerConfigurationInstanceProducer.set(PactConsumerConfiguration.fromMap(config));
     }
-
 }

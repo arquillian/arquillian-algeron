@@ -12,9 +12,7 @@ public class ArrayMatcher {
 
     public static final Optional<String> firstMatch(String[] patternArray, String value) {
         return Arrays.stream(patternArray)
-                .filter(pattern -> Pattern.compile(pattern).matcher(value).lookingAt())
-                .findFirst();
+            .filter(pattern -> Pattern.compile(pattern).matcher(value).lookingAt())
+            .findFirst();
     }
-
-
 }

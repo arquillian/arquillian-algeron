@@ -30,21 +30,19 @@ public class StarWarsProviderTest {
     @BeforeClass
     public static void recordServerInteractions() {
         embeddedService.addExpectation(
-                onRequestTo("/rest/planet/orbital/average")
-                        .withMethod(ClientDriverRequest.Method.GET),
-                giveResponse("1298.3", "text/plain").withStatus(200));
+            onRequestTo("/rest/planet/orbital/average")
+                .withMethod(ClientDriverRequest.Method.GET),
+            giveResponse("1298.3", "text/plain").withStatus(200));
 
         embeddedService.addExpectation(
-                onRequestTo("/rest/planet/orbital/biggest")
-                        .withMethod(ClientDriverRequest.Method.GET),
-                giveResponseAsBytes(StarWarsProviderTest.class.getResourceAsStream("/server.json"), "application/json").withStatus(200));
-
+            onRequestTo("/rest/planet/orbital/biggest")
+                .withMethod(ClientDriverRequest.Method.GET),
+            giveResponseAsBytes(StarWarsProviderTest.class.getResourceAsStream("/server.json"),
+                "application/json").withStatus(200));
     }
-
 
     @Test
     public void validateProvider() {
         target.testInteraction();
     }
-
 }

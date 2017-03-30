@@ -13,10 +13,10 @@ public class AlgeronProviderExtension implements LoadableExtension {
 
         builder.observer(AlgeronProviderConfigurator.class);
 
-        if (LoadableExtension.Validate.classExists("org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender")) {
+        if (LoadableExtension.Validate.classExists(
+            "org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender")) {
             builder.observer(DeploymentEnabler.class);
             builder.override(ResourceProvider.class, URLResourceProvider.class, EnvironmentUrlResourceProvider.class);
         }
-
     }
 }

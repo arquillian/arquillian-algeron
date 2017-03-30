@@ -43,7 +43,6 @@ public class GitContractsPublisher implements ContractsPublisher {
     private Map<String, Object> configuration;
     GitOperations gitOperations;
 
-
     public GitContractsPublisher() {
         this.gitOperations = new GitOperations();
     }
@@ -55,7 +54,8 @@ public class GitContractsPublisher implements ContractsPublisher {
         try {
             git = getGitRepositoryWithLatestRemoteChanges(git);
 
-            logger.log(Level.INFO, String.format("Git repository with contract files at %s.", git.getRepository().getDirectory()
+            logger.log(Level.INFO,
+                String.format("Git repository with contract files at %s.", git.getRepository().getDirectory()
                     .getParentFile().getAbsolutePath()));
 
             // Now repository structure is created and we can start operating on it
@@ -66,17 +66,15 @@ public class GitContractsPublisher implements ContractsPublisher {
             executeCommitAndPush(git);
 
             logger.log(Level.INFO, String.format("Contract files %s pushed to %s repository.",
-                    contractFiles.stream()
-                            .map(path -> path.getFileName().toString())
-                            .collect(Collectors.joining(System.lineSeparator(), "[", "]")),
-                    configuration.get(URL)));
-
+                contractFiles.stream()
+                    .map(path -> path.getFileName().toString())
+                    .collect(Collectors.joining(System.lineSeparator(), "[", "]")),
+                configuration.get(URL)));
         } finally {
             if (git != null) {
                 git.close();
             }
         }
-
     }
 
     protected Git getGitRepositoryWithLatestRemoteChanges(Git git) throws IOException {
@@ -87,13 +85,14 @@ public class GitContractsPublisher implements ContractsPublisher {
             if (this.gitOperations.isValidGitRepository(repository)) {
                 git = useLocalGitRepository(repository);
             } else {
-                logger.log(Level.INFO, String.format("%s directory is not a git directory or does not exists and it is going to be deleted and cloned", repository));
+                logger.log(Level.INFO, String.format(
+                    "%s directory is not a git directory or does not exists and it is going to be deleted and cloned",
+                    repository));
 
                 Files.deleteIfExists(repository);
                 Files.createDirectories(repository);
                 git = executeClone(repository);
             }
-
         } else {
             // Put files in a temp directory
             final Path testGitRepository = Files.createTempDirectory("TestGitRepository");
@@ -114,10 +113,12 @@ public class GitContractsPublisher implements ContractsPublisher {
 
             if (!pullResult.isSuccessful()) {
                 // Merge conflicts
-                throw new IllegalArgumentException("There are merge conflicts into an existing git repo. Provider should not deal with merge conflicts. Correct them or delete the repo and execute again the test.");
+                throw new IllegalArgumentException(
+                    "There are merge conflicts into an existing git repo. Provider should not deal with merge conflicts. Correct them or delete the repo and execute again the test.");
             }
         } else {
-            throw new IllegalArgumentException(String.format("Git repository %s was not cloned correctly.", git.getRepository().getDirectory().getAbsolutePath()));
+            throw new IllegalArgumentException(String.format("Git repository %s was not cloned correctly.",
+                git.getRepository().getDirectory().getAbsolutePath()));
         }
         return git;
     }
@@ -139,21 +140,21 @@ public class GitContractsPublisher implements ContractsPublisher {
         if (isSet(USERNAME, String.class, this.configuration) && isSet(PASSWORD, String.class, this.configuration)) {
 
             this.gitOperations.pushToRepository(git,
-                    getResolvedValue((String) this.configuration.get(REMOTE)),
-                    getResolvedValue((String) this.configuration.get(USERNAME)),
-                    getResolvedValue((String) this.configuration.get(PASSWORD))
+                getResolvedValue((String) this.configuration.get(REMOTE)),
+                getResolvedValue((String) this.configuration.get(USERNAME)),
+                getResolvedValue((String) this.configuration.get(PASSWORD))
             );
         } else {
             if (isSet(PASSPHRASE, String.class, this.configuration)) {
 
                 this.gitOperations.pushToRepository(git,
-                        getResolvedValue((String) this.configuration.get(REMOTE)),
-                        getResolvedValue((String) this.configuration.get(PASSPHRASE)),
-                        getPrivateKey());
+                    getResolvedValue((String) this.configuration.get(REMOTE)),
+                    getResolvedValue((String) this.configuration.get(PASSPHRASE)),
+                    getPrivateKey());
             } else {
 
                 this.gitOperations.pushToRepository(git,
-                        getResolvedValue((String) this.configuration.get(REMOTE))
+                    getResolvedValue((String) this.configuration.get(REMOTE))
                 );
             }
         }
@@ -162,13 +163,13 @@ public class GitContractsPublisher implements ContractsPublisher {
     private void executeCommit(Git git) {
         if (isSet(USERNAME, String.class, this.configuration) && isSet(EMAIL, String.class, this.configuration)) {
             this.gitOperations.addAndCommit(git,
-                    getResolvedValue((String) this.configuration.get(COMMENT)),
-                    getResolvedValue((String) this.configuration.get(USERNAME)),
-                    getResolvedValue((String) this.configuration.get(EMAIL))
+                getResolvedValue((String) this.configuration.get(COMMENT)),
+                getResolvedValue((String) this.configuration.get(USERNAME)),
+                getResolvedValue((String) this.configuration.get(EMAIL))
             );
         } else {
             this.gitOperations.addAndCommit(git,
-                    getResolvedValue((String) this.configuration.get(COMMENT)));
+                getResolvedValue((String) this.configuration.get(COMMENT)));
         }
     }
 
@@ -176,16 +177,16 @@ public class GitContractsPublisher implements ContractsPublisher {
         final List<Path> contractFiles = new ArrayList<>();
         try (Stream<Path> stream = Files.walk(contractsLocation)) {
             stream
-                    .filter(path -> !Files.isDirectory(path))
-                    .peek(path -> contractFiles.add(path))
-                    .forEach(path -> {
-                        try {
-                            final Path contractFile = outputPath.resolve(path.getFileName());
-                            Files.copy(path, contractFile, StandardCopyOption.REPLACE_EXISTING);
-                        } catch (IOException e) {
-                            throw new IllegalArgumentException(e);
-                        }
-                    });
+                .filter(path -> !Files.isDirectory(path))
+                .peek(path -> contractFiles.add(path))
+                .forEach(path -> {
+                    try {
+                        final Path contractFile = outputPath.resolve(path.getFileName());
+                        Files.copy(path, contractFile, StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                });
         }
 
         return contractFiles;
@@ -196,24 +197,24 @@ public class GitContractsPublisher implements ContractsPublisher {
         if (isSet(USERNAME, String.class, this.configuration) && isSet(PASSWORD, String.class, this.configuration)) {
 
             git = this.gitOperations.cloneRepository(
-                    getResolvedValue((String) this.configuration.get(URL)),
-                    repository,
-                    getResolvedValue((String) this.configuration.get(USERNAME)),
-                    getResolvedValue((String) this.configuration.get(PASSWORD))
+                getResolvedValue((String) this.configuration.get(URL)),
+                repository,
+                getResolvedValue((String) this.configuration.get(USERNAME)),
+                getResolvedValue((String) this.configuration.get(PASSWORD))
             );
         } else {
             if (isSet(PASSPHRASE, String.class, this.configuration)) {
 
                 git = this.gitOperations.cloneRepository(
-                        getResolvedValue((String) this.configuration.get(URL)),
-                        repository,
-                        getResolvedValue((String) this.configuration.get(PASSPHRASE)),
-                        getPrivateKey());
+                    getResolvedValue((String) this.configuration.get(URL)),
+                    repository,
+                    getResolvedValue((String) this.configuration.get(PASSPHRASE)),
+                    getPrivateKey());
             } else {
 
                 git = this.gitOperations.cloneRepository(
-                        getResolvedValue((String) this.configuration.get(URL)),
-                        repository);
+                    getResolvedValue((String) this.configuration.get(URL)),
+                    repository);
             }
         }
         return git;
@@ -224,24 +225,24 @@ public class GitContractsPublisher implements ContractsPublisher {
         if (isSet(USERNAME, String.class, this.configuration) && isSet(PASSWORD, String.class, this.configuration)) {
 
             pullResult = this.gitOperations.pullFromRepository(git,
-                    getResolvedValue((String) this.configuration.get(REMOTE)),
-                    getResolvedValue((String) this.configuration.get(BRANCH)),
-                    getResolvedValue((String) this.configuration.get(USERNAME)),
-                    getResolvedValue((String) this.configuration.get(PASSWORD))
+                getResolvedValue((String) this.configuration.get(REMOTE)),
+                getResolvedValue((String) this.configuration.get(BRANCH)),
+                getResolvedValue((String) this.configuration.get(USERNAME)),
+                getResolvedValue((String) this.configuration.get(PASSWORD))
             );
         } else {
             if (isSet(PASSPHRASE, String.class, this.configuration)) {
 
                 pullResult = this.gitOperations.pullFromRepository(git,
-                        getResolvedValue((String) this.configuration.get(REMOTE)),
-                        getResolvedValue((String) this.configuration.get(BRANCH)),
-                        getResolvedValue((String) this.configuration.get(PASSPHRASE)),
-                        getPrivateKey());
+                    getResolvedValue((String) this.configuration.get(REMOTE)),
+                    getResolvedValue((String) this.configuration.get(BRANCH)),
+                    getResolvedValue((String) this.configuration.get(PASSPHRASE)),
+                    getPrivateKey());
             } else {
 
                 pullResult = this.gitOperations.pullFromRepository(git,
-                        getResolvedValue((String) this.configuration.get(REMOTE)),
-                        getResolvedValue((String) this.configuration.get(BRANCH)));
+                    getResolvedValue((String) this.configuration.get(REMOTE)),
+                    getResolvedValue((String) this.configuration.get(BRANCH)));
             }
         }
         return pullResult;
@@ -264,7 +265,8 @@ public class GitContractsPublisher implements ContractsPublisher {
         }
 
         if (isSet(CONTRACT_GIT_DIRECTORY, String.class, this.configuration)) {
-            return Paths.get(directory.getAbsolutePath(), getResolvedValue((String) this.configuration.get(CONTRACT_GIT_DIRECTORY)));
+            return Paths.get(directory.getAbsolutePath(),
+                getResolvedValue((String) this.configuration.get(CONTRACT_GIT_DIRECTORY)));
         }
 
         return Paths.get(directory.getAbsolutePath());
@@ -288,27 +290,35 @@ public class GitContractsPublisher implements ContractsPublisher {
         this.configuration = configuration;
 
         if (!this.configuration.containsKey(URL)) {
-            throw new IllegalArgumentException(String.format("To use Git Publisher you need to set %s of the repository", URL));
+            throw new IllegalArgumentException(
+                String.format("To use Git Publisher you need to set %s of the repository", URL));
         }
 
         if (!(this.configuration.get(URL) instanceof String)) {
-            throw new IllegalArgumentException(String.format("Git Publisher requires %s configuration property to be an String instead of %s", URL, this.configuration.get(URL)));
+            throw new IllegalArgumentException(
+                String.format("Git Publisher requires %s configuration property to be an String instead of %s", URL,
+                    this.configuration.get(URL)));
         }
 
         if (!this.configuration.containsKey(COMMENT)) {
-            throw new IllegalArgumentException(String.format("To use Git Publisher you need to set %s of the repository", COMMENT));
+            throw new IllegalArgumentException(
+                String.format("To use Git Publisher you need to set %s of the repository", COMMENT));
         }
 
         if (!(this.configuration.get(COMMENT) instanceof String)) {
-            throw new IllegalArgumentException(String.format("Git Publisher requires %s configuration property to be an String instead of %s", COMMENT, this.configuration.get(COMMENT)));
+            throw new IllegalArgumentException(
+                String.format("Git Publisher requires %s configuration property to be an String instead of %s", COMMENT,
+                    this.configuration.get(COMMENT)));
         }
 
         if (!this.configuration.containsKey(CONTRACTS_FOLDER)) {
-            throw new IllegalArgumentException(String.format("Git Publisher requires %s configuration property", CONTRACTS_FOLDER));
+            throw new IllegalArgumentException(
+                String.format("Git Publisher requires %s configuration property", CONTRACTS_FOLDER));
         }
 
         if (!(this.configuration.get(CONTRACTS_FOLDER) instanceof String)) {
-            throw new IllegalArgumentException(String.format("Git Publisher requires %s configuration property to be an String", CONTRACTS_FOLDER));
+            throw new IllegalArgumentException(
+                String.format("Git Publisher requires %s configuration property to be an String", CONTRACTS_FOLDER));
         }
 
         setDefaults();
@@ -327,7 +337,6 @@ public class GitContractsPublisher implements ContractsPublisher {
         if (isNotSet(BRANCH, this.configuration)) {
             this.configuration.put(BRANCH, "master");
         }
-
     }
 
     private boolean isNotSet(String field, Map<String, Object> configuration) {

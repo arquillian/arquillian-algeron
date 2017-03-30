@@ -24,9 +24,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Resolves Maven artifacts.
- * This retriever gets artifacts from Maven repo, unpack them in a temporal directory and read the json contracts.
- * Notice that you can use http://maven.apache.org/enforcer/enforcer-rules/versionRanges.html and loader will get the highest version.
+ * Resolves Maven artifacts. This retriever gets artifacts from Maven repo, unpack them in a temporal directory and read
+ * the json contracts. Notice that you can use http://maven.apache.org/enforcer/enforcer-rules/versionRanges.html and
+ * loader will get the highest version.
  */
 public class ContractsMavenDependencyLoader implements ContractsRetriever {
 
@@ -48,9 +48,9 @@ public class ContractsMavenDependencyLoader implements ContractsRetriever {
         final File contractsFolder = createTemporaryFolder("MavenContracts");
         extractContracts(contractsFolder);
         return Arrays.stream(contractsFolder.listFiles())
-                .map(file -> "file://" + file.getAbsolutePath())
-                .map(URI::create)
-                .collect(Collectors.toList());
+            .map(file -> "file://" + file.getAbsolutePath())
+            .map(URI::create)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -95,7 +95,8 @@ public class ContractsMavenDependencyLoader implements ContractsRetriever {
         final ConfigurableMavenResolverSystem configurableMavenResolverSystem = Maven.configureResolver();
 
         if (!"".equals(contractsMavenDependency.customSettings())) {
-            configurableMavenResolverSystem.fromClassloaderResource(RunnerExpressionParser.parseExpressions(contractsMavenDependency.customSettings()));
+            configurableMavenResolverSystem.fromClassloaderResource(
+                RunnerExpressionParser.parseExpressions(contractsMavenDependency.customSettings()));
         }
 
         if (contractsMavenDependency.offline()) {
@@ -103,8 +104,10 @@ public class ContractsMavenDependencyLoader implements ContractsRetriever {
         }
 
         if (!"".equals(contractsMavenDependency.remoteRepository())) {
-            final String[] remoteRepository = getRemoteRepository(RunnerExpressionParser.parseExpressions(contractsMavenDependency.remoteRepository()));
-            configurableMavenResolverSystem.withRemoteRepo(remoteRepository[NAME], remoteRepository[URL], remoteRepository[LAYOUT]);
+            final String[] remoteRepository =
+                getRemoteRepository(RunnerExpressionParser.parseExpressions(contractsMavenDependency.remoteRepository()));
+            configurableMavenResolverSystem.withRemoteRepo(remoteRepository[NAME], remoteRepository[URL],
+                remoteRepository[LAYOUT]);
         }
 
         String[] coordinates = contractsMavenDependency.value();
@@ -114,7 +117,6 @@ public class ContractsMavenDependencyLoader implements ContractsRetriever {
         }
 
         return contracts;
-
     }
 
     private JavaArchive resolve(String coordinate, ConfigurableMavenResolverSystem maven) {
@@ -125,7 +127,9 @@ public class ContractsMavenDependencyLoader implements ContractsRetriever {
     private String[] getRemoteRepository(String remoteRepoDefinition) {
         final String[] elements = remoteRepoDefinition.split(":");
         if (elements.length != 3) {
-            throw new IllegalArgumentException(String.format("Remote Repository must follow the syntax name:url:layout instead of %s", remoteRepoDefinition));
+            throw new IllegalArgumentException(
+                String.format("Remote Repository must follow the syntax name:url:layout instead of %s",
+                    remoteRepoDefinition));
         }
 
         return elements;
@@ -202,5 +206,4 @@ public class ContractsMavenDependencyLoader implements ContractsRetriever {
             return ContractsMavenDependency.class;
         }
     }
-
 }

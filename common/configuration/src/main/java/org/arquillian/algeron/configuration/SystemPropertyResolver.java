@@ -30,7 +30,7 @@ public class SystemPropertyResolver {
         }
         if (propertyValue == null) {
             throw new RuntimeException("Could not resolve property \"" + tuple.getPropertyName()
-                    + "\" in the system properties or environment variables and no default value is supplied");
+                + "\" in the system properties or environment variables and no default value is supplied");
         }
         return propertyValue;
     }
@@ -104,7 +104,5 @@ public class SystemPropertyResolver {
             }
             return list.toArray(new String[list.size()]);
         }
-
     }
-
 }

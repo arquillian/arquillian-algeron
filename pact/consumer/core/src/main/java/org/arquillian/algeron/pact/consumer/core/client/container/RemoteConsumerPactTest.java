@@ -34,12 +34,15 @@ public class RemoteConsumerPactTest extends AbstractConsumerPactTest {
 
         if (pactVerification == null) {
             logger.log(Level.INFO,
-                    String.format("Method %s is not annotated with %s annotation and it is going to be executed as normal junit test.", event.getTestMethod().getName(), PactVerification.class.getName()));
+                String.format(
+                    "Method %s is not annotated with %s annotation and it is going to be executed as normal junit test.",
+                    event.getTestMethod().getName(), PactVerification.class.getName()));
             testEventContext.proceed();
             return;
         }
 
-        final ConsumerProviderPair consumerProviderPair = executeConsumerTest(testEventContext, testClass, pactVerification);
+        final ConsumerProviderPair consumerProviderPair =
+            executeConsumerTest(testEventContext, testClass, pactVerification);
 
         // Send results back to client
         final String filename = getFilename(consumerProviderPair);

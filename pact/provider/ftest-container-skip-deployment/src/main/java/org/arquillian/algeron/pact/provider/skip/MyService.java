@@ -18,5 +18,4 @@ public class MyService {
     public String getMessage() {
         return "{\"responsetest\": true, \"nom\": \"harry\"}";
     }
-
 }

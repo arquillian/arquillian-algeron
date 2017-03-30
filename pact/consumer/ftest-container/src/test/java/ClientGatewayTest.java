@@ -35,15 +35,15 @@ public class ClientGatewayTest {
         header.put("Content-Type", "application/json");
 
         return builder
-                .given("test state", "name", "Alexandra")
-                .uponReceiving("ConsumerTest test interaction")
-                .path("/")
-                .method("GET")
-                .willRespondWith()
-                .status(200)
-                .headers(header)
-                .bodyWithSingleQuotes("{'responsetest': true, 'name': 'harry'}")
-                .toFragment();
+            .given("test state", "name", "Alexandra")
+            .uponReceiving("ConsumerTest test interaction")
+            .path("/")
+            .method("GET")
+            .willRespondWith()
+            .status(200)
+            .headers(header)
+            .bodyWithSingleQuotes("{'responsetest': true, 'name': 'harry'}")
+            .toFragment();
     }
 
     @EJB

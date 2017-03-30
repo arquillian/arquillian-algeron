@@ -8,5 +8,4 @@ public interface ArquillianTestClassAwareTarget {
     void setTestClass(TestClass testClass, Object testInstance);
 
     void setInjector(Injector injector);
-
 }

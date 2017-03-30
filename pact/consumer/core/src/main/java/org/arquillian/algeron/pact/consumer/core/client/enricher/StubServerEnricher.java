@@ -39,7 +39,9 @@ public class StubServerEnricher implements TestEnricher {
                 if (URL.class.isAssignableFrom(stubServer.getType())) {
                     try {
                         String httpScheme = pactConsumerConfiguration.isHttps() ? "https" : "http";
-                        URL url = new URL(httpScheme, pactConsumerConfiguration.getHost(), pactConsumerConfiguration.getPort(), "");
+                        URL url =
+                            new URL(httpScheme, pactConsumerConfiguration.getHost(), pactConsumerConfiguration.getPort(),
+                                "");
                         stubServer.set(testCase, url);
                     } catch (IllegalAccessException e) {
                         throw new IllegalArgumentException(e);
@@ -62,7 +64,9 @@ public class StubServerEnricher implements TestEnricher {
                 if (URL.class.isAssignableFrom(parameterTypes[i])) {
                     String httpScheme = pactConsumerConfiguration.isHttps() ? "https" : "http";
                     try {
-                        URL url = new URL(httpScheme, pactConsumerConfiguration.getHost(), pactConsumerConfiguration.getPort(), "");
+                        URL url =
+                            new URL(httpScheme, pactConsumerConfiguration.getHost(), pactConsumerConfiguration.getPort(),
+                                "");
                         values[i] = url;
                     } catch (MalformedURLException e) {
                         throw new IllegalArgumentException(e);
@@ -87,26 +91,26 @@ public class StubServerEnricher implements TestEnricher {
     }
 
     private static List<Field> getFieldsWithAnnotation(final Class<?> source,
-                                                       final Class<? extends Annotation> annotationClass) {
+        final Class<? extends Annotation> annotationClass) {
         List<Field> declaredAccessableFields = AccessController
-                .doPrivileged(new PrivilegedAction<List<Field>>() {
-                    public List<Field> run() {
-                        List<Field> foundFields = new ArrayList<Field>();
-                        Class<?> nextSource = source;
-                        while (nextSource != Object.class) {
-                            for (Field field : nextSource.getDeclaredFields()) {
-                                if (field.isAnnotationPresent(annotationClass)) {
-                                    if (!field.isAccessible()) {
-                                        field.setAccessible(true);
-                                    }
-                                    foundFields.add(field);
+            .doPrivileged(new PrivilegedAction<List<Field>>() {
+                public List<Field> run() {
+                    List<Field> foundFields = new ArrayList<Field>();
+                    Class<?> nextSource = source;
+                    while (nextSource != Object.class) {
+                        for (Field field : nextSource.getDeclaredFields()) {
+                            if (field.isAnnotationPresent(annotationClass)) {
+                                if (!field.isAccessible()) {
+                                    field.setAccessible(true);
                                 }
+                                foundFields.add(field);
                             }
-                            nextSource = nextSource.getSuperclass();
                         }
-                        return foundFields;
+                        nextSource = nextSource.getSuperclass();
                     }
-                });
+                    return foundFields;
+                }
+            });
         return declaredAccessableFields;
     }
 }

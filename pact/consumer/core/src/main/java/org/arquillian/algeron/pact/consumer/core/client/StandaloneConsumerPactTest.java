@@ -11,7 +11,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Subclass for managing pacts for standalone classes. Cannot be used the client one because it uses Deployment class which is only available in case of container as client/incontainer mode
+ * Subclass for managing pacts for standalone classes. Cannot be used the client one because it uses Deployment class
+ * which is only available in case of container as client/incontainer mode
  */
 public class StandaloneConsumerPactTest extends AbstractConsumerPactTest {
 
@@ -26,12 +27,13 @@ public class StandaloneConsumerPactTest extends AbstractConsumerPactTest {
 
         if (pactVerification == null) {
             logger.log(Level.INFO,
-                    String.format("Method %s is not annotated with %s annotation and it is going to be executed as normal junit test.", event.getTestMethod().getName(), PactVerification.class.getName()));
+                String.format(
+                    "Method %s is not annotated with %s annotation and it is going to be executed as normal junit test.",
+                    event.getTestMethod().getName(), PactVerification.class.getName()));
             testEventContext.proceed();
             return;
         }
 
         executeConsumerTest(testEventContext, testClass, pactVerification);
     }
-
 }

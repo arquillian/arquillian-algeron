@@ -28,15 +28,15 @@ public class ConsumerTest {
         header.put("Content-Type", "application/json");
 
         return builder
-                .given("test state")
-                .uponReceiving("ConsumerTest test interaction")
-                .path("/")
-                .method("GET")
-                .willRespondWith()
-                .status(200)
-                .headers(header)
-                .bodyWithSingleQuotes(("{'responsetest': true, 'name': 'harry'}"))
-                .toFragment();
+            .given("test state")
+            .uponReceiving("ConsumerTest test interaction")
+            .path("/")
+            .method("GET")
+            .willRespondWith()
+            .status(200)
+            .headers(header)
+            .bodyWithSingleQuotes(("{'responsetest': true, 'name': 'harry'}"))
+            .toFragment();
     }
 
     @StubServer
@@ -47,5 +47,4 @@ public class ConsumerTest {
     public void runTest() throws IOException {
         new ConsumerClient().get(url).body("name", equalTo("harry"));
     }
-
 }

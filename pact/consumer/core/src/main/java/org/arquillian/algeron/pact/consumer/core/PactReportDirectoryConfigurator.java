@@ -36,5 +36,4 @@ public class PactReportDirectoryConfigurator {
     public boolean isGradle() {
         return Files.exists(Paths.get("build.gradle"));
     }
-
 }

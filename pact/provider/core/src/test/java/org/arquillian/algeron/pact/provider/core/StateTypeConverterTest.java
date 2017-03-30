@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @NotThreadSafe
 public class StateTypeConverterTest {
 
-
     @Test
     public void should_convert_empty_string_to_empty_string_array() throws Exception {
         // given
@@ -204,6 +203,4 @@ public class StateTypeConverterTest {
     }
 
     // -------------------------------------------------------------------------------------------
-
-
 }

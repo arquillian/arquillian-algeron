@@ -17,13 +17,12 @@ public class PactProviderConfigurator {
     @ApplicationScoped
     private InstanceProducer<PactProviderConfiguration> pactProviderConfigurationInstanceProducer;
 
-    public void configure(@Observes AlgeronProviderConfiguration algeronProviderConfiguration, ArquillianDescriptor arquillianDescriptor) {
+    public void configure(@Observes AlgeronProviderConfiguration algeronProviderConfiguration,
+        ArquillianDescriptor arquillianDescriptor) {
 
         Map<String, String> config = arquillianDescriptor.extension(EXTENSION_NAME).getExtensionProperties();
         PactProviderConfiguration pactProviderConfiguration = PactProviderConfiguration.fromMap(config);
 
         pactProviderConfigurationInstanceProducer.set(pactProviderConfiguration);
-
     }
-
 }

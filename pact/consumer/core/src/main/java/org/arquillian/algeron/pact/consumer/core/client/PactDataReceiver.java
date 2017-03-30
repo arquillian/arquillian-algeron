@@ -23,11 +23,9 @@ public class PactDataReceiver {
             pactFilesCommand.setResult("FAILURE");
             pactFilesCommand.setThrowable(e);
         }
-
     }
 
     private String getDestination() {
         return System.getProperty("pact.rootDir", "target/pacts");
     }
-
 }

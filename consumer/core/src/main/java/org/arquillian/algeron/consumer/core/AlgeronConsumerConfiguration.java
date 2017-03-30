@@ -41,6 +41,4 @@ public class AlgeronConsumerConfiguration {
     private final static Map<String, Object> loadConfiguration(String configurationContent) {
         return (Map<String, Object>) new Yaml().load(configurationContent);
     }
-
-
 }

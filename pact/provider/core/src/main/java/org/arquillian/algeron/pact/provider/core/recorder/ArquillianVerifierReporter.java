@@ -36,12 +36,15 @@ public class ArquillianVerifierReporter implements VerifierReporter {
 
     @Override
     public void reportVerificationForConsumer(ConsumerInfo consumer, ProviderInfo provider) {
-        verificationGroup.setName(String.format("Verifying a pact between %s and %s", consumer.getName(), provider.getName()));
+        verificationGroup.setName(
+            String.format("Verifying a pact between %s and %s", consumer.getName(), provider.getName()));
     }
 
     @Override
     public void warnProviderHasNoConsumers(ProviderInfo providerInfo) {
-        appendTextEntry(String.format("WARNING: There are no consumers to verify for provider %s", providerInfo.getName()), this.verificationGroup);
+        appendTextEntry(
+            String.format("WARNING: There are no consumers to verify for provider %s", providerInfo.getName()),
+            this.verificationGroup);
     }
 
     @Override
@@ -68,7 +71,8 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     }
 
     @Override
-    public void stateChangeRequestFailedWithException(String state, ProviderInfo providerInfo, ConsumerInfo consumerInfo, boolean isSetup, Exception e, boolean printStackTrace) {
+    public void stateChangeRequestFailedWithException(String state, ProviderInfo providerInfo, ConsumerInfo consumerInfo,
+        boolean isSetup, Exception e, boolean printStackTrace) {
         appendTextEntry(String.format("State %s Change Request Failed - %s", state, e.getMessage()), this.stateGroup);
     }
 
@@ -78,12 +82,15 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     }
 
     @Override
-    public void warnStateChangeIgnoredDueToInvalidUrl(String state, ProviderInfo providerInfo, boolean isSetup, Object stateChangeHandler) {
-        appendTextEntry(String.format("WARNING: State Change ignored as there is no stateChange URL, received %s", stateChangeHandler.toString()), this.stateGroup);
+    public void warnStateChangeIgnoredDueToInvalidUrl(String state, ProviderInfo providerInfo, boolean isSetup,
+        Object stateChangeHandler) {
+        appendTextEntry(String.format("WARNING: State Change ignored as there is no stateChange URL, received %s",
+            stateChangeHandler.toString()), this.stateGroup);
     }
 
     @Override
-    public void requestFailed(ProviderInfo providerInfo, Interaction interaction, String interactionMessage, Exception e, boolean printStackTrace) {
+    public void requestFailed(ProviderInfo providerInfo, Interaction interaction, String interactionMessage, Exception e,
+        boolean printStackTrace) {
         appendTextEntry(String.format("Request Failed on %s - %s", e.getMessage()), this.interactionGroup);
     }
 
@@ -187,7 +194,6 @@ public class ArquillianVerifierReporter implements VerifierReporter {
         }
 
         return groupEntry;
-
     }
 
     private GroupEntry serializeDiff(Map errorWithDiff) {
@@ -203,8 +209,8 @@ public class ArquillianVerifierReporter implements VerifierReporter {
 
     private void addDiffs(final GroupEntry diffGroupEntry, final List<?> diffs) {
         diffs.stream()
-                .map(diff -> new TextEntry(diff.toString()))
-                .forEach(diff -> diffGroupEntry.getPropertyEntries().add(diff));
+            .map(diff -> new TextEntry(diff.toString()))
+            .forEach(diff -> diffGroupEntry.getPropertyEntries().add(diff));
     }
 
     @Override
@@ -249,6 +255,4 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     public void setExt(String ext) {
 
     }
-
-
 }

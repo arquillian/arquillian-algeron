@@ -7,7 +7,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ResolveClassAnnotationTest {
 
-
     @Test
     public void should_get_annotation_from_class_level() {
         assertThat(ResolveClassAnnotation.getClassWithAnnotation(A.class, Pact.class)).isPresent();
@@ -24,5 +23,4 @@ public class ResolveClassAnnotationTest {
 
     public static class B extends A {
     }
-
 }

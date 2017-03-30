@@ -66,8 +66,8 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     }
 
     /**
-     * @param host     host of tested service
-     * @param port     port of tested service
+     * @param host host of tested service
+     * @param port port of tested service
      * @param protocol protocol of tested service
      */
     public HttpTarget(final String protocol, final String host, final int port) {
@@ -75,23 +75,24 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     }
 
     /**
-     * @param host     host of tested service
-     * @param port     port of tested service
+     * @param host host of tested service
+     * @param port port of tested service
      * @param protocol protocol of tested service
-     * @param path     protocol of the tested service
+     * @param path protocol of the tested service
      */
     public HttpTarget(final String protocol, final String host, final int port, final String path) {
         this(protocol, host, port, path, false);
     }
 
     /**
-     * @param host     host of tested service
-     * @param port     port of tested service
+     * @param host host of tested service
+     * @param port port of tested service
      * @param protocol protocol of the tested service
-     * @param path     path of the tested service
+     * @param path path of the tested service
      * @param insecure true if certificates should be ignored
      */
-    public HttpTarget(final String protocol, final String host, final int port, final String path, final boolean insecure) {
+    public HttpTarget(final String protocol, final String host, final int port, final String path,
+        final boolean insecure) {
         this.host = host;
         this.port = port;
         this.protocol = protocol;
@@ -107,22 +108,22 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     }
 
     /**
-     * @param url      url of the tested service
+     * @param url url of the tested service
      * @param insecure true if certificates should be ignored
      */
     public HttpTarget(final URL url, final boolean insecure) {
         this(url.getProtocol() == null ? "http" : url.getProtocol(),
-                url.getHost(),
-                url.getPort() == -1 ? 8080 : url.getPort(),
-                url.getPath() == null ? "/" : url.getPath(),
-                insecure);
-
+            url.getHost(),
+            url.getPort() == -1 ? 8080 : url.getPort(),
+            url.getPath() == null ? "/" : url.getPath(),
+            insecure);
     }
 
     @Override
     public void testInteraction() {
         if (this.currentConsumer == null || this.currentRequestResponseInteraction == null) {
-            throw new IllegalArgumentException("Current Consumer or Current Request Response Interaction has not been set.");
+            throw new IllegalArgumentException(
+                "Current Consumer or Current Request Response Interaction has not been set.");
         }
 
         try {
@@ -136,7 +137,8 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     @Override
     public void testInteraction(URL url) {
         if (this.currentConsumer == null || this.currentRequestResponseInteraction == null) {
-            throw new IllegalArgumentException("Current Consumer or Current Request Response Interaction has not been set.");
+            throw new IllegalArgumentException(
+                "Current Consumer or Current Request Response Interaction has not been set.");
         }
 
         try {
@@ -182,7 +184,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     }
 
     private ProviderVerifier setupVerifier(RequestResponseInteraction interaction, ProviderInfo provider,
-                                           ConsumerInfo consumer) {
+        ConsumerInfo consumer) {
         ProviderVerifier verifier = new ProviderVerifier();
 
         setupReporters(verifier, provider.getName(), interaction.getDescription());
@@ -201,7 +203,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
 
     private void setupReporters(ProviderVerifier verifier, String name, String description) {
         String reportDirectory = "target/pact/reports";
-        String[] reports = new String[]{};
+        String[] reports = new String[] {};
         boolean reportingEnabled = false;
 
         VerificationReports verificationReports = testClass.getAnnotation(VerificationReports.class);
@@ -219,18 +221,18 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
             File reportDir = new File(reportDirectory);
             reportDir.mkdirs();
             verifier.setReporters(Arrays.stream(reports)
-                    .filter(r -> !r.isEmpty())
-                    .map(r -> {
-                        final String reportType = r.trim();
-                        if ("recorder".equals(reportType)) {
-                            return injector.inject(new ArquillianVerifierReporter());
-                        } else {
-                            VerifierReporter reporter = ReporterManager.createReporter(reportType);
-                            reporter.setReportDir(reportDir);
-                            reporter.setReportFile(new File(reportDir, name + " - " + description + reporter.getExt()));
-                            return reporter;
-                        }
-                    }).collect(Collectors.toList()));
+                .filter(r -> !r.isEmpty())
+                .map(r -> {
+                    final String reportType = r.trim();
+                    if ("recorder".equals(reportType)) {
+                        return injector.inject(new ArquillianVerifierReporter());
+                    } else {
+                        VerifierReporter reporter = ReporterManager.createReporter(reportType);
+                        reporter.setReportDir(reportDir);
+                        reporter.setReportFile(new File(reportDir, name + " - " + description + reporter.getExt()));
+                        return reporter;
+                    }
+                }).collect(Collectors.toList()));
         }
     }
 
@@ -247,13 +249,15 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
             final Method[] methods = testClass.getMethods(TargetRequestFilter.class);
 
             if (methods != null && methods.length > 0) {
-                providerInfo.setRequestFilter((Consumer<HttpRequest>) httpRequest -> Arrays.stream(methods).forEach(method -> {
-                    try {
-                        method.invoke(testInstance, httpRequest);
-                    } catch (Throwable t) {
-                        throw new AssertionError("Request filter method " + method.getName() + " failed with an exception", t);
-                    }
-                }));
+                providerInfo.setRequestFilter(
+                    (Consumer<HttpRequest>) httpRequest -> Arrays.stream(methods).forEach(method -> {
+                        try {
+                            method.invoke(testInstance, httpRequest);
+                        } catch (Throwable t) {
+                            throw new AssertionError(
+                                "Request filter method " + method.getName() + " failed with an exception", t);
+                        }
+                    }));
             }
         }
 
@@ -299,16 +303,15 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
             }
 
             messageError.append(firstElement)
-                    .append(System.lineSeparator());
+                .append(System.lineSeparator());
 
             for (int i = 1; i < split.length; i++) {
                 messageError.append(padString)
-                        .append(split[i])
-                        .append(System.lineSeparator());
+                    .append(split[i])
+                    .append(System.lineSeparator());
             }
 
             return messageError.toString();
-
         } else {
             return message;
         }
@@ -318,7 +321,8 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
         if (mismatches.containsKey("comparison")) {
             Object comparison = mismatches.get("comparison");
             if (mismatches.containsKey("diff")) {
-                return String.format("%s%n%s", mapToString((Map) comparison), listToString(((List) mismatches.get("diff"))));
+                return String.format("%s%n%s", mapToString((Map) comparison),
+                    listToString(((List) mismatches.get("diff"))));
             } else {
                 if (comparison instanceof Map) {
                     return mapToString((Map) comparison);
@@ -337,10 +341,9 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
 
     private String mapToString(Map comparison) {
         return comparison.entrySet().stream()
-                .map(e -> String.valueOf(((Map.Entry) e).getKey()) + " -> " + ((Map.Entry) e).getValue())
-                .collect(Collectors.joining(System.lineSeparator())).toString();
+            .map(e -> String.valueOf(((Map.Entry) e).getKey()) + " -> " + ((Map.Entry) e).getValue())
+            .collect(Collectors.joining(System.lineSeparator())).toString();
     }
-
 
     @Override
     public void setTestClass(TestClass testClass, Object testInstance) {

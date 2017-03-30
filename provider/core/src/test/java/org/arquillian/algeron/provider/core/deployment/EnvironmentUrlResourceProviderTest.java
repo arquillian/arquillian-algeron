@@ -1,6 +1,5 @@
 package org.arquillian.algeron.provider.core.deployment;
 
-
 import org.arquillian.algeron.provider.api.deployment.Environment;
 import org.arquillian.algeron.provider.core.AlgeronProviderConfiguration;
 import org.jboss.arquillian.container.test.impl.enricher.resource.URLResourceProvider;
@@ -42,7 +41,8 @@ public class EnvironmentUrlResourceProviderTest {
             };
 
             final Field urlField = TestWithFieldEnricher.class.getField("url");
-            final Object url = environmentUrlResourceProvider.doLookup(urlField.getAnnotation(ArquillianResource.class), urlField.getAnnotation(Environment.class));
+            final Object url = environmentUrlResourceProvider.doLookup(urlField.getAnnotation(ArquillianResource.class),
+                urlField.getAnnotation(Environment.class));
             assertThat(url).isInstanceOf(URL.class);
             URL urlObject = (URL) url;
             assertThat(urlObject).hasHost("www.arquillian.org");
@@ -69,7 +69,8 @@ public class EnvironmentUrlResourceProviderTest {
             environmentUrlResourceProvider.injectorInstance = () -> injector;
 
             final Field urlField = TestWithFieldEnricher.class.getField("url");
-            final Object url = environmentUrlResourceProvider.doLookup(urlField.getAnnotation(ArquillianResource.class), urlField.getAnnotation(Environment.class));
+            final Object url = environmentUrlResourceProvider.doLookup(urlField.getAnnotation(ArquillianResource.class),
+                urlField.getAnnotation(Environment.class));
 
             assertThat(url).isInstanceOf(URL.class);
             URL urlObject = (URL) url;
@@ -88,5 +89,4 @@ public class EnvironmentUrlResourceProviderTest {
             return url;
         }
     }
-
 }

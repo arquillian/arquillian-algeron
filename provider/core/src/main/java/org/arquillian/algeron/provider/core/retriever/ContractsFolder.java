@@ -1,6 +1,5 @@
 package org.arquillian.algeron.provider.core.retriever;
 
-
 import org.arquillian.algeron.provider.spi.retriever.ContractsSource;
 
 import java.lang.annotation.ElementType;

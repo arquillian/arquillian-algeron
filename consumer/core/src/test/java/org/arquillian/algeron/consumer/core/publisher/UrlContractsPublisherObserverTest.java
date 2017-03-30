@@ -45,8 +45,8 @@ public class UrlContractsPublisherObserverTest extends AbstractManagerTestBase {
         Files.copy(new ByteArrayInputStream(content), new File(origin, "pact.txt").toPath());
 
         String config = "provider: url\n" +
-                "contractsFolder: " + origin.getAbsolutePath() + "\n" +
-                "url: http://localhost:18081/pacts\n";
+            "contractsFolder: " + origin.getAbsolutePath() + "\n" +
+            "url: http://localhost:18081/pacts\n";
 
         final Map<String, String> params = new HashMap<>();
         params.put("publishContracts", "true");
@@ -56,16 +56,13 @@ public class UrlContractsPublisherObserverTest extends AbstractManagerTestBase {
         bind(ApplicationScoped.class, AlgeronConsumerConfiguration.class, pactConsumerConfiguration);
 
         WireMock.stubFor(
-                WireMock.post(WireMock.urlEqualTo("/pacts/pact.txt"))
-                        .withRequestBody(new ContainsPattern("Contract File"))
-                        .willReturn(WireMock.aResponse().withStatus(200)));
+            WireMock.post(WireMock.urlEqualTo("/pacts/pact.txt"))
+                .withRequestBody(new ContainsPattern("Contract File"))
+                .willReturn(WireMock.aResponse().withStatus(200)));
 
         fire(new AfterClass(UrlContractsPublisherObserverTest.class));
 
         WireMock.verify(WireMock.postRequestedFor(WireMock.urlEqualTo("/pacts/pact.txt"))
-                .withRequestBody(new ContainsPattern("Contract File")));
-
-
+            .withRequestBody(new ContainsPattern("Contract File")));
     }
-
 }

@@ -18,5 +18,4 @@ public @interface VerificationReports {
      * Directory where reports should be written
      */
     String reportDir() default "target/pact/reports";
-
 }

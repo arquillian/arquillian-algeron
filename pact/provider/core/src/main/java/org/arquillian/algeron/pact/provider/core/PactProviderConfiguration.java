@@ -1,6 +1,5 @@
 package org.arquillian.algeron.pact.provider.core;
 
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -49,7 +48,6 @@ public class PactProviderConfiguration {
     public boolean isInsecure() {
         return insecure;
     }
-
 
     public boolean isTargetUrlSet() {
         return this.getTargetUrl() != null;

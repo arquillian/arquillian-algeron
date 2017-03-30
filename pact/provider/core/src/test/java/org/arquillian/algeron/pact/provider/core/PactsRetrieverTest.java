@@ -52,8 +52,8 @@ public class PactsRetrieverTest {
         Pacts pacts = argumentCaptor.getValue();
         final List<Pact> listOfLoadedPacts = pacts.getPacts();
         assertThat(listOfLoadedPacts).hasSize(1).element(0)
-                .hasFieldOrPropertyWithValue("provider", new au.com.dius.pact.model.Provider("planets_provider"))
-                .hasFieldOrPropertyWithValue("consumer", new Consumer("planets_consumer"));
+            .hasFieldOrPropertyWithValue("provider", new au.com.dius.pact.model.Provider("planets_provider"))
+            .hasFieldOrPropertyWithValue("consumer", new Consumer("planets_consumer"));
     }
 
     @Test
@@ -64,27 +64,25 @@ public class PactsRetrieverTest {
         pactsRetriever.pactsInstanceProducer = instanceProducer;
         pactsRetriever.algeronProviderConfigurationInstance = instance;
 
-
         String retriever = "provider: folder" + System.lineSeparator() + "contractsFolder: pacts";
         final Map<String, String> configuration = new HashMap<>();
         configuration.put("retrieverConfiguration", retriever);
 
-        final AlgeronProviderConfiguration algeronProviderConfiguration = AlgeronProviderConfiguration.fromMap(configuration);
+        final AlgeronProviderConfiguration algeronProviderConfiguration =
+            AlgeronProviderConfiguration.fromMap(configuration);
 
         when(instance.get()).thenReturn(algeronProviderConfiguration);
 
-
         // When
         pactsRetriever.retrievePacts(new BeforeClass(NonePactDefinition.class));
-
 
         // Then
         verify(instanceProducer).set(argumentCaptor.capture());
         Pacts pacts = argumentCaptor.getValue();
         final List<Pact> listOfLoadedPacts = pacts.getPacts();
         assertThat(listOfLoadedPacts).hasSize(1).element(0)
-                .hasFieldOrPropertyWithValue("provider", new au.com.dius.pact.model.Provider("planets_provider"))
-                .hasFieldOrPropertyWithValue("consumer", new Consumer("planets_consumer"));
+            .hasFieldOrPropertyWithValue("provider", new au.com.dius.pact.model.Provider("planets_provider"))
+            .hasFieldOrPropertyWithValue("consumer", new Consumer("planets_consumer"));
     }
 
     @Provider("planets_provider")
@@ -96,5 +94,4 @@ public class PactsRetrieverTest {
     @Provider("planets_provider")
     public static class NonePactDefinition {
     }
-
 }

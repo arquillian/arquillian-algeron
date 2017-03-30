@@ -15,7 +15,6 @@ public class PactConsumerVersionExtractor {
     private static final Logger logger = Logger.getLogger(PactConsumerVersionExtractor.class.getName());
     private static final String SELENIUM_VERSION = "latest";
 
-
     public static String fromClassPath() {
         Set<String> versions = new HashSet<>();
         try {
@@ -36,11 +35,11 @@ public class PactConsumerVersionExtractor {
                         }
                     }
                 }
-
             }
-
         } catch (Exception e) {
-            logger.log(Level.WARNING, "Exception {0} occurred while resolving selenium version and latest image is going to be used.", e.getMessage());
+            logger.log(Level.WARNING,
+                "Exception {0} occurred while resolving selenium version and latest image is going to be used.",
+                e.getMessage());
             return SELENIUM_VERSION;
         }
 
@@ -51,11 +50,10 @@ public class PactConsumerVersionExtractor {
 
         String foundVersion = versions.iterator().next();
         if (versions.size() > 1) {
-            logger.log(Level.WARNING, "Multiple versions of Selenium found in classpath. Using the first one found {0}.", foundVersion);
+            logger.log(Level.WARNING, "Multiple versions of Selenium found in classpath. Using the first one found {0}.",
+                foundVersion);
         }
 
         return foundVersion;
     }
-
-
 }

@@ -44,7 +44,6 @@ public class GitOperations {
             } else {
                 return false;
             }
-
         } else {
             return false;
         }
@@ -71,7 +70,7 @@ public class GitOperations {
     public Ref checkoutTag(Git git, String tag) {
         try {
             return git.checkout()
-                    .setName("tags/" + tag).call();
+                .setName("tags/" + tag).call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -80,7 +79,7 @@ public class GitOperations {
     /**
      * Checks if given branch has been checkedout locally too.
      *
-     * @param git    instance.
+     * @param git instance.
      * @param branch to check.
      * @return True if it is local, false otherwise.
      */
@@ -88,17 +87,16 @@ public class GitOperations {
         try {
             final List<Ref> refs = git.branchList().call();
             return refs.stream()
-                    .anyMatch(ref -> ref.getName().endsWith(branch));
+                .anyMatch(ref -> ref.getName().endsWith(branch));
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
-
     }
 
     /**
      * Checks if given branch is remote.
      *
-     * @param git    instance.
+     * @param git instance.
      * @param branch to check.
      * @param remote name.
      * @return True if it is remote, false otherwise.
@@ -106,7 +104,7 @@ public class GitOperations {
     public boolean isRemoteBranch(final Git git, final String branch, final String remote) {
         try {
             final List<Ref> refs = git.branchList()
-                    .setListMode(ListBranchCommand.ListMode.REMOTE).call();
+                .setListMode(ListBranchCommand.ListMode.REMOTE).call();
 
             final String remoteBranch = remote + "/" + branch;
             return refs.stream().anyMatch(ref -> ref.getName().endsWith(remoteBranch));
@@ -118,15 +116,15 @@ public class GitOperations {
     /**
      * Checkout existing branch.
      *
-     * @param git    instance.
+     * @param git instance.
      * @param branch to move
      * @return Ref to current branch
      */
     public Ref checkoutBranch(Git git, String branch) {
         try {
             return git.checkout()
-                    .setName(branch)
-                    .call();
+                .setName(branch)
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -135,7 +133,7 @@ public class GitOperations {
     /**
      * Checkout existing branch.
      *
-     * @param git    instance.
+     * @param git instance.
      * @param branch to move
      * @param remote repository name
      * @return Ref to current branch
@@ -143,11 +141,11 @@ public class GitOperations {
     public Ref checkoutBranch(Git git, String branch, String remote) {
         try {
             return git.checkout()
-                    .setCreateBranch(true)
-                    .setName(branch)
-                    .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
-                    .setStartPoint(remote + "/" + branch)
-                    .call();
+                .setCreateBranch(true)
+                .setName(branch)
+                .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
+                .setStartPoint(remote + "/" + branch)
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -156,17 +154,17 @@ public class GitOperations {
     /**
      * Executes a checkout -b command using given branch.
      *
-     * @param git    instance.
+     * @param git instance.
      * @param branch to create and checkout.
      * @return Ref to current branch.
      */
     public Ref createBranchAndCheckout(Git git, String branch) {
         try {
             return git.checkout()
-                    .setCreateBranch(true)
-                    .setName(branch)
-                    .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
-                    .call();
+                .setCreateBranch(true)
+                .setName(branch)
+                .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -175,18 +173,18 @@ public class GitOperations {
     /**
      * Add all files and commit them with given message. This is equivalent as doing git add . git commit -m "message".
      *
-     * @param git     instance.
+     * @param git instance.
      * @param message of the commit.
      * @return RevCommit of this commit.
      */
     public RevCommit addAndCommit(Git git, String message) {
         try {
             git.add()
-                    .addFilepattern(".")
-                    .call();
+                .addFilepattern(".")
+                .call();
             return git.commit()
-                    .setMessage(message)
-                    .call();
+                .setMessage(message)
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -195,21 +193,21 @@ public class GitOperations {
     /**
      * Add all files and commit them with given message. This is equivalent as doing git add . git commit -m "message".
      *
-     * @param git     instance.
+     * @param git instance.
      * @param message of the commit.
-     * @param author  of the commit.
-     * @param email   of author of the commit.
+     * @param author of the commit.
+     * @param email of author of the commit.
      * @return RevCommit of this commit.
      */
     public RevCommit addAndCommit(Git git, String message, String author, String email) {
         try {
             git.add()
-                    .addFilepattern(".")
-                    .call();
+                .addFilepattern(".")
+                .call();
             return git.commit()
-                    .setAuthor(author, email)
-                    .setMessage(message)
-                    .call();
+                .setAuthor(author, email)
+                .setMessage(message)
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -218,16 +216,16 @@ public class GitOperations {
     /**
      * Pull repository from current branch and remote branch with same name as current
      *
-     * @param git          instance.
-     * @param remote       to be used.
+     * @param git instance.
+     * @param remote to be used.
      * @param remoteBranch to use.
      */
     public PullResult pullFromRepository(Git git, String remote, String remoteBranch) {
         try {
             return git.pull()
-                    .setRemote(remote)
-                    .setRemoteBranchName(remoteBranch)
-                    .call();
+                .setRemote(remote)
+                .setRemoteBranchName(remoteBranch)
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -236,17 +234,17 @@ public class GitOperations {
     /**
      * Push all changes and tags to given remote.
      *
-     * @param git    instance.
+     * @param git instance.
      * @param remote to be used.
      * @return List of all results of given push.
      */
     public Iterable<PushResult> pushToRepository(Git git, String remote) {
         try {
             return git.push()
-                    .setRemote(remote)
-                    .setPushAll()
-                    .setPushTags()
-                    .call();
+                .setRemote(remote)
+                .setPushAll()
+                .setPushTags()
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -255,8 +253,8 @@ public class GitOperations {
     /**
      * Push all changes and tags to given remote.
      *
-     * @param git      instance.
-     * @param remote   to be used.
+     * @param git instance.
+     * @param remote to be used.
      * @param username to login.
      * @param password to login.
      * @return List of all results of given push.
@@ -264,11 +262,11 @@ public class GitOperations {
     public Iterable<PushResult> pushToRepository(Git git, String remote, String username, String password) {
         try {
             return git.push()
-                    .setRemote(remote)
-                    .setPushAll()
-                    .setPushTags()
-                    .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
-                    .call();
+                .setRemote(remote)
+                .setPushAll()
+                .setPushTags()
+                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -277,15 +275,15 @@ public class GitOperations {
     /**
      * Creates a tag.
      *
-     * @param git  instance.
+     * @param git instance.
      * @param name of the tag.
      * @return Ref created to tag.
      */
     public Ref createTag(Git git, String name) {
         try {
             return git.tag()
-                    .setName(name)
-                    .call();
+                .setName(name)
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -294,8 +292,8 @@ public class GitOperations {
     /**
      * Push all changes and tags to given remote.
      *
-     * @param git        instance.
-     * @param remote     to be used.
+     * @param git instance.
+     * @param remote to be used.
      * @param passphrase to access private key.
      * @param privateKey file location.
      * @return List of all results of given push.
@@ -321,14 +319,14 @@ public class GitOperations {
 
         try {
             return git.push()
-                    .setRemote(remote)
-                    .setPushAll()
-                    .setPushTags()
-                    .setTransportConfigCallback(transport -> {
-                        SshTransport sshTransport = (SshTransport) transport;
-                        sshTransport.setSshSessionFactory(sshSessionFactory);
-                    })
-                    .call();
+                .setRemote(remote)
+                .setPushAll()
+                .setPushTags()
+                .setTransportConfigCallback(transport -> {
+                    SshTransport sshTransport = (SshTransport) transport;
+                    sshTransport.setSshSessionFactory(sshSessionFactory);
+                })
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -337,19 +335,19 @@ public class GitOperations {
     /**
      * Pull repository from current branch and remote branch with same name as current
      *
-     * @param git          instance.
-     * @param remote       to be used.
+     * @param git instance.
+     * @param remote to be used.
      * @param remoteBranch to use.
-     * @param username     to connect
-     * @param password     to connect
+     * @param username to connect
+     * @param password to connect
      */
     public PullResult pullFromRepository(Git git, String remote, String remoteBranch, String username, String password) {
         try {
             return git.pull()
-                    .setRemote(remote)
-                    .setRemoteBranchName(remoteBranch)
-                    .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
-                    .call();
+                .setRemote(remote)
+                .setRemoteBranchName(remoteBranch)
+                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -358,13 +356,14 @@ public class GitOperations {
     /**
      * Pull repository from current branch and remote branch with same name as current
      *
-     * @param git          instance.
-     * @param remote       to be used.
+     * @param git instance.
+     * @param remote to be used.
      * @param remoteBranch to use.
-     * @param passphrase   to access private key.
-     * @param privateKey   file location.
+     * @param passphrase to access private key.
+     * @param privateKey file location.
      */
-    public PullResult pullFromRepository(final Git git, final String remote, String remoteBranch, final String passphrase, final Path privateKey) {
+    public PullResult pullFromRepository(final Git git, final String remote, String remoteBranch, final String passphrase,
+        final Path privateKey) {
         SshSessionFactory sshSessionFactory = new JschConfigSessionFactory() {
             @Override
             protected void configure(OpenSshConfig.Host host, Session session) {
@@ -385,13 +384,13 @@ public class GitOperations {
 
         try {
             return git.pull()
-                    .setRemote(remote)
-                    .setRemoteBranchName(remoteBranch)
-                    .setTransportConfigCallback(transport -> {
-                        SshTransport sshTransport = (SshTransport) transport;
-                        sshTransport.setSshSessionFactory(sshSessionFactory);
-                    })
-                    .call();
+                .setRemote(remote)
+                .setRemoteBranchName(remoteBranch)
+                .setTransportConfigCallback(transport -> {
+                    SshTransport sshTransport = (SshTransport) transport;
+                    sshTransport.setSshSessionFactory(sshSessionFactory);
+                })
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -407,9 +406,9 @@ public class GitOperations {
     public Git cloneRepository(String remoteUrl, Path localPath) {
         try {
             return Git.cloneRepository()
-                    .setURI(remoteUrl)
-                    .setDirectory(localPath.toFile())
-                    .call();
+                .setURI(remoteUrl)
+                .setDirectory(localPath.toFile())
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -420,17 +419,17 @@ public class GitOperations {
      *
      * @param remoteUrl to connect.
      * @param localPath where to clone the repo.
-     * @param username  to connect
-     * @param password  to connect
+     * @param username to connect
+     * @param password to connect
      * @return Git instance. Caller is responsible to close the connection.
      */
     public Git cloneRepository(String remoteUrl, Path localPath, String username, String password) {
         try {
             return Git.cloneRepository()
-                    .setURI(remoteUrl)
-                    .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
-                    .setDirectory(localPath.toFile())
-                    .call();
+                .setURI(remoteUrl)
+                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
+                .setDirectory(localPath.toFile())
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -439,13 +438,14 @@ public class GitOperations {
     /**
      * Clones a private remote git repository. Caller is responsible of closing git repository.
      *
-     * @param remoteUrl  to connect.
-     * @param localPath  where to clone the repo.
+     * @param remoteUrl to connect.
+     * @param localPath where to clone the repo.
      * @param passphrase to access private key.
      * @param privateKey file location. If null default (~.ssh/id_rsa) location is used.
      * @return Git instance. Caller is responsible to close the connection.
      */
-    public Git cloneRepository(final String remoteUrl, final Path localPath, final String passphrase, final Path privateKey) {
+    public Git cloneRepository(final String remoteUrl, final Path localPath, final String passphrase,
+        final Path privateKey) {
 
         SshSessionFactory sshSessionFactory = new JschConfigSessionFactory() {
             @Override
@@ -467,13 +467,13 @@ public class GitOperations {
 
         try {
             return Git.cloneRepository()
-                    .setURI(remoteUrl)
-                    .setTransportConfigCallback(transport -> {
-                        SshTransport sshTransport = (SshTransport) transport;
-                        sshTransport.setSshSessionFactory(sshSessionFactory);
-                    })
-                    .setDirectory(localPath.toFile())
-                    .call();
+                .setURI(remoteUrl)
+                .setTransportConfigCallback(transport -> {
+                    SshTransport sshTransport = (SshTransport) transport;
+                    sshTransport.setSshSessionFactory(sshSessionFactory);
+                })
+                .setDirectory(localPath.toFile())
+                .call();
         } catch (GitAPIException e) {
             throw new IllegalStateException(e);
         }
@@ -495,5 +495,4 @@ public class GitOperations {
 
         return false;
     }
-
 }

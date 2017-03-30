@@ -53,7 +53,8 @@ public class ContractsGitLoaderTest {
         when(gitOperations.cloneRepository(eq("myrepourl"), any(Path.class))).thenReturn(git);
         when(gitOperations.isLocalBranch(git, "master")).thenReturn(false);
 
-        ContractsGitLoader pactGitLoader = new ContractsGitLoader(TestWithPactRandomDirectory.class.getAnnotation(ContractsGit.class));
+        ContractsGitLoader pactGitLoader =
+            new ContractsGitLoader(TestWithPactRandomDirectory.class.getAnnotation(ContractsGit.class));
         pactGitLoader.gitOperations = gitOperations;
 
         pactGitLoader.getContractsFolderFromGitRepo();
@@ -72,7 +73,8 @@ public class ContractsGitLoaderTest {
         when(gitOperations.pullFromRepository(git, "origin", "master")).thenReturn(pullResult);
         when(gitOperations.isLocalBranch(git, "master")).thenReturn(true);
 
-        ContractsGitLoader pactGitLoader = new ContractsGitLoader(TestWithPactRepositoryDirectory.class.getAnnotation(ContractsGit.class));
+        ContractsGitLoader pactGitLoader =
+            new ContractsGitLoader(TestWithPactRepositoryDirectory.class.getAnnotation(ContractsGit.class));
         pactGitLoader.gitOperations = gitOperations;
 
         final Path pactsFromGitRepo = pactGitLoader.getContractsFolderFromGitRepo();
@@ -80,7 +82,6 @@ public class ContractsGitLoaderTest {
         verify(gitOperations).pullFromRepository(git, "origin", "master");
         verify(gitOperations).checkoutBranch(git, "master");
         assertThat(pactsFromGitRepo.toString()).isEqualTo("/tmp");
-
     }
 
     @Test
@@ -93,7 +94,8 @@ public class ContractsGitLoaderTest {
         when(gitOperations.pullFromRepository(git, "origin", "master")).thenReturn(pullResult);
         when(gitOperations.isLocalBranch(git, "master")).thenReturn(false);
 
-        ContractsGitLoader pactGitLoader = new ContractsGitLoader(TestWithPactRepositoryDirectory.class.getAnnotation(ContractsGit.class));
+        ContractsGitLoader pactGitLoader =
+            new ContractsGitLoader(TestWithPactRepositoryDirectory.class.getAnnotation(ContractsGit.class));
         pactGitLoader.gitOperations = gitOperations;
 
         final Path pactsFromGitRepo = pactGitLoader.getContractsFolderFromGitRepo();
@@ -101,7 +103,6 @@ public class ContractsGitLoaderTest {
         verify(gitOperations).pullFromRepository(git, "origin", "master");
         verify(gitOperations).checkoutBranch(git, "master", "origin");
         assertThat(pactsFromGitRepo.toString()).isEqualTo("/tmp");
-
     }
 
     @Test
@@ -114,7 +115,8 @@ public class ContractsGitLoaderTest {
         when(gitOperations.pullFromRepository(git, "origin", "master")).thenReturn(pullResult);
         when(gitOperations.isLocalBranch(git, "master")).thenReturn(false);
 
-        ContractsGitLoader pactGitLoader = new ContractsGitLoader(TestWithPactRepositoryDirectoryAndSubfolder.class.getAnnotation(ContractsGit.class));
+        ContractsGitLoader pactGitLoader =
+            new ContractsGitLoader(TestWithPactRepositoryDirectoryAndSubfolder.class.getAnnotation(ContractsGit.class));
         pactGitLoader.gitOperations = gitOperations;
 
         final Path pactsFromGitRepo = pactGitLoader.getContractsFolderFromGitRepo();
@@ -122,7 +124,6 @@ public class ContractsGitLoaderTest {
         verify(gitOperations).pullFromRepository(git, "origin", "master");
         verify(gitOperations).checkoutBranch(git, "master", "origin");
         assertThat(pactsFromGitRepo.toString()).isEqualTo("/tmp/pacts");
-
     }
 
     @Test
@@ -135,7 +136,8 @@ public class ContractsGitLoaderTest {
         when(gitOperations.pullFromRepository(git, "origin", "mybranch")).thenReturn(pullResult);
         when(gitOperations.isLocalBranch(git, "master")).thenReturn(false);
 
-        ContractsGitLoader pactGitLoader = new ContractsGitLoader(TestWithPactRepositoryDirectoryAndTag.class.getAnnotation(ContractsGit.class));
+        ContractsGitLoader pactGitLoader =
+            new ContractsGitLoader(TestWithPactRepositoryDirectoryAndTag.class.getAnnotation(ContractsGit.class));
         pactGitLoader.gitOperations = gitOperations;
 
         final Path pactsFromGitRepo = pactGitLoader.getContractsFolderFromGitRepo();
@@ -143,9 +145,7 @@ public class ContractsGitLoaderTest {
         verify(gitOperations).pullFromRepository(git, "origin", "mybranch");
         verify(gitOperations).checkoutTag(git, "mytag");
         assertThat(pactsFromGitRepo.toString()).isEqualTo("/tmp");
-
     }
-
 
     @ContractsGit("myrepourl")
     private static class TestWithPactRandomDirectory {
@@ -162,5 +162,4 @@ public class ContractsGitLoaderTest {
     @ContractsGit(value = "", repository = "/tmp", contractsDirectory = "pacts")
     private static class TestWithPactRepositoryDirectoryAndSubfolder {
     }
-
 }

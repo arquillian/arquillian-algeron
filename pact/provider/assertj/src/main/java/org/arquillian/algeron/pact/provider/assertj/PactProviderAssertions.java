@@ -6,7 +6,6 @@ import org.assertj.core.api.Assertions;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-
 public class PactProviderAssertions extends Assertions {
 
     private Target target;
@@ -40,5 +39,4 @@ public class PactProviderAssertions extends Assertions {
             throw new IllegalArgumentException(e);
         }
     }
-
 }

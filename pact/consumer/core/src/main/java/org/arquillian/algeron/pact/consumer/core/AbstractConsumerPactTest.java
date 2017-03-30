@@ -27,7 +27,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-
 public abstract class AbstractConsumerPactTest {
 
     private static final Logger logger = Logger.getLogger(AbstractConsumerPactTest.class.getName());
@@ -39,7 +38,8 @@ public abstract class AbstractConsumerPactTest {
     @Inject
     protected Instance<MockProviderConfig> mockProviderConfigInstance;
 
-    protected ConsumerProviderPair executeConsumerTest(EventContext<Test> testEventContext, TestClass testClass, PactVerification pactVerification) throws Throwable {
+    protected ConsumerProviderPair executeConsumerTest(EventContext<Test> testEventContext, TestClass testClass,
+        PactVerification pactVerification) throws Throwable {
         String currentProvider = getProvider(testClass, pactVerification);
 
         // Start of execution
@@ -47,13 +47,15 @@ public abstract class AbstractConsumerPactTest {
         return executePactFragment(testEventContext, currentProvider, pactVerification);
     }
 
-    private ConsumerProviderPair executePactFragment(EventContext<Test> testEventContext, String currentProvider, PactVerification pactVerification) throws Throwable {
+    private ConsumerProviderPair executePactFragment(EventContext<Test> testEventContext, String currentProvider,
+        PactVerification pactVerification) throws Throwable {
         final Object testInstance = testEventContext.getEvent().getTestInstance();
         final TestClass testClass = testEventContext.getEvent().getTestClass();
 
         Optional<PactMethod> possiblePactMethod = findPactMethod(currentProvider, testClass, pactVerification);
         if (!possiblePactMethod.isPresent()) {
-            throw new UnsupportedOperationException("Could not find method with @Pact for the provider " + currentProvider);
+            throw new UnsupportedOperationException(
+                "Could not find method with @Pact for the provider " + currentProvider);
         }
 
         PactMethod pactMethod = possiblePactMethod.get();
@@ -104,7 +106,9 @@ public abstract class AbstractConsumerPactTest {
                     return pactConsumerConfiguration.getProvider();
                 } else {
                     throw new IllegalArgumentException(
-                            String.format("Provider name must be set either by using provider configuration property in arquillian.xml or annotating %s test with %s with a provider set.", testClass.getName(), PactVerification.class.getName()));
+                        String.format(
+                            "Provider name must be set either by using provider configuration property in arquillian.xml or annotating %s test with %s with a provider set.",
+                            testClass.getName(), PactVerification.class.getName()));
                 }
             }
         }
@@ -114,15 +118,17 @@ public abstract class AbstractConsumerPactTest {
         return testClass.getAnnotation(Pact.class) != null;
     }
 
-    protected Optional<PactMethod> findPactMethod(String currentProvider, TestClass testClass, PactVerification pactVerification) {
+    protected Optional<PactMethod> findPactMethod(String currentProvider, TestClass testClass,
+        PactVerification pactVerification) {
         String pactFragment = pactVerification.fragment();
 
-        final Optional<Class<?>> classWithPactAnnotation = ResolveClassAnnotation.getClassWithAnnotation(testClass.getJavaClass(), Pact.class);
+        final Optional<Class<?>> classWithPactAnnotation =
+            ResolveClassAnnotation.getClassWithAnnotation(testClass.getJavaClass(), Pact.class);
         final List<Method> pactMethods = findPactFragmentMethods(testClass);
         for (Method method : pactMethods) {
             Optional<Pact> pact = resolvePactAnnotation(classWithPactAnnotation, method);
             if (pact.isPresent() && pact.get().provider().equals(currentProvider)
-                    && (pactFragment.isEmpty() || pactFragment.equals(method.getName()))) {
+                && (pactFragment.isEmpty() || pactFragment.equals(method.getName()))) {
 
                 validatePactSignature(method);
                 return Optional.of(new PactMethod(method, pact.get()));
@@ -140,27 +146,27 @@ public abstract class AbstractConsumerPactTest {
                 return Optional.ofNullable(clazz.get().getAnnotation(Pact.class));
             } else {
                 // method will be ignored.
-                logger.log(Level.INFO, String.format("Method %s returns a %s type but it is not annotated at method nor at class level with %s",
-                        method.getName(),
-                        PactFragment.class.getName(),
-                        Pact.class.getName()));
+                logger.log(Level.INFO, String.format(
+                    "Method %s returns a %s type but it is not annotated at method nor at class level with %s",
+                    method.getName(),
+                    PactFragment.class.getName(),
+                    Pact.class.getName()));
                 return null;
             }
         } else {
             return Optional.of(pactMethodAnnotation);
         }
-
     }
 
     private void validatePactSignature(Method method) {
         boolean hasValidPactSignature =
-                PactFragment.class.isAssignableFrom(method.getReturnType())
-                        && method.getParameterTypes().length == 1
-                        && method.getParameterTypes()[0].isAssignableFrom(PactDslWithProvider.class);
+            PactFragment.class.isAssignableFrom(method.getReturnType())
+                && method.getParameterTypes().length == 1
+                && method.getParameterTypes()[0].isAssignableFrom(PactDslWithProvider.class);
 
         if (!hasValidPactSignature) {
             throw new UnsupportedOperationException("Method " + method.getName() +
-                    " does not conform required method signature 'public PactFragment xxx(PactDslWithProvider builder)'");
+                " does not conform required method signature 'public PactFragment xxx(PactDslWithProvider builder)'");
         }
     }
 
@@ -168,8 +174,8 @@ public abstract class AbstractConsumerPactTest {
         final Method[] methods = testClass.getJavaClass().getMethods();
 
         return Arrays.stream(methods)
-                .filter(method -> method.getReturnType().isAssignableFrom(PactFragment.class))
-                .collect(Collectors.toList());
+            .filter(method -> method.getReturnType().isAssignableFrom(PactFragment.class))
+            .collect(Collectors.toList());
     }
 
     protected static class PactMethod {
@@ -189,5 +195,4 @@ public abstract class AbstractConsumerPactTest {
             return pact;
         }
     }
-
 }

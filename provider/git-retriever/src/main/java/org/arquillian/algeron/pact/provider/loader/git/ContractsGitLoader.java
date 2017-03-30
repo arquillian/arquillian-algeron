@@ -45,9 +45,9 @@ public class ContractsGitLoader implements ContractsRetriever {
     public List<URI> retrieve() throws IOException {
         final Path contractsFolderFromGitRepo = getContractsFolderFromGitRepo();
         return Arrays.stream(contractsFolderFromGitRepo.toFile().listFiles())
-                .map(file -> "file://" + file.getAbsolutePath())
-                .map(URI::create)
-                .collect(Collectors.toList());
+            .map(file -> "file://" + file.getAbsolutePath())
+            .map(URI::create)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -59,7 +59,6 @@ public class ContractsGitLoader implements ContractsRetriever {
     public void configure(Map<String, Object> configuration) {
         this.contractsGit = new ExternallyConfiguredContractsGit(configuration);
     }
-
 
     protected Path getContractsFolderFromGitRepo() throws IOException {
         Path location = null;
@@ -80,20 +79,23 @@ public class ContractsGitLoader implements ContractsRetriever {
                             location = moveToCorrectLocation(git);
                         } else {
                             // Merge conflicts
-                            throw new IllegalArgumentException("There are merge conflicts into an existing git repo. Provider should not deal with merge conflicts. Correct them or delete the repo and execute again the test.");
+                            throw new IllegalArgumentException(
+                                "There are merge conflicts into an existing git repo. Provider should not deal with merge conflicts. Correct them or delete the repo and execute again the test.");
                         }
                     } else {
-                        throw new IllegalArgumentException(String.format("Git repository %s was not cloned correctly.", git.getRepository().getDirectory().getAbsolutePath()));
+                        throw new IllegalArgumentException(String.format("Git repository %s was not cloned correctly.",
+                            git.getRepository().getDirectory().getAbsolutePath()));
                     }
                 } else {
-                    logger.log(Level.INFO, String.format("%s directory is not a git directory or does not exists and it is going to be deleted and cloned", repository));
+                    logger.log(Level.INFO, String.format(
+                        "%s directory is not a git directory or does not exists and it is going to be deleted and cloned",
+                        repository));
 
                     Files.deleteIfExists(repository);
                     Files.createDirectories(repository);
                     git = executeClone(repository);
                     location = moveToCorrectLocation(git);
                 }
-
             } else {
                 // Put files in a temp directory
                 final Path testGitRepository = Files.createTempDirectory("TestGitRepository");
@@ -103,7 +105,6 @@ public class ContractsGitLoader implements ContractsRetriever {
                 git = executeClone(testGitRepository);
                 location = moveToCorrectLocation(git);
             }
-
         } finally {
             if (git != null) {
                 git.close();
@@ -111,7 +112,6 @@ public class ContractsGitLoader implements ContractsRetriever {
         }
         return location;
     }
-
 
     private Path moveToCorrectLocation(Git git) {
         //getRepository().getDirectory() returns the .git directory of the project
@@ -141,24 +141,24 @@ public class ContractsGitLoader implements ContractsRetriever {
         if (isSet(this.contractsGit.username()) && isSet(this.contractsGit.password())) {
 
             git = this.gitOperations.cloneRepository(
-                    getResolvedValue(this.contractsGit.value()),
-                    repository,
-                    getResolvedValue(this.contractsGit.username()),
-                    getResolvedValue(this.contractsGit.password())
+                getResolvedValue(this.contractsGit.value()),
+                repository,
+                getResolvedValue(this.contractsGit.username()),
+                getResolvedValue(this.contractsGit.password())
             );
         } else {
             if (isSet(this.contractsGit.passphrase())) {
 
                 git = this.gitOperations.cloneRepository(
-                        getResolvedValue(this.contractsGit.value()),
-                        repository,
-                        getResolvedValue(this.contractsGit.passphrase()),
-                        getPrivateKey());
+                    getResolvedValue(this.contractsGit.value()),
+                    repository,
+                    getResolvedValue(this.contractsGit.passphrase()),
+                    getPrivateKey());
             } else {
 
                 git = this.gitOperations.cloneRepository(
-                        getResolvedValue(this.contractsGit.value()),
-                        repository);
+                    getResolvedValue(this.contractsGit.value()),
+                    repository);
             }
         }
         return git;
@@ -169,23 +169,23 @@ public class ContractsGitLoader implements ContractsRetriever {
         if (isSet(this.contractsGit.username()) && isSet(this.contractsGit.password())) {
 
             pullResult = this.gitOperations.pullFromRepository(git,
-                    getResolvedValue(this.contractsGit.remote()),
-                    getResolvedValue(this.contractsGit.branch()),
-                    getResolvedValue(this.contractsGit.username()),
-                    getResolvedValue(this.contractsGit.password()));
+                getResolvedValue(this.contractsGit.remote()),
+                getResolvedValue(this.contractsGit.branch()),
+                getResolvedValue(this.contractsGit.username()),
+                getResolvedValue(this.contractsGit.password()));
         } else {
             if (isSet(this.contractsGit.passphrase())) {
 
                 pullResult = this.gitOperations.pullFromRepository(git,
-                        getResolvedValue(this.contractsGit.remote()),
-                        getResolvedValue(this.contractsGit.branch()),
-                        getResolvedValue(this.contractsGit.passphrase()),
-                        getPrivateKey());
+                    getResolvedValue(this.contractsGit.remote()),
+                    getResolvedValue(this.contractsGit.branch()),
+                    getResolvedValue(this.contractsGit.passphrase()),
+                    getPrivateKey());
             } else {
 
                 pullResult = this.gitOperations.pullFromRepository(git,
-                        getResolvedValue(this.contractsGit.remote()),
-                        getResolvedValue(this.contractsGit.branch()));
+                    getResolvedValue(this.contractsGit.remote()),
+                    getResolvedValue(this.contractsGit.branch()));
             }
         }
         return pullResult;
@@ -219,7 +219,6 @@ public class ContractsGitLoader implements ContractsRetriever {
         private static final String CONTRACT_GIT_DIRECTORY = "contractGitDirectory";
         private static final String TAG = "tag";
         private static final String BRANCH = "branch";
-
 
         private String url = "";
         private String username = "";
@@ -272,7 +271,6 @@ public class ContractsGitLoader implements ContractsRetriever {
             if (configuration.containsKey(REMOTE)) {
                 remote = (String) configuration.get(REMOTE);
             }
-
         }
 
         @Override
@@ -345,5 +343,4 @@ public class ContractsGitLoader implements ContractsRetriever {
             return ContractsGit.class;
         }
     }
-
 }

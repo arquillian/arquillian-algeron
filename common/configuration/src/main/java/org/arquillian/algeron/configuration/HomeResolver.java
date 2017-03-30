@@ -14,5 +14,4 @@ public class HomeResolver {
         }
         return path;
     }
-
 }

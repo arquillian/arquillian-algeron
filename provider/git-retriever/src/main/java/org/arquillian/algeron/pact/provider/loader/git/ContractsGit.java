@@ -20,73 +20,52 @@ public @interface ContractsGit {
 
     /**
      * URL of remote git repository
-     *
-     * @return
      */
     String value();
 
     /**
      * Username to access to repository
-     *
-     * @return
      */
     String username() default "";
 
     /**
      * Password to access to repository
-     *
-     * @return
      */
     String password() default "";
 
     /**
      * Passphrase to access to private key
-     *
-     * @return
      */
     String passphrase() default "";
 
     /**
      * Location and name of the private key. By default ~/.ssh/id_rsa
-     *
-     * @return
      */
     String key() default "~/.ssh/id_rsa";
 
     /**
      * Directory where remote git repository is cloned. By default uses temp directory
-     *
-     * @return
      */
     String repository() default "";
 
     /**
      * In case contracts are stored inside an specific folder, you need to specify where are stored
-     *
-     * @return
      */
     String contractsDirectory() default "";
 
     /**
      * If you want to checkout an specific tag
-     *
-     * @return
      */
 
     String tag() default "";
 
     /**
      * If you want to change to an specific branch. By default is master.
-     *
-     * @return
      */
     String branch() default "master";
 
     /**
      * Sets the remote used in pull operation, by default uses "origin"
-     *
-     * @return
      */
     String remote() default "origin";
-
 }

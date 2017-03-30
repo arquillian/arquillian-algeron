@@ -20,29 +20,27 @@ public class MockProviderConfigCreator {
         if (pactConsumerConfiguration.isHttps()) {
             if (pactConsumerConfiguration.getPort() < 1) {
                 final MockProviderConfig value = MockHttpsProviderConfig
-                        .createDefault(pactConsumerConfiguration.getHost(),
-                                pactConsumerConfiguration.getPactSpecVersion());
+                    .createDefault(pactConsumerConfiguration.getHost(),
+                        pactConsumerConfiguration.getPactSpecVersion());
                 configInstanceProducer.set(value);
             } else {
                 final MockProviderConfig value = MockHttpsProviderConfig
-                        .httpsConfig(pactConsumerConfiguration.getHost(),
-                                pactConsumerConfiguration.getPort(),
-                                pactConsumerConfiguration.getPactSpecVersion());
+                    .httpsConfig(pactConsumerConfiguration.getHost(),
+                        pactConsumerConfiguration.getPort(),
+                        pactConsumerConfiguration.getPactSpecVersion());
                 configInstanceProducer.set(value);
             }
         } else {
             if (pactConsumerConfiguration.getPort() < 1) {
                 final MockProviderConfig value = MockProviderConfig.createDefault(pactConsumerConfiguration.getHost(),
-                        pactConsumerConfiguration.getPactSpecVersion());
+                    pactConsumerConfiguration.getPactSpecVersion());
                 configInstanceProducer.set(value);
             } else {
                 final MockProviderConfig value = MockProviderConfig.httpConfig(pactConsumerConfiguration.getHost(),
-                        pactConsumerConfiguration.getPort(),
-                        pactConsumerConfiguration.getPactSpecVersion());
+                    pactConsumerConfiguration.getPort(),
+                    pactConsumerConfiguration.getPactSpecVersion());
                 configInstanceProducer.set(value);
             }
         }
-
     }
-
 }

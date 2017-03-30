@@ -21,7 +21,5 @@ public class AlgeronProviderConfigurator {
 
         final AlgeronProviderConfiguration algeronConsumerConfiguration = AlgeronProviderConfiguration.fromMap(config);
         configurationProducer.set(algeronConsumerConfiguration);
-
     }
-
 }

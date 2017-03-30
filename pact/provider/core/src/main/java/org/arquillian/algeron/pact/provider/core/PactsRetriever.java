@@ -1,6 +1,5 @@
 package org.arquillian.algeron.pact.provider.core;
 
-
 import static java.util.stream.Collectors.toList;
 
 import au.com.dius.pact.model.Pact;
@@ -56,7 +55,8 @@ public class PactsRetriever {
 
         final Provider providerInfo = testClass.getAnnotation(Provider.class);
         if (providerInfo == null) {
-            throw new IllegalArgumentException(String.format("Provider name should be set by using %s", Provider.class.getName()));
+            throw new IllegalArgumentException(
+                String.format("Provider name should be set by using %s", Provider.class.getName()));
         }
 
         final String serviceName = providerInfo.value();
@@ -66,13 +66,14 @@ public class PactsRetriever {
 
         List<Pact> pacts = new ArrayList<>();
         try {
-            final ContractsRetriever contractsSource = getContractsSource(testClass, algeronProviderConfigurationInstance.get());
+            final ContractsRetriever contractsSource =
+                getContractsSource(testClass, algeronProviderConfigurationInstance.get());
             contractsSource.setProviderName(serviceName);
             final List<URI> contractsDirectory = contractsSource.retrieve();
 
             pacts = loadContractFiles(contractsDirectory, serviceName).stream()
-                    .filter(p -> consumerName == null || p.getConsumer().getName().equals(consumerName))
-                    .collect(toList());
+                .filter(p -> consumerName == null || p.getConsumer().getName().equals(consumerName))
+                .collect(toList());
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -82,33 +83,36 @@ public class PactsRetriever {
     protected List<Pact> loadContractFiles(List<URI> contracts, String providerName) {
         if (contracts != null) {
             List<URI> contractFiles = contracts.stream()
-                    .filter(uri -> uri.toString().endsWith(".json"))
-                    .collect(toList());
+                .filter(uri -> uri.toString().endsWith(".json"))
+                .collect(toList());
 
             if (contractFiles != null) {
                 return contractFiles.stream()
-                        .map(URI::toString)
-                        .map(PactReader::loadPact)
-                        .filter(pact -> pact.getProvider().getName().equals(providerName))
-                        .collect(Collectors.toList());
+                    .map(URI::toString)
+                    .map(PactReader::loadPact)
+                    .filter(pact -> pact.getProvider().getName().equals(providerName))
+                    .collect(Collectors.toList());
             }
         }
         return new ArrayList<>();
     }
 
-    protected ContractsRetriever getContractsSource(final TestClass testClass, AlgeronProviderConfiguration algeronProviderConfiguration) {
+    protected ContractsRetriever getContractsSource(final TestClass testClass,
+        AlgeronProviderConfiguration algeronProviderConfiguration) {
 
         // Gets a test annotated directly with PactSource annotation
         final ContractsSource pactSource = testClass.getAnnotation(ContractsSource.class);
 
         // Gets annotations that might be meta annotated with PactSource annotation
         final List<Annotation> pactLoaders = Arrays.stream(testClass.getJavaClass().getAnnotations())
-                .filter(annotation -> annotation.annotationType().getAnnotation(ContractsSource.class) != null)
-                .collect(toList());
+            .filter(annotation -> annotation.annotationType().getAnnotation(ContractsSource.class) != null)
+            .collect(toList());
 
         // It can only be one PactSource in test
         if (isIncorrectNumberOfContractSources(pactSource, pactLoaders)) {
-            throw new IllegalArgumentException(String.format("Exactly zero or one contract source as annotation should be set, but %s are set", countNumberOfContractsSource(pactSource, pactLoaders)));
+            throw new IllegalArgumentException(
+                String.format("Exactly zero or one contract source as annotation should be set, but %s are set",
+                    countNumberOfContractsSource(pactSource, pactLoaders)));
         }
 
         try {
@@ -116,7 +120,8 @@ public class PactsRetriever {
                 final Class<? extends ContractsRetriever> pactLoaderClass = pactSource.value();
                 try {
                     // Checks if there is a constructor with one argument of type Class.
-                    final Constructor<? extends ContractsRetriever> contructorWithClass = pactLoaderClass.getDeclaredConstructor(Class.class);
+                    final Constructor<? extends ContractsRetriever> contructorWithClass =
+                        pactLoaderClass.getDeclaredConstructor(Class.class);
                     contructorWithClass.setAccessible(true);
                     return contructorWithClass.newInstance(testClass.getJavaClass());
                 } catch (NoSuchMethodException e) {
@@ -126,7 +131,7 @@ public class PactsRetriever {
                 if (isAnnotationPresent(pactLoaders)) {
                     final Annotation annotation = pactLoaders.iterator().next();
                     return annotation.annotationType().getAnnotation(ContractsSource.class).value()
-                            .getConstructor(annotation.annotationType()).newInstance(annotation);
+                        .getConstructor(annotation.annotationType()).newInstance(annotation);
                 } else {
                     return getContractsRetriever(algeronProviderConfiguration);
                 }
@@ -153,12 +158,15 @@ public class PactsRetriever {
             final Map<String, Object> retrieverConfiguration = algeronProviderConfiguration.getRetrieverConfiguration();
 
             if (retrieverConfiguration.containsKey(PROVIDER)) {
-                final ContractsRetriever contractRetriever = findContractRetriever((String) retrieverConfiguration.get(PROVIDER));
+                final ContractsRetriever contractRetriever =
+                    findContractRetriever((String) retrieverConfiguration.get(PROVIDER));
                 contractRetriever.configure(retrieverConfiguration);
 
                 return contractRetriever;
             } else {
-                throw new IllegalArgumentException(String.format("Retrieving contracts are enabled, but configuration is not providing a %s property with provider name to be used.", PROVIDER));
+                throw new IllegalArgumentException(String.format(
+                    "Retrieving contracts are enabled, but configuration is not providing a %s property with provider name to be used.",
+                    PROVIDER));
             }
         }
 
@@ -177,5 +185,4 @@ public class PactsRetriever {
 
         throw new IllegalArgumentException(String.format("No retriever registered with name %s.", name));
     }
-
 }

@@ -41,14 +41,13 @@ public class GitContractsPublisherTest {
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-
     @Test
     public void should_clone_and_copy_pact_files_and_push() throws IOException {
 
         byte[] content = "Contract File".getBytes();
         final File contractLocation = temporaryFolder.newFolder("input");
         Files.copy(new ByteArrayInputStream(content),
-                new File(contractLocation, "pact.txt").toPath());
+            new File(contractLocation, "pact.txt").toPath());
 
         GitContractsPublisher gitContractsPublisher = new GitContractsPublisher();
         gitContractsPublisher.gitOperations = gitOperations;
@@ -64,13 +63,11 @@ public class GitContractsPublisherTest {
         when(git.getRepository()).thenReturn(this.repository);
         when(this.repository.getDirectory()).thenReturn(new File(repository, ".git"));
 
-
         gitContractsPublisher.publish();
         verify(gitOperations).addAndCommit(git, "my comment");
         verify(gitOperations).pushToRepository(git, "origin");
 
         assertThat(new File(repository, "pact.txt")).exists().hasContent("Contract File");
-
     }
 
     @Test
@@ -79,7 +76,7 @@ public class GitContractsPublisherTest {
         byte[] content = "Contract File".getBytes();
         final File contractLocation = temporaryFolder.newFolder("input");
         Files.copy(new ByteArrayInputStream(content),
-                new File(contractLocation, "pact.txt").toPath());
+            new File(contractLocation, "pact.txt").toPath());
 
         GitContractsPublisher gitContractsPublisher = new GitContractsPublisher();
         gitContractsPublisher.gitOperations = gitOperations;
@@ -100,13 +97,11 @@ public class GitContractsPublisherTest {
 
         when(this.repository.getDirectory()).thenReturn(new File(repository, ".git"));
 
-
         gitContractsPublisher.publish();
         verify(gitOperations).addAndCommit(git, "my comment");
         verify(gitOperations).pushToRepository(git, "origin");
 
         assertThat(new File(repository, "pact.txt")).exists().hasContent("Contract File");
-
     }
 
     @Test
@@ -115,7 +110,7 @@ public class GitContractsPublisherTest {
         byte[] content = "Contract File".getBytes();
         final File contractLocation = temporaryFolder.newFolder("input");
         Files.copy(new ByteArrayInputStream(content),
-                new File(contractLocation, "pact.txt").toPath());
+            new File(contractLocation, "pact.txt").toPath());
 
         GitContractsPublisher gitContractsPublisher = new GitContractsPublisher();
         gitContractsPublisher.gitOperations = gitOperations;
@@ -137,14 +132,12 @@ public class GitContractsPublisherTest {
 
         when(this.repository.getDirectory()).thenReturn(new File(repository, ".git"));
 
-
         gitContractsPublisher.publish();
         verify(gitOperations).addAndCommit(git, "my comment");
         verify(gitOperations).createTag(git, "mytag");
         verify(gitOperations).pushToRepository(git, "origin");
 
         assertThat(new File(repository, "pact.txt")).exists().hasContent("Contract File");
-
     }
 
     @Test
@@ -153,7 +146,7 @@ public class GitContractsPublisherTest {
         byte[] content = "Contract File".getBytes();
         final File contractLocation = temporaryFolder.newFolder("input");
         Files.copy(new ByteArrayInputStream(content),
-                new File(contractLocation, "pact.txt").toPath());
+            new File(contractLocation, "pact.txt").toPath());
 
         GitContractsPublisher gitContractsPublisher = new GitContractsPublisher();
         gitContractsPublisher.gitOperations = gitOperations;
@@ -178,7 +171,6 @@ public class GitContractsPublisherTest {
 
         gitContractsPublisher.publish();
         verify(gitOperations).createBranchAndCheckout(git, "mybranch");
-
     }
 
     private Map<String, Object> getConfigurationWithCommonFields(File repository, File contractLocation) {
@@ -190,5 +182,4 @@ public class GitContractsPublisherTest {
 
         return config;
     }
-
 }

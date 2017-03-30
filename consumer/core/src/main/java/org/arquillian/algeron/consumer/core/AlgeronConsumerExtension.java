@@ -7,6 +7,6 @@ public class AlgeronConsumerExtension implements LoadableExtension {
     @Override
     public void register(ExtensionBuilder builder) {
         builder.observer(AlgeronConsumerConfigurator.class)
-                .observer(ContractsPublisherObserver.class);
+            .observer(ContractsPublisherObserver.class);
     }
 }

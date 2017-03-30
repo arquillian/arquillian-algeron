@@ -10,23 +10,28 @@ import org.jboss.arquillian.core.spi.EventContext;
 
 public class DeploymentEnabler {
 
-    void skipDeployment(@Observes(precedence = -1000) EventContext<DeployManagedDeployments> eventContext, AlgeronProviderConfiguration algeronProviderConfiguration) {
+    void skipDeployment(@Observes(precedence = -1000) EventContext<DeployManagedDeployments> eventContext,
+        AlgeronProviderConfiguration algeronProviderConfiguration) {
         proceedIfEnabled(eventContext, algeronProviderConfiguration);
     }
 
-    void skipUndeploy(@Observes(precedence = -1000) EventContext<UnDeployManagedDeployments> eventContext, AlgeronProviderConfiguration algeronProviderConfiguration) {
+    void skipUndeploy(@Observes(precedence = -1000) EventContext<UnDeployManagedDeployments> eventContext,
+        AlgeronProviderConfiguration algeronProviderConfiguration) {
         proceedIfEnabled(eventContext, algeronProviderConfiguration);
     }
 
-    void skipStartContainer(@Observes(precedence = -1000) EventContext<StartContainer> eventContext, AlgeronProviderConfiguration algeronProviderConfiguration) {
+    void skipStartContainer(@Observes(precedence = -1000) EventContext<StartContainer> eventContext,
+        AlgeronProviderConfiguration algeronProviderConfiguration) {
         proceedIfEnabled(eventContext, algeronProviderConfiguration);
     }
 
-    void skipStopContainer(@Observes(precedence = -1000) EventContext<StopContainer> eventContext, AlgeronProviderConfiguration algeronProviderConfiguration) {
+    void skipStopContainer(@Observes(precedence = -1000) EventContext<StopContainer> eventContext,
+        AlgeronProviderConfiguration algeronProviderConfiguration) {
         proceedIfEnabled(eventContext, algeronProviderConfiguration);
     }
 
-    private <T> void proceedIfEnabled(final EventContext<T> eventContext, AlgeronProviderConfiguration algeronProviderConfiguration) {
+    private <T> void proceedIfEnabled(final EventContext<T> eventContext,
+        AlgeronProviderConfiguration algeronProviderConfiguration) {
         if (shouldEnableDeployment(algeronProviderConfiguration)) {
             eventContext.proceed();
         }
@@ -35,5 +40,4 @@ public class DeploymentEnabler {
     public static boolean shouldEnableDeployment(AlgeronProviderConfiguration algeronProviderConfiguration) {
         return !algeronProviderConfiguration.isSkipDeployment();
     }
-
 }

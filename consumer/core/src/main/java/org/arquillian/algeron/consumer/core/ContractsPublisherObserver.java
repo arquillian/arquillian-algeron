@@ -17,24 +17,30 @@ public class ContractsPublisherObserver {
     private static Logger logger = Logger.getLogger(ContractsPublisherObserver.class.getName());
     private static final String PROVIDER = "provider";
 
-    public void publish(@Observes AfterClass event, AlgeronConsumerConfiguration algeronConsumerConfiguration) throws IOException {
-        if (algeronConsumerConfiguration.isPublishContracts() && algeronConsumerConfiguration.isPublishConfigurationSet()) {
+    public void publish(@Observes AfterClass event, AlgeronConsumerConfiguration algeronConsumerConfiguration)
+        throws IOException {
+        if (algeronConsumerConfiguration.isPublishContracts()
+            && algeronConsumerConfiguration.isPublishConfigurationSet()) {
 
             final Map<String, Object> publishConfiguration = algeronConsumerConfiguration.getPublishConfiguration();
             if (publishConfiguration.containsKey(PROVIDER)) {
                 final String providerName = (String) publishConfiguration.get(PROVIDER);
 
-                final org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher contractsPublisher = getContractPublisher(providerName);
+                final org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher contractsPublisher =
+                    getContractPublisher(providerName);
                 contractsPublisher.configure(publishConfiguration);
                 contractsPublisher.publish();
             } else {
-                logger.log(Level.WARNING, String.format("Publishing contracts are enabled, but configuration is not providing a %s property with provider name to be used.", PROVIDER));
+                logger.log(Level.WARNING, String.format(
+                    "Publishing contracts are enabled, but configuration is not providing a %s property with provider name to be used.",
+                    PROVIDER));
             }
         }
     }
 
     private org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher getContractPublisher(String name) {
-        ServiceLoader<org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher> pactPublisherServiceLoader = ServiceLoader.load(org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher.class);
+        ServiceLoader<org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher> pactPublisherServiceLoader =
+            ServiceLoader.load(org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher.class);
 
         for (org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher contractsPublisher : pactPublisherServiceLoader) {
             if (contractsPublisher.getName().equals(name)) {
@@ -44,5 +50,4 @@ public class ContractsPublisherObserver {
 
         throw new IllegalArgumentException(String.format("No contract publisher registered with name %s.", name));
     }
-
 }

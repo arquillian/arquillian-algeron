@@ -42,7 +42,8 @@ import java.util.stream.StreamSupport;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Out-of-the-box implementation of {@link org.arquillian.algeron.provider.spi.retriever.ContractsRetriever} that downloads pacts from Pact broker
+ * Out-of-the-box implementation of {@link org.arquillian.algeron.provider.spi.retriever.ContractsRetriever} that
+ * downloads pacts from Pact broker
  */
 public class PactBrokerLoader implements ContractsRetriever {
     private static final Logger LOGGER = Logger.getLogger(PactBrokerLoader.class.getName());
@@ -53,15 +54,14 @@ public class PactBrokerLoader implements ContractsRetriever {
     private PactBroker pactBroker;
 
     private final Retryer<HttpResponse> retryer = RetryerBuilder.<HttpResponse>newBuilder()
-            .retryIfResult(response -> response.getStatusLine().getStatusCode() >= 500)
-            .withWaitStrategy(WaitStrategies.exponentialWait(100, 1, TimeUnit.SECONDS))
-            .withStopStrategy(StopStrategies.stopAfterDelay(5000))
-            .build();
+        .retryIfResult(response -> response.getStatusLine().getStatusCode() >= 500)
+        .withWaitStrategy(WaitStrategies.exponentialWait(100, 1, TimeUnit.SECONDS))
+        .withStopStrategy(StopStrategies.stopAfterDelay(5000))
+        .build();
     private Callable<HttpResponse> httpResponseCallable;
 
     public PactBrokerLoader() {
     }
-
 
     @Override
     public void setProviderName(String providerName) {
@@ -81,23 +81,25 @@ public class PactBrokerLoader implements ContractsRetriever {
     @Override
     public List<URI> retrieve() throws IOException {
         return Arrays.stream(pactBroker.tags())
-                .map(tag -> getResolvedValue(tag))
-                .map(tag -> {
-                    try {
-                        return loadPactsForProvider(providerName, tag);
-                    } catch (IOException e) {
-                        throw new IllegalStateException(e);
-                    }
-                })
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
+            .map(tag -> getResolvedValue(tag))
+            .map(tag -> {
+                try {
+                    return loadPactsForProvider(providerName, tag);
+                } catch (IOException e) {
+                    throw new IllegalStateException(e);
+                }
+            })
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
     }
 
     private List<URI> loadPactsForProvider(final String providerName, final String tag) throws IOException {
-        LOGGER.log(Level.FINER, String.format("Loading pacts from pact broker for provider %s and tag %s ", providerName, tag));
+        LOGGER.log(Level.FINER,
+            String.format("Loading pacts from pact broker for provider %s and tag %s ", providerName, tag));
         final HttpResponse httpResponse;
         try {
-            URIBuilder uriBuilder = new URIBuilder().setScheme(RunnerExpressionParser.parseExpressions(pactBroker.protocol()))
+            URIBuilder uriBuilder =
+                new URIBuilder().setScheme(RunnerExpressionParser.parseExpressions(pactBroker.protocol()))
                     .setHost(RunnerExpressionParser.parseExpressions(pactBroker.host()))
                     .setPort(Integer.parseInt(RunnerExpressionParser.parseExpressions(pactBroker.port())));
             if (tag.equals("latest")) {
@@ -108,8 +110,8 @@ public class PactBrokerLoader implements ContractsRetriever {
             URI brokerUri = uriBuilder.build();
             if (httpResponseCallable == null) {
                 httpResponse = retryer.call(() -> Request.Get(brokerUri)
-                        .setHeader(HttpHeaders.ACCEPT, "application/hal+json")
-                        .execute().returnResponse());
+                    .setHeader(HttpHeaders.ACCEPT, "application/hal+json")
+                    .execute().returnResponse());
             } else {
                 httpResponse = retryer.call(httpResponseCallable);
             }
@@ -119,14 +121,15 @@ public class PactBrokerLoader implements ContractsRetriever {
 
         final int statusCode = httpResponse.getStatusLine().getStatusCode();
         if (statusCode == 404) {
-            LOGGER.log(Level.WARNING, String.format("There are no pacts found for the service %s and tag %s", providerName, tag));
+            LOGGER.log(Level.WARNING,
+                String.format("There are no pacts found for the service %s and tag %s", providerName, tag));
             return Collections.emptyList();
         }
 
         final InputStream content = httpResponse.getEntity().getContent();
         if (statusCode / 100 != 2) {
             throw new RuntimeException("Pact broker responded with status: " + statusCode +
-                    "\n payload: '" + asStringPreservingNewLines(content) + "'");
+                "\n payload: '" + asStringPreservingNewLines(content) + "'");
         }
 
         final JsonValue parse = Json.parse(new InputStreamReader(content));
@@ -138,9 +141,9 @@ public class PactBrokerLoader implements ContractsRetriever {
 
             if (pacts != null) {
                 return StreamSupport.stream(pacts.spliterator(), false)
-                        .map(jsonNode -> jsonNode.asObject().getString("href", ""))
-                        .map(URI::create)
-                        .collect(toList());
+                    .map(jsonNode -> jsonNode.asObject().getString("href", ""))
+                    .map(URI::create)
+                    .collect(toList());
             }
         }
 
@@ -199,7 +202,8 @@ public class PactBrokerLoader implements ContractsRetriever {
             return PactBroker.class;
         }
 
-        public List<String> getFromStringOrListOfString(Map<String, Object> configuration, String field, String defaultValue) {
+        public List<String> getFromStringOrListOfString(Map<String, Object> configuration, String field,
+            String defaultValue) {
             List<String> values = new ArrayList<>();
             if (configuration.containsKey(field)) {
                 Object tags = configuration.get(field);
@@ -210,9 +214,9 @@ public class PactBrokerLoader implements ContractsRetriever {
                     if (tags instanceof Collection) {
                         Collection<String> listOfTags = (Collection) tags;
                         values.addAll(
-                                listOfTags.stream()
-                                        .map(tag -> getResolvedValue(tag))
-                                        .collect(toList()));
+                            listOfTags.stream()
+                                .map(tag -> getResolvedValue(tag))
+                                .collect(toList()));
                     }
                 }
             } else {
@@ -234,7 +238,8 @@ public class PactBrokerLoader implements ContractsRetriever {
             if (configuration.containsKey(field)) {
                 return (String) configuration.get(field);
             } else {
-                throw new IllegalArgumentException(String.format("%s field is mandatory in Pact Broker Retriever.", field));
+                throw new IllegalArgumentException(
+                    String.format("%s field is mandatory in Pact Broker Retriever.", field));
             }
         }
     }

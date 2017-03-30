@@ -1,6 +1,5 @@
 package org.arquillian.algeron.provider.spi.retriever;
 
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
@@ -39,5 +38,4 @@ public interface ContractsRetriever {
      * @return name of the published
      */
     String getName();
-
 }

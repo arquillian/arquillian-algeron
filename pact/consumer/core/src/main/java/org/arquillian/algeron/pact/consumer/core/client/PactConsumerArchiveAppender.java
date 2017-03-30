@@ -34,14 +34,14 @@ public class PactConsumerArchiveAppender implements AuxiliaryArchiveAppender {
     @Override
     public Archive<?> createAuxiliaryArchive() {
         final JavaArchive arquillianPactConsumer = ShrinkWrap.create(JavaArchive.class, "arquillian-pact-consumer.jar")
-                // Add Core classes required in container part
-                .addClasses(AbstractConsumerPactTest.class,
-                        RemoteConsumerPactTest.class, PactConsumerConfiguration.class,
-                        MockProviderConfigCreator.class, PactConsumerConfigurator.class,
-                        PactConsumerRemoteExtension.class, PactFilesCommand.class, ConsumerProviderPair.class,
-                        ResolveClassAnnotation.class, StubServer.class, StubServerEnricher.class)
-                .addPackages(true, Pact.class.getPackage())
-                .addAsServiceProvider(RemoteLoadableExtension.class, PactConsumerRemoteExtension.class);
+            // Add Core classes required in container part
+            .addClasses(AbstractConsumerPactTest.class,
+                RemoteConsumerPactTest.class, PactConsumerConfiguration.class,
+                MockProviderConfigCreator.class, PactConsumerConfigurator.class,
+                PactConsumerRemoteExtension.class, PactFilesCommand.class, ConsumerProviderPair.class,
+                ResolveClassAnnotation.class, StubServer.class, StubServerEnricher.class)
+            .addPackages(true, Pact.class.getPackage())
+            .addAsServiceProvider(RemoteLoadableExtension.class, PactConsumerRemoteExtension.class);
 
         final Properties properties = pactConsumerConfigurationInstance.get().asProperties();
         String configuration = toString(properties);
@@ -49,8 +49,8 @@ public class PactConsumerArchiveAppender implements AuxiliaryArchiveAppender {
         arquillianPactConsumer.add(new StringAsset(configuration), "/pact-consumer-configuration.properties");
 
         final JavaArchive[] pactConsumerDeps = Maven.resolver()
-                .resolve("au.com.dius:pact-jvm-consumer_2.11:" + getVersion())
-                .withTransitivity().as(JavaArchive.class);
+            .resolve("au.com.dius:pact-jvm-consumer_2.11:" + getVersion())
+            .withTransitivity().as(JavaArchive.class);
 
         final JavaArchive merge = merge(arquillianPactConsumer, pactConsumerDeps);
         return merge;

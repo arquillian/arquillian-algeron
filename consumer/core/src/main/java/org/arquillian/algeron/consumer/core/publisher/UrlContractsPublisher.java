@@ -1,6 +1,5 @@
 package org.arquillian.algeron.consumer.core.publisher;
 
-
 import org.arquillian.algeron.configuration.RunnerExpressionParser;
 import org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher;
 
@@ -106,16 +105,18 @@ public class UrlContractsPublisher implements ContractsPublisher {
         }
 
         if (!(this.configuration.get(URL) instanceof String)) {
-            throw new IllegalArgumentException(String.format("Url Publisher requires %s configuration property to be an String", URL));
+            throw new IllegalArgumentException(
+                String.format("Url Publisher requires %s configuration property to be an String", URL));
         }
 
         if (!this.configuration.containsKey(CONTRACTS_FOLDER)) {
-            throw new IllegalArgumentException(String.format("Url Publisher requires %s configuration property", CONTRACTS_FOLDER));
+            throw new IllegalArgumentException(
+                String.format("Url Publisher requires %s configuration property", CONTRACTS_FOLDER));
         }
 
         if (!(this.configuration.get(CONTRACTS_FOLDER) instanceof String)) {
-            throw new IllegalArgumentException(String.format("Url Publisher requires %s configuration property to be an String", CONTRACTS_FOLDER));
+            throw new IllegalArgumentException(
+                String.format("Url Publisher requires %s configuration property to be an String", CONTRACTS_FOLDER));
         }
-
     }
 }

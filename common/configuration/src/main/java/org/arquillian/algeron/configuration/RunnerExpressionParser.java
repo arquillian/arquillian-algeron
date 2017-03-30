@@ -59,5 +59,4 @@ public class RunnerExpressionParser {
 
         return joiner.toString();
     }
-
 }

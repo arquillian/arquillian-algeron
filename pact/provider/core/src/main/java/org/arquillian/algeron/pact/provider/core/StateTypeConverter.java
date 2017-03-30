@@ -11,15 +11,14 @@ import java.util.Collection;
 
 public class StateTypeConverter {
 
-
     /**
      * A helper converting method.
      * <p>
      * Converts string to a class of given type
      *
      * @param value String value to be converted
-     * @param to    Type of desired value
-     * @param <T>   Type of returned value
+     * @param to Type of desired value
+     * @param <T> Type of returned value
      * @return Value converted to the appropriate type
      */
     public static <T> T convert(String value, Class<T> to) {
@@ -89,7 +88,6 @@ public class StateTypeConverter {
                 }
 
                 return to.cast(Arrays.asList(convertedArray));
-
             } else if (Charset.class.equals(to)) {
                 return to.cast(Charset.forName(trimmedValue.toUpperCase()));
             } else if (Class.class.equals(to)) {
@@ -105,11 +103,11 @@ public class StateTypeConverter {
                     Object instance = Class.forName(value).newInstance();
                     return to.cast(instance);
                 } catch (Exception e) {
-                    throw new IllegalArgumentException("Unable to convert value [" + value + "] to a class [" + to.getName() + "].", e);
+                    throw new IllegalArgumentException(
+                        "Unable to convert value [" + value + "] to a class [" + to.getName() + "].", e);
                 }
             }
         }
-
     }
 
     private static String extractEnumName(final String value) {
@@ -145,5 +143,4 @@ public class StateTypeConverter {
     private static boolean isBlank(String element) {
         return element.trim().length() != 0;
     }
-
 }

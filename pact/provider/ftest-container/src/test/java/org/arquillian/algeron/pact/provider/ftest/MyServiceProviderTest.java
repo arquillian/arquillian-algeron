@@ -40,5 +40,4 @@ public class MyServiceProviderTest {
     public void should_provide_valid_answers() {
         assertThat(target).withUrl(webapp).satisfiesContract();
     }
-
 }

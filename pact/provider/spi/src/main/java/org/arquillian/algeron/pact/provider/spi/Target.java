@@ -9,7 +9,6 @@ import java.net.URL;
  */
 public interface Target {
 
-
     /**
      * Run {@link au.com.dius.pact.model.RequestResponseInteraction} and perform response verification
      * <p>
@@ -37,8 +36,8 @@ public interface Target {
      * <p>
      * Any exception will be caught by caller and reported as test failure
      *
-     * @param url         where provider is deployed
-     * @param consumer    consumer name that generated the interaction
+     * @param url where provider is deployed
+     * @param consumer consumer name that generated the interaction
      * @param interaction interaction to be tested
      */
     void testInteraction(URL url, String consumer, RequestResponseInteraction interaction);
@@ -48,9 +47,8 @@ public interface Target {
      * <p>
      * Any exception will be caught by caller and reported as test failure
      *
-     * @param consumer    consumer name that generated the interaction
+     * @param consumer consumer name that generated the interaction
      * @param interaction interaction to be tested
      */
     void testInteraction(String consumer, RequestResponseInteraction interaction);
-
 }

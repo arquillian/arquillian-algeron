@@ -27,7 +27,6 @@ public class ConsumerProviderPair {
 
         if (consumer != null ? !consumer.equals(that.consumer) : that.consumer != null) return false;
         return provider != null ? provider.equals(that.provider) : that.provider == null;
-
     }
 
     @Override

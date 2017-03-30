@@ -48,8 +48,8 @@ public class RunnerExpressionParserTest {
 
     @Test
     public void should_scan_only_first_colon_as_property() {
-        assertThat(RunnerExpressionParser.parseExpressions("${giturl:http://localhost:3000/alex/gamer-contracts.git}")).isEqualTo("http://localhost:3000/alex/gamer-contracts.git");
+        assertThat(RunnerExpressionParser.parseExpressions(
+            "${giturl:http://localhost:3000/alex/gamer-contracts.git}")).isEqualTo(
+            "http://localhost:3000/alex/gamer-contracts.git");
     }
-
-
 }

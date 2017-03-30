@@ -14,7 +14,8 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Implementation of {@link org.arquillian.algeron.provider.spi.retriever.ContractsRetriever} that download contracts from given urls
+ * Implementation of {@link org.arquillian.algeron.provider.spi.retriever.ContractsRetriever} that download contracts from
+ * given urls
  */
 public class ContractsUrlLoader implements ContractsRetriever {
 
@@ -31,9 +32,9 @@ public class ContractsUrlLoader implements ContractsRetriever {
 
     public ContractsUrlLoader(final ContractsUrl contractsUrl) {
         this(Arrays.stream(contractsUrl.urls())
-                .map(url -> getResolvedValue(url))
-                .map(URI::create)
-                .collect(toList()));
+            .map(url -> getResolvedValue(url))
+            .map(URI::create)
+            .collect(toList()));
     }
 
     @Override
@@ -54,7 +55,9 @@ public class ContractsUrlLoader implements ContractsRetriever {
 
         final Object url = configuration.get(URL);
         if (!(url instanceof String || url instanceof Collection)) {
-            throw new IllegalArgumentException(String.format("Url Retriever requires %s configuration property to be an String or List of Strings", URL));
+            throw new IllegalArgumentException(
+                String.format("Url Retriever requires %s configuration property to be an String or List of Strings",
+                    URL));
         }
 
         if (url instanceof String) {
@@ -62,9 +65,9 @@ public class ContractsUrlLoader implements ContractsRetriever {
             this.urls.add(URI.create((String) url));
         } else {
             this.urls = ((List<String>) url).stream()
-                    .map(u -> getResolvedValue(u))
-                    .map(URI::create)
-                    .collect(toList());
+                .map(u -> getResolvedValue(u))
+                .map(URI::create)
+                .collect(toList());
         }
     }
 

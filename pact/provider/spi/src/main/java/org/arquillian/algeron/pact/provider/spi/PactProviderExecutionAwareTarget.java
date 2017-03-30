@@ -10,5 +10,4 @@ public interface PactProviderExecutionAwareTarget {
     void setConsumer(au.com.dius.pact.model.Consumer consumer);
 
     void setRequestResponseInteraction(RequestResponseInteraction requestResponseInteraction);
-
 }

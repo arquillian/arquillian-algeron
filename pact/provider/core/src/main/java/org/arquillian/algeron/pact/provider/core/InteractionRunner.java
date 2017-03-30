@@ -48,7 +48,6 @@ public class InteractionRunner {
     @Inject
     Instance<Target> targetInstance;
 
-
     public void executePacts(@Observes EventContext<Test> test) {
         TestClass testClass = test.getEvent().getTestClass();
 
@@ -57,13 +56,14 @@ public class InteractionRunner {
         validateTargetRequestFilters(testClass, errors);
         validateTestTarget(testClass, errors);
 
-        Field interactionField = validateAndGetResourceField(testClass, RequestResponseInteraction.class, CurrentInteraction.class, errors);
+        Field interactionField =
+            validateAndGetResourceField(testClass, RequestResponseInteraction.class, CurrentInteraction.class, errors);
         Field consumerField = validateAndGetResourceField(testClass, Consumer.class, CurrentConsumer.class, errors);
 
         if (errors.size() != 0) {
             String errorMessage = errors.stream()
-                    .map(error -> error.getMessage())
-                    .collect(Collectors.joining(" * "));
+                .map(error -> error.getMessage())
+                .collect(Collectors.joining(" * "));
             throw new IllegalArgumentException(errorMessage);
         }
 
@@ -73,10 +73,10 @@ public class InteractionRunner {
         } else {
             logger.log(Level.WARNING, "No pacts read for execution");
         }
-
     }
 
-    private void executePacts(EventContext<Test> test, final Pacts pacts, final Field interactionField, final Field consumerField) {
+    private void executePacts(EventContext<Test> test, final Pacts pacts, final Field interactionField,
+        final Field consumerField) {
         final TestClass testClass = test.getEvent().getTestClass();
         final Object testInstance = test.getEvent().getTestInstance();
 
@@ -94,12 +94,14 @@ public class InteractionRunner {
                 Target target = targetInstance.get();
 
                 if (target instanceof ArquillianTestClassAwareTarget) {
-                    ArquillianTestClassAwareTarget arquillianTestClassAwareTarget = (ArquillianTestClassAwareTarget) target;
+                    ArquillianTestClassAwareTarget arquillianTestClassAwareTarget =
+                        (ArquillianTestClassAwareTarget) target;
                     arquillianTestClassAwareTarget.setTestClass(testClass, testInstance);
                 }
 
                 if (target instanceof PactProviderExecutionAwareTarget) {
-                    PactProviderExecutionAwareTarget pactProviderExecutionAwareTarget = (PactProviderExecutionAwareTarget) target;
+                    PactProviderExecutionAwareTarget pactProviderExecutionAwareTarget =
+                        (PactProviderExecutionAwareTarget) target;
                     pactProviderExecutionAwareTarget.setConsumer(pact.getConsumer());
                     pactProviderExecutionAwareTarget.setRequestResponseInteraction(interaction);
                 }
@@ -112,7 +114,6 @@ public class InteractionRunner {
                 // run the test
                 test.proceed();
             }
-
         }
     }
 
@@ -135,17 +136,20 @@ public class InteractionRunner {
         Method[] methods = testClass.getMethods(TargetRequestFilter.class);
         for (Method method : methods) {
             if (!isPublic(method)) {
-                String publicError = String.format("Method %s annotated with %s should be public.", method.getName(), TargetRequestFilter.class.getName());
+                String publicError = String.format("Method %s annotated with %s should be public.", method.getName(),
+                    TargetRequestFilter.class.getName());
                 logger.log(Level.SEVERE, publicError);
                 errors.add(new IllegalArgumentException(publicError));
             }
 
             if (method.getParameterCount() != 1) {
-                String argumentError = String.format("Method %s should take only a single %s parameter", method.getName(), HttpRequest.class.getName());
+                String argumentError = String.format("Method %s should take only a single %s parameter", method.getName(),
+                    HttpRequest.class.getName());
                 logger.log(Level.SEVERE, argumentError);
                 errors.add(new IllegalArgumentException(argumentError));
             } else if (!HttpRequest.class.isAssignableFrom(method.getParameterTypes()[0])) {
-                String httpRequestError = String.format("Method %s should take only %s parameter", method.getName(), HttpRequest.class.getName());
+                String httpRequestError = String.format("Method %s should take only %s parameter", method.getName(),
+                    HttpRequest.class.getName());
                 logger.log(Level.SEVERE, httpRequestError);
                 errors.add(new IllegalArgumentException(httpRequestError));
             }
@@ -153,16 +157,20 @@ public class InteractionRunner {
     }
 
     protected void validateTestTarget(TestClass testClass, final List<Throwable> errors) {
-        final List<Field> fieldsWithAnnotation = getFieldsWithAnnotation(testClass.getJavaClass(), ArquillianResource.class)
+        final List<Field> fieldsWithAnnotation =
+            getFieldsWithAnnotation(testClass.getJavaClass(), ArquillianResource.class)
                 .stream()
                 .filter(f -> Target.class.isAssignableFrom(f.getType()))
                 .collect(Collectors.toList());
         if (fieldsWithAnnotation.size() > 1) {
-            final String testTargetError = String.format("Test should have one field annotated with %s of type %s", ArquillianResource.class.getName(), Target.class.getName());
+            final String testTargetError = String.format("Test should have one field annotated with %s of type %s",
+                ArquillianResource.class.getName(), Target.class.getName());
             logger.log(Level.SEVERE, testTargetError);
             errors.add(new IllegalArgumentException(testTargetError));
         } else if (fieldsWithAnnotation.size() == 0) {
-            final String testTargetError = String.format("Field annotated with %s should implement %s and didn't found any", ArquillianResource.class.getName(), Target.class.getName());
+            final String testTargetError =
+                String.format("Field annotated with %s should implement %s and didn't found any",
+                    ArquillianResource.class.getName(), Target.class.getName());
             logger.log(Level.SEVERE, testTargetError);
             errors.add(new IllegalArgumentException(testTargetError));
         }
@@ -181,17 +189,20 @@ public class InteractionRunner {
         }
     }
 
-    private Field validateAndGetResourceField(TestClass testClass, Class<?> fieldType, Class<? extends Annotation> annotation, List<Throwable> errors) {
+    private Field validateAndGetResourceField(TestClass testClass, Class<?> fieldType,
+        Class<? extends Annotation> annotation, List<Throwable> errors) {
         final List<Field> fieldsWithArquillianResource = getFieldsWithAnnotation(testClass.getJavaClass(), annotation);
 
         List<Field> rri = fieldsWithArquillianResource
-                .stream()
-                .filter(
-                        field -> fieldType.isAssignableFrom(field.getType())
-                ).collect(Collectors.toList());
+            .stream()
+            .filter(
+                field -> fieldType.isAssignableFrom(field.getType())
+            ).collect(Collectors.toList());
 
         if (rri.size() > 1) {
-            String rriError = String.format("Only one field annotated with %s of type %s should be present", annotation.getName(), fieldType.getName());
+            String rriError =
+                String.format("Only one field annotated with %s of type %s should be present", annotation.getName(),
+                    fieldType.getName());
             logger.log(Level.SEVERE, rriError);
             errors.add(new IllegalArgumentException(rriError));
         } else {
@@ -201,42 +212,43 @@ public class InteractionRunner {
         }
 
         return null;
-
     }
 
-    protected void executeStateChanges(final RequestResponseInteraction interaction, final TestClass testClass, final Object target) {
+    protected void executeStateChanges(final RequestResponseInteraction interaction, final TestClass testClass,
+        final Object target) {
         if (!interaction.getProviderStates().isEmpty()) {
             for (final ProviderState state : interaction.getProviderStates()) {
                 Arrays.stream(testClass.getMethods(State.class))
-                        .filter(method -> ArrayMatcher.matches(
-                                method.getAnnotation(State.class).value(), state.getName()))
-                        .forEach(method -> {
-                            if (isStateMethodWithMapParameter(method)) {
-                                executeMethod(method, target, state.getParams());
+                    .filter(method -> ArrayMatcher.matches(
+                        method.getAnnotation(State.class).value(), state.getName()))
+                    .forEach(method -> {
+                        if (isStateMethodWithMapParameter(method)) {
+                            executeMethod(method, target, state.getParams());
+                        } else {
+                            if (method.getParameterCount() > 0) {
+                                // Use regular expressions to pass parameters.
+                                executeStateMethodWithRegExp(method, state, target);
                             } else {
-                                if (method.getParameterCount() > 0) {
-                                    // Use regular expressions to pass parameters.
-                                    executeStateMethodWithRegExp(method, state, target);
-                                } else {
-                                    executeMethod(method, target);
-                                }
+                                executeMethod(method, target);
                             }
-                        });
+                        }
+                    });
             }
         }
     }
 
     private void executeStateMethodWithRegExp(Method stateMethod, ProviderState state, Object target) {
         final Optional<String> matchingStateOptional = ArrayMatcher.firstMatch(
-                stateMethod.getAnnotation(State.class).value(), state.getName());
+            stateMethod.getAnnotation(State.class).value(), state.getName());
         // We are sure that at this point, an state is present
         final String matchingState = matchingStateOptional.get();
         final List<String> arguments = ArgumentPatternMatcher.arguments(
-                Pattern.compile(matchingState), state.getName());
+            Pattern.compile(matchingState), state.getName());
 
         if (arguments.size() != stateMethod.getParameterCount()) {
-            throw new IllegalArgumentException(String.format("Consumer state %s matches with provider state %s but provider method contains %s arguments instead of matching %s",
-                    state.getName(), matchingState, stateMethod.getParameterCount(), arguments.size()));
+            throw new IllegalArgumentException(String.format(
+                "Consumer state %s matches with provider state %s but provider method contains %s arguments instead of matching %s",
+                state.getName(), matchingState, stateMethod.getParameterCount(), arguments.size()));
         }
 
         Class<?>[] parameterTypes = stateMethod.getParameterTypes();
@@ -251,10 +263,9 @@ public class InteractionRunner {
         executeMethod(stateMethod, target, instances);
     }
 
-
     private boolean isStateMethodWithMapParameter(Method method) {
         return method.getParameterCount() == 1 &&
-                Map.class.isAssignableFrom(method.getParameterTypes()[0]);
+            Map.class.isAssignableFrom(method.getParameterTypes()[0]);
     }
 
     private void executeMethod(Method method, Object target, Object... params) {
@@ -266,26 +277,26 @@ public class InteractionRunner {
     }
 
     private List<Field> getFieldsWithAnnotation(final Class<?> source,
-                                                final Class<? extends Annotation> annotationClass) {
+        final Class<? extends Annotation> annotationClass) {
         List<Field> declaredAccessableFields = AccessController
-                .doPrivileged(new PrivilegedAction<List<Field>>() {
-                    public List<Field> run() {
-                        List<Field> foundFields = new ArrayList<Field>();
-                        Class<?> nextSource = source;
-                        while (nextSource != Object.class) {
-                            for (Field field : nextSource.getDeclaredFields()) {
-                                if (field.isAnnotationPresent(annotationClass)) {
-                                    if (!field.isAccessible()) {
-                                        field.setAccessible(true);
-                                    }
-                                    foundFields.add(field);
+            .doPrivileged(new PrivilegedAction<List<Field>>() {
+                public List<Field> run() {
+                    List<Field> foundFields = new ArrayList<Field>();
+                    Class<?> nextSource = source;
+                    while (nextSource != Object.class) {
+                        for (Field field : nextSource.getDeclaredFields()) {
+                            if (field.isAnnotationPresent(annotationClass)) {
+                                if (!field.isAccessible()) {
+                                    field.setAccessible(true);
                                 }
+                                foundFields.add(field);
                             }
-                            nextSource = nextSource.getSuperclass();
                         }
-                        return foundFields;
+                        nextSource = nextSource.getSuperclass();
                     }
-                });
+                    return foundFields;
+                }
+            });
         return declaredAccessableFields;
     }
 

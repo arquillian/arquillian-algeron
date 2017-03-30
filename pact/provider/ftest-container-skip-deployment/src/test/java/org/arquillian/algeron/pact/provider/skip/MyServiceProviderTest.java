@@ -50,10 +50,10 @@ public class MyServiceProviderTest {
     public static void recordServerInteractions() {
 
         embeddedService.addExpectation(
-                onRequestTo("/")
-                        .withMethod(ClientDriverRequest.Method.GET),
-                giveResponseAsBytes(MyServiceProviderTest.class.getResourceAsStream("/server.json"), "application/json").withStatus(200));
-
+            onRequestTo("/")
+                .withMethod(ClientDriverRequest.Method.GET),
+            giveResponseAsBytes(MyServiceProviderTest.class.getResourceAsStream("/server.json"),
+                "application/json").withStatus(200));
     }
 
     @State("test state")
@@ -65,5 +65,4 @@ public class MyServiceProviderTest {
     public void should_provide_valid_answers() {
         target.testInteraction(webapp);
     }
-
 }

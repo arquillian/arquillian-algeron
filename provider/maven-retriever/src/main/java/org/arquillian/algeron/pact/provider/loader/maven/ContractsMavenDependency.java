@@ -1,6 +1,5 @@
 package org.arquillian.algeron.pact.provider.loader.maven;
 
-
 import org.arquillian.algeron.provider.spi.retriever.ContractsSource;
 
 import java.lang.annotation.ElementType;
@@ -20,9 +19,8 @@ import java.lang.annotation.Target;
 public @interface ContractsMavenDependency {
 
     /**
-     * List of Maven coordinates in form of group:artifact:(package:classifier:)version
-     * <p>
-     * version can be specified as http://maven.apache.org/enforcer/enforcer-rules/versionRanges.html and loader will use the highest version
+     * List of Maven coordinates in form of group:artifact:(package:classifier:)version <p> version can be specified as
+     * http://maven.apache.org/enforcer/enforcer-rules/versionRanges.html and loader will use the highest version
      *
      * @return List of maven coordinates
      */
@@ -43,10 +41,10 @@ public @interface ContractsMavenDependency {
     String customSettings() default "";
 
     /**
-     * Sets a remote repository to be used instead of ones defined in settings.xml or default ones in form of name:url:layout
+     * Sets a remote repository to be used instead of ones defined in settings.xml or default ones in form of
+     * name:url:layout
      *
      * @return remote repository.
      */
     String remoteRepository() default "";
-
 }

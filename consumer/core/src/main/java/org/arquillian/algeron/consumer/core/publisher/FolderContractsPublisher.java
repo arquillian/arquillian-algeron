@@ -29,7 +29,6 @@ public class FolderContractsPublisher implements ContractsPublisher {
         final String contractFolder = (String) this.configuration.get(CONTRACTS_FOLDER);
         final Path contractsSource = Paths.get(RunnerExpressionParser.parseExpressions(contractFolder));
         copyPactFiles(contractsSource, outputPath);
-
     }
 
     protected void copyPactFiles(Path pactsLocation, Path outputPath) throws IOException {
@@ -57,19 +56,23 @@ public class FolderContractsPublisher implements ContractsPublisher {
         this.configuration = configuration;
 
         if (!this.configuration.containsKey(OUTPUT_FOLDER)) {
-            throw new IllegalArgumentException(String.format("Folder Publisher requires %s configuration property", OUTPUT_FOLDER));
+            throw new IllegalArgumentException(
+                String.format("Folder Publisher requires %s configuration property", OUTPUT_FOLDER));
         }
 
         if (!(this.configuration.get(OUTPUT_FOLDER) instanceof String)) {
-            throw new IllegalArgumentException(String.format("Folder Publisher requires %s configuration property to be an String", OUTPUT_FOLDER));
+            throw new IllegalArgumentException(
+                String.format("Folder Publisher requires %s configuration property to be an String", OUTPUT_FOLDER));
         }
 
         if (!this.configuration.containsKey(CONTRACTS_FOLDER)) {
-            throw new IllegalArgumentException(String.format("Folder Publisher requires %s configuration property", CONTRACTS_FOLDER));
+            throw new IllegalArgumentException(
+                String.format("Folder Publisher requires %s configuration property", CONTRACTS_FOLDER));
         }
 
         if (!(this.configuration.get(CONTRACTS_FOLDER) instanceof String)) {
-            throw new IllegalArgumentException(String.format("Folder Publisher requires %s configuration property to be an String", CONTRACTS_FOLDER));
+            throw new IllegalArgumentException(
+                String.format("Folder Publisher requires %s configuration property to be an String", CONTRACTS_FOLDER));
         }
     }
 }

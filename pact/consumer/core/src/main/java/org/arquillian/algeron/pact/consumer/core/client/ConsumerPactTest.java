@@ -16,7 +16,8 @@ public class ConsumerPactTest extends AbstractConsumerPactTest {
 
     private static final Logger logger = Logger.getLogger(ConsumerPactTest.class.getName());
 
-    public void testPact(@Observes(precedence = -50) EventContext<Test> testEventContext, Deployment deployment) throws Throwable {
+    public void testPact(@Observes(precedence = -50) EventContext<Test> testEventContext, Deployment deployment)
+        throws Throwable {
 
         final Test event = testEventContext.getEvent();
         final TestClass testClass = event.getTestClass();
@@ -28,7 +29,9 @@ public class ConsumerPactTest extends AbstractConsumerPactTest {
 
             if (pactVerification == null) {
                 logger.log(Level.INFO,
-                        String.format("Method %s is not annotated with %s annotation and it is going to be executed as normal junit test.", event.getTestMethod().getName(), PactVerification.class.getName()));
+                    String.format(
+                        "Method %s is not annotated with %s annotation and it is going to be executed as normal junit test.",
+                        event.getTestMethod().getName(), PactVerification.class.getName()));
                 testEventContext.proceed();
                 return;
             }
@@ -39,6 +42,4 @@ public class ConsumerPactTest extends AbstractConsumerPactTest {
             testEventContext.proceed();
         }
     }
-
-
 }

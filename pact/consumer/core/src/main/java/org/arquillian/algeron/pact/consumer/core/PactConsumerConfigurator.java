@@ -23,6 +23,4 @@ public class PactConsumerConfigurator {
 
         this.pactConsumerConfigurationInstanceProducer.set(pactConsumerConfiguration);
     }
-
-
 }

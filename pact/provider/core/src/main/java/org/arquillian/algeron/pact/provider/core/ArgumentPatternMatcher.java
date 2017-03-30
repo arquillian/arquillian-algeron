@@ -26,7 +26,5 @@ public class ArgumentPatternMatcher {
         }
 
         return argumentsValues;
-
     }
-
 }

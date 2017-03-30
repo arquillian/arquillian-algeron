@@ -18,14 +18,12 @@ public class PactProviderAssertionsTest {
     @Mock
     Target target;
 
-
     @Test
     public void should_test_interactions_with_url_assertj() throws MalformedURLException {
 
         final URL url = new URL("http://www.google.com");
         assertThat(target).withUrl(url).satisfiesContract();
         verify(target).testInteraction(url);
-
     }
 
     @Test
@@ -33,7 +31,5 @@ public class PactProviderAssertionsTest {
 
         assertThat(target).satisfiesContract();
         verify(target).testInteraction();
-
     }
-
 }

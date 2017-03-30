@@ -1,6 +1,5 @@
 package org.arquillian.algeron.consumer.core.publisher;
 
-
 import net.jcip.annotations.NotThreadSafe;
 import org.arquillian.algeron.consumer.core.AlgeronConsumerConfiguration;
 import org.arquillian.algeron.consumer.core.ContractsPublisherObserver;
@@ -45,8 +44,8 @@ public class FolderContractsPublisherObserverTest extends AbstractManagerTestBas
         Files.copy(new ByteArrayInputStream(content), new File(origin, "pact.txt").toPath());
 
         String config = "provider: folder\n" +
-                "contractsFolder: " + origin.getAbsolutePath() + "\n" +
-                "outputFolder: " + output.getAbsolutePath() + "\n";
+            "contractsFolder: " + origin.getAbsolutePath() + "\n" +
+            "outputFolder: " + output.getAbsolutePath() + "\n";
 
         params = new HashMap<>();
         params.put("publishConfiguration", config);
@@ -63,7 +62,6 @@ public class FolderContractsPublisherObserverTest extends AbstractManagerTestBas
 
         Assertions.assertThat(output).isDirectory();
         Assertions.assertThat(new File(output, "pact.txt")).exists().hasContent("Contract File");
-
     }
 
     @Test
@@ -76,7 +74,5 @@ public class FolderContractsPublisherObserverTest extends AbstractManagerTestBas
 
         Assertions.assertThat(output).isDirectory();
         Assertions.assertThat(new File(output, "pact.txt")).doesNotExist();
-
     }
-
 }

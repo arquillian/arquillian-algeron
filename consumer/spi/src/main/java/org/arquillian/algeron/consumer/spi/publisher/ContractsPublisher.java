@@ -28,5 +28,4 @@ public interface ContractsPublisher {
      * @param configuration key-values
      */
     void configure(Map<String, Object> configuration);
-
 }

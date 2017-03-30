@@ -25,16 +25,15 @@ public class HttpTargetCreator {
             httpTarget = new HttpTarget(pactProviderConfiguration.getTargetUrl(), pactProviderConfiguration.isInsecure());
         } else {
             httpTarget = new HttpTarget(
-                    pactProviderConfiguration.getProtocol(),
-                    pactProviderConfiguration.getHost(),
-                    pactProviderConfiguration.getPort(),
-                    pactProviderConfiguration.getPath(),
-                    pactProviderConfiguration.isInsecure()
+                pactProviderConfiguration.getProtocol(),
+                pactProviderConfiguration.getHost(),
+                pactProviderConfiguration.getPort(),
+                pactProviderConfiguration.getPath(),
+                pactProviderConfiguration.isInsecure()
             );
         }
 
         httpTarget.setInjector(injectorInstance.get());
         targetInstanceProducer.set(httpTarget);
     }
-
 }

@@ -24,5 +24,4 @@ public @interface Pact {
      * name of the consumer
      */
     String consumer();
-
 }
