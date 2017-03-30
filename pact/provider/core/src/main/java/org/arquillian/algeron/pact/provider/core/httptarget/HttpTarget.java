@@ -49,8 +49,10 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     private Injector injector;
 
     /**
-     * @param host host of tested service
-     * @param port port of tested service
+     * @param host
+     *     host of tested service
+     * @param port
+     *     port of tested service
      */
     public HttpTarget(final String host, final int port) {
         this("http", host, port);
@@ -59,37 +61,50 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     /**
      * Host of tested service is assumed as "localhost"
      *
-     * @param port port of tested service
+     * @param port
+     *     port of tested service
      */
     public HttpTarget(final int port) {
         this("http", "localhost", port);
     }
 
     /**
-     * @param host host of tested service
-     * @param port port of tested service
-     * @param protocol protocol of tested service
+     * @param host
+     *     host of tested service
+     * @param port
+     *     port of tested service
+     * @param protocol
+     *     protocol of tested service
      */
     public HttpTarget(final String protocol, final String host, final int port) {
         this(protocol, host, port, "/");
     }
 
     /**
-     * @param host host of tested service
-     * @param port port of tested service
-     * @param protocol protocol of tested service
-     * @param path protocol of the tested service
+     * @param host
+     *     host of tested service
+     * @param port
+     *     port of tested service
+     * @param protocol
+     *     protocol of tested service
+     * @param path
+     *     protocol of the tested service
      */
     public HttpTarget(final String protocol, final String host, final int port, final String path) {
         this(protocol, host, port, path, false);
     }
 
     /**
-     * @param host host of tested service
-     * @param port port of tested service
-     * @param protocol protocol of the tested service
-     * @param path path of the tested service
-     * @param insecure true if certificates should be ignored
+     * @param host
+     *     host of tested service
+     * @param port
+     *     port of tested service
+     * @param protocol
+     *     protocol of the tested service
+     * @param path
+     *     path of the tested service
+     * @param insecure
+     *     true if certificates should be ignored
      */
     public HttpTarget(final String protocol, final String host, final int port, final String path,
         final boolean insecure) {
@@ -101,15 +116,18 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     }
 
     /**
-     * @param url url of the tested service
+     * @param url
+     *     url of the tested service
      */
     public HttpTarget(final URL url) {
         this(url, false);
     }
 
     /**
-     * @param url url of the tested service
-     * @param insecure true if certificates should be ignored
+     * @param url
+     *     url of the tested service
+     * @param insecure
+     *     true if certificates should be ignored
      */
     public HttpTarget(final URL url, final boolean insecure) {
         this(url.getProtocol() == null ? "http" : url.getProtocol(),

@@ -28,12 +28,19 @@ public class Reflection {
      * Create a new instance by finding a constructor that matches the argumentTypes signature
      * using the arguments for instantiation.
      *
-     * @param implClass Full classname of class to create
-     * @param argumentTypes The constructor argument types
-     * @param arguments The constructor arguments
+     * @param implClass
+     *     Full classname of class to create
+     * @param argumentTypes
+     *     The constructor argument types
+     * @param arguments
+     *     The constructor arguments
+     *
      * @return a new instance
-     * @throws IllegalArgumentException if className, argumentTypes, or arguments are null
-     * @throws RuntimeException if any exceptions during creation
+     *
+     * @throws IllegalArgumentException
+     *     if className, argumentTypes, or arguments are null
+     * @throws RuntimeException
+     *     if any exceptions during creation
      * @author <a href="mailto:aslak@conduct.no">Aslak Knutsen</a>
      * @author <a href="mailto:andrew.rubinger@jboss.org">ALR</a>
      */

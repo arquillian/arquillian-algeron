@@ -30,7 +30,9 @@ public class GitOperations {
     /**
      * Checks if given folder is a git repository
      *
-     * @param folder to check
+     * @param folder
+     *     to check
+     *
      * @return true if it is a git repository, false otherwise.
      */
     public boolean isValidGitRepository(Path folder) {
@@ -52,8 +54,11 @@ public class GitOperations {
     /**
      * Opens local git repository.
      *
-     * @param path of git repository
+     * @param path
+     *     of git repository
+     *
      * @return Git instance
+     *
      * @throws IOException
      */
     public Git openGitRepository(Path path) throws IOException {
@@ -63,8 +68,11 @@ public class GitOperations {
     /**
      * Checkout existing tag.
      *
-     * @param git instance.
-     * @param tag to move
+     * @param git
+     *     instance.
+     * @param tag
+     *     to move
+     *
      * @return Ref to current branch
      */
     public Ref checkoutTag(Git git, String tag) {
@@ -79,8 +87,11 @@ public class GitOperations {
     /**
      * Checks if given branch has been checkedout locally too.
      *
-     * @param git instance.
-     * @param branch to check.
+     * @param git
+     *     instance.
+     * @param branch
+     *     to check.
+     *
      * @return True if it is local, false otherwise.
      */
     public boolean isLocalBranch(final Git git, final String branch) {
@@ -96,9 +107,13 @@ public class GitOperations {
     /**
      * Checks if given branch is remote.
      *
-     * @param git instance.
-     * @param branch to check.
-     * @param remote name.
+     * @param git
+     *     instance.
+     * @param branch
+     *     to check.
+     * @param remote
+     *     name.
+     *
      * @return True if it is remote, false otherwise.
      */
     public boolean isRemoteBranch(final Git git, final String branch, final String remote) {
@@ -116,8 +131,11 @@ public class GitOperations {
     /**
      * Checkout existing branch.
      *
-     * @param git instance.
-     * @param branch to move
+     * @param git
+     *     instance.
+     * @param branch
+     *     to move
+     *
      * @return Ref to current branch
      */
     public Ref checkoutBranch(Git git, String branch) {
@@ -133,9 +151,13 @@ public class GitOperations {
     /**
      * Checkout existing branch.
      *
-     * @param git instance.
-     * @param branch to move
-     * @param remote repository name
+     * @param git
+     *     instance.
+     * @param branch
+     *     to move
+     * @param remote
+     *     repository name
+     *
      * @return Ref to current branch
      */
     public Ref checkoutBranch(Git git, String branch, String remote) {
@@ -154,8 +176,11 @@ public class GitOperations {
     /**
      * Executes a checkout -b command using given branch.
      *
-     * @param git instance.
-     * @param branch to create and checkout.
+     * @param git
+     *     instance.
+     * @param branch
+     *     to create and checkout.
+     *
      * @return Ref to current branch.
      */
     public Ref createBranchAndCheckout(Git git, String branch) {
@@ -173,8 +198,11 @@ public class GitOperations {
     /**
      * Add all files and commit them with given message. This is equivalent as doing git add . git commit -m "message".
      *
-     * @param git instance.
-     * @param message of the commit.
+     * @param git
+     *     instance.
+     * @param message
+     *     of the commit.
+     *
      * @return RevCommit of this commit.
      */
     public RevCommit addAndCommit(Git git, String message) {
@@ -193,10 +221,15 @@ public class GitOperations {
     /**
      * Add all files and commit them with given message. This is equivalent as doing git add . git commit -m "message".
      *
-     * @param git instance.
-     * @param message of the commit.
-     * @param author of the commit.
-     * @param email of author of the commit.
+     * @param git
+     *     instance.
+     * @param message
+     *     of the commit.
+     * @param author
+     *     of the commit.
+     * @param email
+     *     of author of the commit.
+     *
      * @return RevCommit of this commit.
      */
     public RevCommit addAndCommit(Git git, String message, String author, String email) {
@@ -216,9 +249,12 @@ public class GitOperations {
     /**
      * Pull repository from current branch and remote branch with same name as current
      *
-     * @param git instance.
-     * @param remote to be used.
-     * @param remoteBranch to use.
+     * @param git
+     *     instance.
+     * @param remote
+     *     to be used.
+     * @param remoteBranch
+     *     to use.
      */
     public PullResult pullFromRepository(Git git, String remote, String remoteBranch) {
         try {
@@ -234,8 +270,11 @@ public class GitOperations {
     /**
      * Push all changes and tags to given remote.
      *
-     * @param git instance.
-     * @param remote to be used.
+     * @param git
+     *     instance.
+     * @param remote
+     *     to be used.
+     *
      * @return List of all results of given push.
      */
     public Iterable<PushResult> pushToRepository(Git git, String remote) {
@@ -253,10 +292,15 @@ public class GitOperations {
     /**
      * Push all changes and tags to given remote.
      *
-     * @param git instance.
-     * @param remote to be used.
-     * @param username to login.
-     * @param password to login.
+     * @param git
+     *     instance.
+     * @param remote
+     *     to be used.
+     * @param username
+     *     to login.
+     * @param password
+     *     to login.
+     *
      * @return List of all results of given push.
      */
     public Iterable<PushResult> pushToRepository(Git git, String remote, String username, String password) {
@@ -275,8 +319,11 @@ public class GitOperations {
     /**
      * Creates a tag.
      *
-     * @param git instance.
-     * @param name of the tag.
+     * @param git
+     *     instance.
+     * @param name
+     *     of the tag.
+     *
      * @return Ref created to tag.
      */
     public Ref createTag(Git git, String name) {
@@ -292,10 +339,15 @@ public class GitOperations {
     /**
      * Push all changes and tags to given remote.
      *
-     * @param git instance.
-     * @param remote to be used.
-     * @param passphrase to access private key.
-     * @param privateKey file location.
+     * @param git
+     *     instance.
+     * @param remote
+     *     to be used.
+     * @param passphrase
+     *     to access private key.
+     * @param privateKey
+     *     file location.
+     *
      * @return List of all results of given push.
      */
     public Iterable<PushResult> pushToRepository(Git git, String remote, String passphrase, Path privateKey) {
@@ -335,11 +387,16 @@ public class GitOperations {
     /**
      * Pull repository from current branch and remote branch with same name as current
      *
-     * @param git instance.
-     * @param remote to be used.
-     * @param remoteBranch to use.
-     * @param username to connect
-     * @param password to connect
+     * @param git
+     *     instance.
+     * @param remote
+     *     to be used.
+     * @param remoteBranch
+     *     to use.
+     * @param username
+     *     to connect
+     * @param password
+     *     to connect
      */
     public PullResult pullFromRepository(Git git, String remote, String remoteBranch, String username, String password) {
         try {
@@ -356,11 +413,16 @@ public class GitOperations {
     /**
      * Pull repository from current branch and remote branch with same name as current
      *
-     * @param git instance.
-     * @param remote to be used.
-     * @param remoteBranch to use.
-     * @param passphrase to access private key.
-     * @param privateKey file location.
+     * @param git
+     *     instance.
+     * @param remote
+     *     to be used.
+     * @param remoteBranch
+     *     to use.
+     * @param passphrase
+     *     to access private key.
+     * @param privateKey
+     *     file location.
      */
     public PullResult pullFromRepository(final Git git, final String remote, String remoteBranch, final String passphrase,
         final Path privateKey) {
@@ -399,8 +461,11 @@ public class GitOperations {
     /**
      * Clones a public remote git repository. Caller is responsible of closing git repository.
      *
-     * @param remoteUrl to connect.
-     * @param localPath where to clone the repo.
+     * @param remoteUrl
+     *     to connect.
+     * @param localPath
+     *     where to clone the repo.
+     *
      * @return Git instance. Caller is responsible to close the connection.
      */
     public Git cloneRepository(String remoteUrl, Path localPath) {
@@ -417,10 +482,15 @@ public class GitOperations {
     /**
      * Clones a private remote git repository. Caller is responsible of closing git repository.
      *
-     * @param remoteUrl to connect.
-     * @param localPath where to clone the repo.
-     * @param username to connect
-     * @param password to connect
+     * @param remoteUrl
+     *     to connect.
+     * @param localPath
+     *     where to clone the repo.
+     * @param username
+     *     to connect
+     * @param password
+     *     to connect
+     *
      * @return Git instance. Caller is responsible to close the connection.
      */
     public Git cloneRepository(String remoteUrl, Path localPath, String username, String password) {
@@ -438,10 +508,15 @@ public class GitOperations {
     /**
      * Clones a private remote git repository. Caller is responsible of closing git repository.
      *
-     * @param remoteUrl to connect.
-     * @param localPath where to clone the repo.
-     * @param passphrase to access private key.
-     * @param privateKey file location. If null default (~.ssh/id_rsa) location is used.
+     * @param remoteUrl
+     *     to connect.
+     * @param localPath
+     *     where to clone the repo.
+     * @param passphrase
+     *     to access private key.
+     * @param privateKey
+     *     file location. If null default (~.ssh/id_rsa) location is used.
+     *
      * @return Git instance. Caller is responsible to close the connection.
      */
     public Git cloneRepository(final String remoteUrl, final Path localPath, final String passphrase,
@@ -482,7 +557,9 @@ public class GitOperations {
     /**
      * Checks if a repo has been cloned correctly.
      *
-     * @param repo to check
+     * @param repo
+     *     to check
+     *
      * @return true if has been cloned correctly, false otherwise
      */
     public boolean hasAtLeastOneReference(Repository repo) {

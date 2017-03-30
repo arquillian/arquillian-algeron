@@ -13,6 +13,7 @@ import java.lang.annotation.Target;
 public @interface ContractsSource {
     /**
      * @return {@link ContractsRetriever} class that will be used for pact loading
+     *
      * @see ContractsRetriever
      */
     Class<? extends ContractsRetriever> value();

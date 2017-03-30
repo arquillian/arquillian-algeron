@@ -27,7 +27,8 @@ public interface Target {
      * <p>
      * Important: Implementators must implements {@link PactProviderExecutionAwareTarget}
      *
-     * @param url where provider is deployed
+     * @param url
+     *     where provider is deployed
      */
     void testInteraction(URL url);
 
@@ -36,9 +37,12 @@ public interface Target {
      * <p>
      * Any exception will be caught by caller and reported as test failure
      *
-     * @param url where provider is deployed
-     * @param consumer consumer name that generated the interaction
-     * @param interaction interaction to be tested
+     * @param url
+     *     where provider is deployed
+     * @param consumer
+     *     consumer name that generated the interaction
+     * @param interaction
+     *     interaction to be tested
      */
     void testInteraction(URL url, String consumer, RequestResponseInteraction interaction);
 
@@ -47,8 +51,10 @@ public interface Target {
      * <p>
      * Any exception will be caught by caller and reported as test failure
      *
-     * @param consumer consumer name that generated the interaction
-     * @param interaction interaction to be tested
+     * @param consumer
+     *     consumer name that generated the interaction
+     * @param interaction
+     *     interaction to be tested
      */
     void testInteraction(String consumer, RequestResponseInteraction interaction);
 }

@@ -11,8 +11,11 @@ public class ResolveClassAnnotation {
     /**
      * Class that returns if a class or any subclass is annotated with given annotation.
      *
-     * @param source class.
-     * @param annotationClass to find.
+     * @param source
+     *     class.
+     * @param annotationClass
+     *     to find.
+     *
      * @return Class containing the annotation.
      */
     public static Optional<Class<?>> getClassWithAnnotation(final Class<?> source,

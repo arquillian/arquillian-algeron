@@ -16,9 +16,13 @@ public class StateTypeConverter {
      * <p>
      * Converts string to a class of given type
      *
-     * @param value String value to be converted
-     * @param to Type of desired value
-     * @param <T> Type of returned value
+     * @param value
+     *     String value to be converted
+     * @param to
+     *     Type of desired value
+     * @param <T>
+     *     Type of returned value
+     *
      * @return Value converted to the appropriate type
      */
     public static <T> T convert(String value, Class<T> to) {

@@ -19,7 +19,8 @@ public interface ContractsRetriever {
     /**
      * Method called to provide the provider name to retreiver. Most of retrievers don't need it.
      *
-     * @param providerName to set.
+     * @param providerName
+     *     to set.
      */
     default void setProviderName(String providerName) {
     }
@@ -28,7 +29,8 @@ public interface ContractsRetriever {
      * Method used for passing configuration parameters to publisher.
      * This method is intended to be called when configuring retriver in arquillian.xml
      *
-     * @param configuration key-values
+     * @param configuration
+     *     key-values
      */
     void configure(Map<String, Object> configuration);
 

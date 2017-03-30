@@ -25,7 +25,8 @@ public interface ContractsPublisher {
     /**
      * Method used for passing configuration parameters to publisher.
      *
-     * @param configuration key-values
+     * @param configuration
+     *     key-values
      */
     void configure(Map<String, Object> configuration);
 }
