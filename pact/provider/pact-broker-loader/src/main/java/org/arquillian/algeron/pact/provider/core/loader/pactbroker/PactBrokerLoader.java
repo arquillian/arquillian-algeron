@@ -1,66 +1,32 @@
 package org.arquillian.algeron.pact.provider.core.loader.pactbroker;
 
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
-import com.github.rholder.retry.RetryException;
-import com.github.rholder.retry.Retryer;
-import com.github.rholder.retry.RetryerBuilder;
-import com.github.rholder.retry.StopStrategies;
-import com.github.rholder.retry.WaitStrategies;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.client.utils.URIBuilder;
-import org.arquillian.algeron.configuration.RunnerExpressionParser;
+import au.com.dius.pact.provider.ConsumerInfo;
+import au.com.dius.pact.provider.broker.PactBrokerClient;
+import java.lang.annotation.Annotation;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 import org.arquillian.algeron.provider.spi.retriever.ContractsRetriever;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.lang.annotation.Annotation;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * Out-of-the-box implementation of {@link org.arquillian.algeron.provider.spi.retriever.ContractsRetriever} that
  * downloads pacts from Pact broker
  */
 public class PactBrokerLoader implements ContractsRetriever {
-    private static final Logger LOGGER = Logger.getLogger(PactBrokerLoader.class.getName());
-    private static final String PACT_URL_PATTERN = "/pacts/provider/{0}/latest";
-    private static final String PACT_URL_PATTERN_WITH_TAG = "/pacts/provider/{0}/latest/{1}";
-
     private String providerName;
     private PactBroker pactBroker;
 
-    private final Retryer<HttpResponse> retryer = RetryerBuilder.<HttpResponse>newBuilder()
-        .retryIfResult(response -> response.getStatusLine().getStatusCode() >= 500)
-        .withWaitStrategy(WaitStrategies.exponentialWait(100, 1, TimeUnit.SECONDS))
-        .withStopStrategy(StopStrategies.stopAfterDelay(5000))
-        .build();
-    private Callable<HttpResponse> httpResponseCallable;
-
     public PactBrokerLoader() {
+    }
+
+    public PactBrokerLoader(PactBroker pactBroker) {
+        this.pactBroker = pactBroker;
     }
 
     @Override
@@ -70,7 +36,7 @@ public class PactBrokerLoader implements ContractsRetriever {
 
     @Override
     public void configure(Map<String, Object> configuration) {
-        this.pactBroker = new ExternallyConfiguredPactBroker(configuration);
+        this.pactBroker = new ExternallyConfiguredContractsPactBroker(configuration);
     }
 
     @Override
@@ -80,189 +46,130 @@ public class PactBrokerLoader implements ContractsRetriever {
 
     @Override
     public List<URI> retrieve() throws IOException {
-        return Arrays.stream(pactBroker.tags())
-            .map(tag -> getResolvedValue(tag))
-            .map(tag -> {
+
+        final String url =
+            containsAuthenticationOptions() ? getAuthenticateUrl(this.pactBroker.url()) : this.pactBroker.url();
+        final PactBrokerClient pactBrokerClient = new PactBrokerClient(url);
+
+        if (this.pactBroker.tags().length == 0) {
+
+            final List<ConsumerInfo> consumerInfos = pactBrokerClient.fetchConsumers(this.providerName);
+            return toUri(consumerInfos);
+        } else {
+            final List<URI> contracts = new ArrayList<>();
+            for (String tag : this.pactBroker.tags()) {
+                contracts.addAll(
+                    toUri(pactBrokerClient.fetchConsumersWithTag(this.providerName, tag)));
+            }
+
+            return contracts;
+        }
+    }
+
+    private List<URI> toUri(List<ConsumerInfo> consumerInfos) {
+        return consumerInfos.stream()
+            .map(ConsumerInfo::getPactFile)
+            .map(u -> {
                 try {
-                    return loadPactsForProvider(providerName, tag);
-                } catch (IOException e) {
-                    throw new IllegalStateException(e);
+                    return ((java.net.URL) u).toURI();
+                } catch (URISyntaxException e) {
+                    throw new IllegalArgumentException(e);
                 }
             })
-            .flatMap(List::stream)
             .collect(Collectors.toList());
     }
 
-    private List<URI> loadPactsForProvider(final String providerName, final String tag) throws IOException {
-        LOGGER.log(Level.FINER,
-            String.format("Loading pacts from pact broker for provider %s and tag %s ", providerName, tag));
-        final HttpResponse httpResponse;
-        try {
-            URIBuilder uriBuilder =
-                new URIBuilder().setScheme(RunnerExpressionParser.parseExpressions(pactBroker.protocol()))
-                    .setHost(RunnerExpressionParser.parseExpressions(pactBroker.host()))
-                    .setPort(Integer.parseInt(RunnerExpressionParser.parseExpressions(pactBroker.port())));
-            if (tag.equals("latest")) {
-                uriBuilder.setPath(MessageFormat.format(PACT_URL_PATTERN, providerName));
-            } else {
-                uriBuilder.setPath(MessageFormat.format(PACT_URL_PATTERN_WITH_TAG, providerName, tag));
-            }
-            URI brokerUri = uriBuilder.build();
-            if (httpResponseCallable == null) {
-                httpResponse = retryer.call(() -> Request.Get(brokerUri)
-                    .setHeader(HttpHeaders.ACCEPT, "application/hal+json")
-                    .execute().returnResponse());
-            } else {
-                httpResponse = retryer.call(httpResponseCallable);
-            }
-        } catch (final ExecutionException | RetryException | URISyntaxException e) {
-            throw new IOException("Was not able load pacts from broker", e);
-        }
-
-        final int statusCode = httpResponse.getStatusLine().getStatusCode();
-        if (statusCode == 404) {
-            LOGGER.log(Level.WARNING,
-                String.format("There are no pacts found for the service %s and tag %s", providerName, tag));
-            return Collections.emptyList();
-        }
-
-        final InputStream content = httpResponse.getEntity().getContent();
-        if (statusCode / 100 != 2) {
-            throw new RuntimeException("Pact broker responded with status: " + statusCode +
-                "\n payload: '" + asStringPreservingNewLines(content) + "'");
-        }
-
-        final JsonValue parse = Json.parse(new InputStreamReader(content));
-        final JsonObject fullList = parse.asObject();
-        final JsonObject links = fullList.get("_links").asObject();
-
-        if (links != null) {
-            final JsonArray pacts = links.get("pacts").asArray();
-
-            if (pacts != null) {
-                return StreamSupport.stream(pacts.spliterator(), false)
-                    .map(jsonNode -> jsonNode.asObject().getString("href", ""))
-                    .map(URI::create)
-                    .collect(toList());
-            }
-        }
-
-        return new ArrayList<>();
+    private boolean containsAuthenticationOptions() {
+        return !"".equals(this.pactBroker.userame().trim()) && !"".equals(this.pactBroker.password().trim());
     }
 
-    public Callable<HttpResponse> getHttpResponseCallable() {
-        return httpResponseCallable;
+    private String getAuthenticateUrl(String url) {
+        final String username = this.pactBroker.userame();
+        final String password = this.pactBroker.password();
+
+        final int slashIndex = url.indexOf("//");
+
+        if (slashIndex > -1) {
+            url = String.format("%s%s:%s@%s", url.substring(0, slashIndex + 2), username, password,
+                url.substring(slashIndex + 2));
+        } else {
+            url = String.format("%s:%s@%s", username, password, url);
+        }
+        return url;
     }
 
-    public void setHttpResponseCallable(Callable<HttpResponse> httpResponseCallable) {
-        this.httpResponseCallable = httpResponseCallable;
-    }
+    static class ExternallyConfiguredContractsPactBroker implements PactBroker {
 
-    static class ExternallyConfiguredPactBroker implements PactBroker {
+        static final String URL = "url";
+        static final String USERNAME = "username";
+        static final String PASSWORD = "password";
+        static final String TAGS = "tags";
 
-        private static final String HOST = "host";
-        private static final String PORT = "port";
-        private static final String PROTOCOL = "protocol";
-        private static final String TAGS = "tags";
+        String url;
+        String username = "";
+        String password = "";
+        String[] tags = new String[0];
 
-        private String host = "";
-        private String port = "";
-        private String protocol = "http";
-        private List<String> tags = new ArrayList<>();
+        public ExternallyConfiguredContractsPactBroker(Map<String, Object> configuration) {
 
-        public ExternallyConfiguredPactBroker(Map<String, Object> configuration) {
-            this.host = getMandatoryField(configuration, HOST);
-            this.port = getMandatoryField(configuration, PORT);
-            this.protocol = getOptionalField(configuration, PROTOCOL, "http");
-            this.tags = getFromStringOrListOfString(configuration, TAGS, "latest");
+            if (!configuration.containsKey(URL)) {
+                throw new IllegalArgumentException(
+                    String.format("To use Pact Broker Publisher you need to set %s of the broker", URL));
+            }
+
+            if (!(configuration.get(URL) instanceof String)) {
+                throw new IllegalArgumentException(String.format(
+                    "Pact Broker Publisher requires %s configuration property to be an String instead of %s", URL,
+                    configuration.get(URL)));
+            }
+
+            url = (String) configuration.get(URL);
+
+            if (configuration.containsKey(USERNAME)) {
+                username = (String) configuration.get(USERNAME);
+            }
+
+            if (configuration.containsKey(PASSWORD)) {
+                password = (String) configuration.get(PASSWORD);
+            }
+            if (configuration.containsKey(TAGS)) {
+                Object tags = configuration.get(TAGS);
+
+                if (tags instanceof String) {
+                    String tagsString = (String) tags;
+                    this.tags = tagsString.split(",");
+                }
+
+                if (tags instanceof Collection) {
+                    Collection<String> tagsCollection = (Collection<String>) tags;
+                    this.tags = tagsCollection.toArray(new String[tagsCollection.size()]);
+                }
+            }
         }
 
         @Override
-        public String host() {
-            return host;
+        public String url() {
+            return url;
         }
 
         @Override
-        public String port() {
-            return port;
+        public String userame() {
+            return username;
         }
 
         @Override
-        public String protocol() {
-            return protocol;
+        public String password() {
+            return password;
         }
 
         @Override
         public String[] tags() {
-            return tags.toArray(new String[tags.size()]);
+            return tags;
         }
 
         @Override
         public Class<? extends Annotation> annotationType() {
             return PactBroker.class;
         }
-
-        public List<String> getFromStringOrListOfString(Map<String, Object> configuration, String field,
-            String defaultValue) {
-            List<String> values = new ArrayList<>();
-            if (configuration.containsKey(field)) {
-                Object tags = configuration.get(field);
-
-                if (tags instanceof String) {
-                    values.add(getResolvedValue((String) tags));
-                } else {
-                    if (tags instanceof Collection) {
-                        Collection<String> listOfTags = (Collection) tags;
-                        values.addAll(
-                            listOfTags.stream()
-                                .map(tag -> getResolvedValue(tag))
-                                .collect(toList()));
-                    }
-                }
-            } else {
-                values.add(defaultValue);
-            }
-
-            return values;
-        }
-
-        public String getOptionalField(Map<String, Object> configuration, String field, String defaultValue) {
-            if (configuration.containsKey(field)) {
-                return (String) configuration.get(field);
-            } else {
-                return defaultValue;
-            }
-        }
-
-        public String getMandatoryField(Map<String, Object> configuration, String field) {
-            if (configuration.containsKey(field)) {
-                return (String) configuration.get(field);
-            } else {
-                throw new IllegalArgumentException(
-                    String.format("%s field is mandatory in Pact Broker Retriever.", field));
-            }
-        }
-    }
-
-    private static String asStringPreservingNewLines(InputStream response) {
-        StringWriter logwriter = new StringWriter();
-
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response));
-
-            String line = null;
-            while ((line = bufferedReader.readLine()) != null) {
-                logwriter.write(line);
-                logwriter.write(System.lineSeparator());
-            }
-
-            return logwriter.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static String getResolvedValue(String field) {
-        return RunnerExpressionParser.parseExpressions(field);
     }
 }

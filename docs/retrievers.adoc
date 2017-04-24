@@ -6,7 +6,7 @@ One real important thing in provider tests is where contract files are located a
 To specify this, Arquillian Provider provides some class annotations, but of course you can implement your own as well:
 
 From URL:: `@ContractsUrl(urls = {"http://build.server/zoo_app-animal_service.json"} )`
-From PactBroker:: `@PactBroker(host="${pactbroker.hostname:localhost}", port = "80")`
+From PactBroker:: `@PactBroker(url="${pactbroker.hostname:localhost}")`
 Notice that in this case system properties with defaults are supported. Also you need to add `org.arquillian.algeron:arquillian-algeron-pact-provider-pact-broker-loader:${version}` dependency. This is only supported in case of using Pact provider.
 From Folder:: `@ContractsFolder("subfolder/in/resource/directory")`
 You can use absolute or relative path. The loader first checks if resource is in classpath and if not checks directory. As with *PactBroker*, you can use system properties.
@@ -175,8 +175,10 @@ You can retrieve contracts from Pact Broker artifacts.
 <extension qualifier="algeron-provider">
   <property name="retrieverConfiguration">
           provider: pactbroker
-          host: <host of pact broker server>
-          port: <port of pact broker server>
+          url: <url of pact broker server>
+          username: <username of pact borker>
+          password: <password of pact broker>
+          tags: <tag or list of tags
   </property>
 </extension>
 ----
@@ -188,17 +190,17 @@ Possible attributes:
 |===
 | Parameter | Description
 
-|host
-|Mandatory field that sets host of Pact Broker.
+|url
+|Mandatory field that sets url of Pact Broker.
 
-|port
-|Mandatory field that sets the port of Pact Broker.
+|username
+|Optional field that sets the username of Pact Broker.
 
-|protocol
-|Optional field that sets protocol used. By default Algeron uses http.
+|password
+|Optional field that sets the password of Pact Broker.
 
 |tags
-|Optional field that sets the tags to retrieve from Pact Broker.
+|Optional field that sets the tags to retrieve from Pact Broker or latest by default.
 |===
 
 Notice that all these attributes can be set using system properties or environment variable as any other property in `arquillian.xml`.
