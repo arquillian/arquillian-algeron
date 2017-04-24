@@ -78,6 +78,50 @@ For example given `http://myhost/pacts` and a "contract" file called `consumer_p
 
 You can set `url` value using Java system property `${name:defaultvalue}` or environment variable `${env.name:defaultvalue}`.
 
+== Pact Broker
+
+You can publish contracts to Pact Broker server.
+
+[source, xml]
+.arquillian.xml
+----
+<extension qualifier="algeron-provider">
+  <property name="retrieverConfiguration">
+          provider: pactbroker
+          url: <url of pact broker server>
+          username: <username to access>
+          password: <password to access>
+          contractsFolder: <path where pact files are generated>
+          version: <version which pacts are stored>
+  </property>
+</extension>
+----
+
+Also you need to add `org.arquillian.algeron:arquillian-algeron-consumer-pact-broker-publisher:${version}` dependency. This is only supported in case of using Pact provider.
+
+Possible attributes:
+
+|===
+| Parameter | Description
+
+|url
+|Mandatory field that sets url of Pact Broker.
+
+|contractsFolder
+|Mandatory field that sets the location of Pact files.
+
+|username
+|Optional field that sets the username.
+
+|password
+|Optional field that sets the password.
+
+|version
+|Optional field that sets the version of contracts in pact broker. If not set `latest` is used.
+|===
+
+Notice that all these attributes can be set using system properties or environment variable as any other property in `arquillian.xml`.
+
 == Git Publisher
 
 Git publisher publishes contract files to a git repository.
