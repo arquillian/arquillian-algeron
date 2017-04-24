@@ -533,9 +533,10 @@ table.CodeRay td.code>pre{padding:0}
 <ul class="sectlevel3">
 <li><a href="#_folder_publisher">4.2.1. Folder Publisher</a></li>
 <li><a href="#_url_publisher">4.2.2. URL Publisher</a></li>
-<li><a href="#_git_publisher">4.2.3. Git Publisher</a></li>
-<li><a href="#_spi">4.2.4. SPI</a></li>
-<li><a href="#_jboss_forge_arquillian_addon">4.2.5. JBoss Forge Arquillian Addon</a></li>
+<li><a href="#_pact_broker">4.2.3. Pact Broker</a></li>
+<li><a href="#_git_publisher">4.2.4. Git Publisher</a></li>
+<li><a href="#_spi">4.2.5. SPI</a></li>
+<li><a href="#_jboss_forge_arquillian_addon">4.2.6. JBoss Forge Arquillian Addon</a></li>
 </ul>
 </li>
 </ul>
@@ -571,7 +572,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><span class="image"><a class="image" href="https://travis-ci.org/arquillian/arquillian-algeron"><img src="https://travis-ci.org/arquillian/arquillian-pact.svg?branch=master" alt="Build Status"></a></span></p>
+<p><span class="image"><a class="image" href="https://travis-ci.org/arquillian/arquillian-algeron"><img src="https://travis-ci.org/arquillian/arquillian-algeron.svg?branch=master" alt="Build Status"></a></span></p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -1197,7 +1198,71 @@ For example given <code><a href="http://myhost/pacts" class="bare">http://myhost
 </div>
 </div>
 <div class="sect3">
-<h4 id="_git_publisher"><a class="anchor" href="#_git_publisher"></a>4.2.3. Git Publisher</h4>
+<h4 id="_pact_broker"><a class="anchor" href="#_pact_broker"></a>4.2.3. Pact Broker</h4>
+<div class="paragraph">
+<p>You can publish contracts to Pact Broker server.</p>
+</div>
+<div class="listingblock">
+<div class="title">arquillian.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">algeron-provider</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">retrieverConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+          provider: pactbroker
+          url: <span class="tag">&lt;url</span> <span class="attribute-name">of</span> <span class="attribute-name">pact</span> <span class="attribute-name">broker</span> <span class="attribute-name">server</span><span class="tag">&gt;</span>
+          username: <span class="tag">&lt;username</span> <span class="attribute-name">to</span> <span class="attribute-name">access</span><span class="tag">&gt;</span>
+          password: <span class="tag">&lt;password</span> <span class="attribute-name">to</span> <span class="attribute-name">access</span><span class="tag">&gt;</span>
+          contractsFolder: <span class="tag">&lt;path</span> <span class="attribute-name">where</span> <span class="attribute-name">pact</span> <span class="attribute-name">files</span> <span class="attribute-name">are</span> <span class="attribute-name">generated</span><span class="tag">&gt;</span>
+          version: <span class="tag">&lt;version</span> <span class="attribute-name">which</span> <span class="attribute-name">pacts</span> <span class="attribute-name">are</span> <span class="attribute-name">stored</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;/property&gt;</span>
+<span class="tag">&lt;/extension&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also you need to add <code>org.arquillian.algeron:arquillian-algeron-consumer-pact-broker-publisher:${version}</code> dependency. This is only supported in case of using Pact provider.</p>
+</div>
+<div class="paragraph">
+<p>Possible attributes:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">url</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory field that sets url of Pact Broker.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contractsFolder</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory field that sets the location of Pact files.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the username.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the password.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the version of contracts in pact broker. If not set <code>latest</code> is used.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Notice that all these attributes can be set using system properties or environment variable as any other property in <code>arquillian.xml</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_git_publisher"><a class="anchor" href="#_git_publisher"></a>4.2.4. Git Publisher</h4>
 <div class="paragraph">
 <p>Git publisher publishes contract files to a git repository.
 Optionally they can be committed into a branch or tag the commit.</p>
@@ -1309,7 +1374,7 @@ Optionally they can be committed into a branch or tag the commit.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_spi"><a class="anchor" href="#_spi"></a>4.2.4. SPI</h4>
+<h4 id="_spi"><a class="anchor" href="#_spi"></a>4.2.5. SPI</h4>
 <div class="paragraph">
 <p>You can also implement your own publisher.
 To make it so you need create a class that implements <code>org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher</code> and register this service inside <code>META-INF/services/org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher</code>.</p>
@@ -1319,7 +1384,7 @@ To make it so you need create a class that implements <code>org.arquillian.alger
 </div>
 </div>
 <div class="sect3">
-<h4 id="_jboss_forge_arquillian_addon"><a class="anchor" href="#_jboss_forge_arquillian_addon"></a>4.2.5. JBoss Forge Arquillian Addon</h4>
+<h4 id="_jboss_forge_arquillian_addon"><a class="anchor" href="#_jboss_forge_arquillian_addon"></a>4.2.6. JBoss Forge Arquillian Addon</h4>
 <div class="paragraph">
 <p><a href="http://forge.jboss.org">Forge</a> Arquillian Addon offers an integration with Arquillian Algeron Publishers.</p>
 </div>
@@ -1376,7 +1441,7 @@ To specify this, Arquillian Provider provides some class annotations, but of cou
 </dd>
 <dt class="hdlist1">From PactBroker</dt>
 <dd>
-<p><code>@PactBroker(host="${pactbroker.hostname:localhost}", port = "80")</code>
+<p><code>@PactBroker(url="${pactbroker.hostname:localhost}")</code>
 Notice that in this case system properties with defaults are supported. Also you need to add <code>org.arquillian.algeron:arquillian-algeron-pact-provider-pact-broker-loader:${version}</code> dependency. This is only supported in case of using Pact provider.</p>
 </dd>
 <dt class="hdlist1">From Folder</dt>
@@ -1626,9 +1691,11 @@ class <code>MyOwnRetriever</code> must have a default empty constructor or a con
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">algeron-provider</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">retrieverConfiguration</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
           provider: pactbroker
-          host: <span class="tag">&lt;host</span> <span class="attribute-name">of</span> <span class="attribute-name">pact</span> <span class="attribute-name">broker</span> <span class="attribute-name">server</span><span class="tag">&gt;</span>
-          port: <span class="tag">&lt;port</span> <span class="attribute-name">of</span> <span class="attribute-name">pact</span> <span class="attribute-name">broker</span> <span class="attribute-name">server</span><span class="tag">&gt;</span>
-  <span class="tag">&lt;/property&gt;</span>
+          url: <span class="tag">&lt;url</span> <span class="attribute-name">of</span> <span class="attribute-name">pact</span> <span class="attribute-name">broker</span> <span class="attribute-name">server</span><span class="tag">&gt;</span>
+          username: <span class="tag">&lt;username</span> <span class="attribute-name">of</span> <span class="attribute-name">pact</span> <span class="attribute-name">borker</span><span class="tag">&gt;</span>
+          password: <span class="tag">&lt;password</span> <span class="attribute-name">of</span> <span class="attribute-name">pact</span> <span class="attribute-name">broker</span><span class="tag">&gt;</span>
+          tags: <span class="tag">&lt;tag</span> <span class="attribute-name">or</span> <span class="attribute-name">list</span> <span class="attribute-name">of</span> <span class="attribute-name">tags</span>
+  <span class="error">&lt;</span><span class="error">/</span><span class="attribute-name">property</span><span class="tag">&gt;</span>
 <span class="tag">&lt;/extension&gt;</span></code></pre>
 </div>
 </div>
@@ -1651,20 +1718,20 @@ class <code>MyOwnRetriever</code> must have a default empty constructor or a con
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">host</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory field that sets host of Pact Broker.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">url</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory field that sets url of Pact Broker.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">port</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory field that sets the port of Pact Broker.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the username of Pact Broker.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">protocol</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets protocol used. By default Algeron uses http.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the password of Pact Broker.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">tags</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the tags to retrieve from Pact Broker.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that sets the tags to retrieve from Pact Broker or latest by default.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2319,7 +2386,7 @@ If you want to enable skipDeployment feature, you can set Java system property o
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-24 21:00:51 UTC
+Last updated 2017-04-24 10:52:14 UTC
 </div>
 </div>
 </body>
