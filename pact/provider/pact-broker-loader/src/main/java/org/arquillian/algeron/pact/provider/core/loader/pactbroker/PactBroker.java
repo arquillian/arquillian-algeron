@@ -18,19 +18,20 @@ import java.lang.annotation.Target;
 @ContractsSource(PactBrokerLoader.class)
 public @interface PactBroker {
     /**
-     * @return host of pact broker
+     * @return url of pact broker
      */
-    String host();
+    String url();
 
     /**
-     * @return port of pact broker
+     * @return username of pact broker
      */
-    String port();
+    String userame();
 
     /**
-     * HTTP protocol, defaults to http
+     * @return password of pact broker
      */
-    String protocol() default "http";
+    String password();
+
 
     /**
      * Tags to use to fetch pacts for

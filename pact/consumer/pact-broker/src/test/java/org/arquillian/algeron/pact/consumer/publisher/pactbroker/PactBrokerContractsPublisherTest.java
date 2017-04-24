@@ -1,19 +1,13 @@
 package org.arquillian.algeron.pact.consumer.publisher.pactbroker;
 
-import io.specto.hoverfly.junit.rule.HoverflyRule;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
-import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 
 @Ignore
 public class PactBrokerContractsPublisherTest {
-
-    @ClassRule
-    public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureOrSimulationMode("pactbroker.json");
 
     @Test
     public void should_publish_directory_of_contracts() throws IOException {
@@ -25,7 +19,6 @@ public class PactBrokerContractsPublisherTest {
 
     }
 
-    @NotNull
     private Map<String, Object> createConfiguration() {
         final Map<String, Object> configuration = new HashMap<>();
         configuration.put(PactBorkerContractsPublisher.URL, "https://redhat.pact.dius.com.au");
