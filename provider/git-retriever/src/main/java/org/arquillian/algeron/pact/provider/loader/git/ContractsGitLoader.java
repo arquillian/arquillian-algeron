@@ -34,11 +34,12 @@ public class ContractsGitLoader implements ContractsRetriever {
     GitOperations gitOperations;
 
     public ContractsGitLoader() {
+        this.gitOperations = new GitOperations();
     }
 
     public ContractsGitLoader(ContractsGit contractsGit) {
+        this();
         this.contractsGit = contractsGit;
-        this.gitOperations = new GitOperations();
     }
 
     @Override
@@ -58,7 +59,6 @@ public class ContractsGitLoader implements ContractsRetriever {
     @Override
     public void configure(Map<String, Object> configuration) {
         this.contractsGit = new ExternallyConfiguredContractsGit(configuration);
-        this.gitOperations = new GitOperations();
     }
 
     protected Path getContractsFolderFromGitRepo() throws IOException {
