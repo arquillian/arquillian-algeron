@@ -58,6 +58,7 @@ public class ContractsGitLoader implements ContractsRetriever {
     @Override
     public void configure(Map<String, Object> configuration) {
         this.contractsGit = new ExternallyConfiguredContractsGit(configuration);
+        this.gitOperations = new GitOperations();
     }
 
     protected Path getContractsFolderFromGitRepo() throws IOException {

@@ -8,4 +8,11 @@
     <property name="port">8332</property>
   </extension>
 
+  <extension qualifier="algeron-provider">
+    <property name="retrieverConfiguration">
+      provider: git
+      url: https://github.com/lordofthejars/starwarspact.git
+      branch: master
+    </property>
+  </extension>
 </arquillian>
