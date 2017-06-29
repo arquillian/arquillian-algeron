@@ -2,6 +2,7 @@ package org.arquillian.algeron.pact.consumer.ftest;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.PactFragment;
+import au.com.dius.pact.model.RequestResponsePact;
 import org.arquillian.algeron.consumer.StubServer;
 import org.arquillian.algeron.pact.consumer.spi.Pact;
 import org.arquillian.algeron.pact.consumer.spi.PactVerification;
@@ -22,7 +23,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 public class ConsumerTest {
 
     @Pact(provider = "test_provider", consumer = "test_consumer")
-    public PactFragment createFragment(PactDslWithProvider builder) {
+    public RequestResponsePact createFragment(PactDslWithProvider builder) {
 
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
@@ -36,7 +37,7 @@ public class ConsumerTest {
             .status(200)
             .headers(header)
             .bodyWithSingleQuotes(("{'responsetest': true, 'name': 'harry'}"))
-            .toFragment();
+            .toPact();
     }
 
     @StubServer

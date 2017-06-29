@@ -6,7 +6,7 @@
 
   <container qualifier="chameleon" default="true">
     <configuration>
-      <property name="chameleonTarget">wildfly:9.0.0.Final:managed</property>
+      <property name="chameleonTarget">wildfly:10.0.0.Final:managed</property>
       <!--payara:4.1.1.163:managed-->
     </configuration>
   </container>

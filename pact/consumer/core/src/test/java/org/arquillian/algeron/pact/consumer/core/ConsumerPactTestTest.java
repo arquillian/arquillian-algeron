@@ -1,7 +1,7 @@
 package org.arquillian.algeron.pact.consumer.core;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
-import au.com.dius.pact.model.PactFragment;
+import au.com.dius.pact.model.RequestResponsePact;
 import org.arquillian.algeron.pact.consumer.core.client.StandaloneConsumerPactTest;
 import org.arquillian.algeron.pact.consumer.spi.Pact;
 import org.arquillian.algeron.pact.consumer.spi.PactVerification;
@@ -132,14 +132,14 @@ public class ConsumerPactTestTest {
     public static class PactMethod {
 
         @Pact(consumer = "c1", provider = "p1")
-        public PactFragment contract1(PactDslWithProvider builder) {
+        public RequestResponsePact contract1(PactDslWithProvider builder) {
             return null;
         }
     }
 
     @Pact(consumer = "c2", provider = "p2")
     public static class PactClass {
-        public PactFragment contract2(PactDslWithProvider builder) {
+        public RequestResponsePact contract2(PactDslWithProvider builder) {
             return null;
         }
     }
@@ -147,21 +147,21 @@ public class ConsumerPactTestTest {
     @Pact(consumer = "c3", provider = "p3")
     public static class PactMethodClass {
         @Pact(consumer = "c4", provider = "p4")
-        public PactFragment contract3(PactDslWithProvider builder) {
+        public RequestResponsePact contract3(PactDslWithProvider builder) {
             return null;
         }
     }
 
     @Pact(consumer = "c2", provider = "p2")
     public static class PactClassClassProvider {
-        public PactFragment contract2(PactDslWithProvider builder) {
+        public RequestResponsePact contract2(PactDslWithProvider builder) {
             return null;
         }
     }
 
     @Pact(consumer = "c2", provider = "p2")
     public static class PactClassMethodProvider {
-        public PactFragment contract2(PactDslWithProvider builder) {
+        public RequestResponsePact contract2(PactDslWithProvider builder) {
             return null;
         }
     }
@@ -169,7 +169,7 @@ public class ConsumerPactTestTest {
     public static class PactMethodPactVerificationWithoutProvider {
 
         @Pact(consumer = "c1", provider = "p1")
-        public PactFragment contract1(PactDslWithProvider builder) {
+        public RequestResponsePact contract1(PactDslWithProvider builder) {
             return null;
         }
     }
