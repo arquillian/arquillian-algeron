@@ -3,6 +3,8 @@
 First thing to do is develop the *Consumer* part of the test.
 Consumer part of Consumer-Driven Contract defines requirements from the consumer of the API which are then used to develop the client interaction with the API as well as to validate provider implementation.
 
+IMPORTANT: Arquillian Algeron Pact 1.X works with versions of Pact previous to 3.5.0. Arquillian Algeron Pact 2.X works with Pact 3.5.0.
+
 == Pact Consumer Enrichers
 
 You can use in a test `@StubServer` annotation to inject URL where stub http server is started.
@@ -75,11 +77,11 @@ Then you need to add `arquillian-pact-consumer` dependency as well as `pact-jvm-
         <groupId>au.com.dius</groupId>
         <artifactId>pact-jvm-consumer_2.11</artifactId>
         <scope>test</scope>
-        <version>3.5.0-beta.2</version> <!--1-->
+        <version>3.5.0</version> <!--1-->
     </dependency>
 </dependencies>
 ----
-<1> Arquillian Algeron Pact has been tested with latest version, but it should work with any 3.X version.
+<1> Arquillian Algeron Pact 2.X only works with 3.5.0, Arquillian Algeron Pact 1.X works with < 3.5.0.
 
 After dependencies you can write the test that defines the contract:
 
@@ -97,7 +99,7 @@ public class ClientGatewayTest {
         return ShrinkWrap.create(JavaArchive.class).addClasses(ClientGateway.class);
     }
 
-    public PactFragment createFragment(PactDslWithProvider builder) {
+    public RequestResponsePact createFragment(PactDslWithProvider builder) {
 
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
@@ -111,7 +113,7 @@ public class ClientGatewayTest {
                 .status(200)
                 .headers(header)
                 .body("{\"responsetest\": true, \"name\": \"harry\"}")
-                .toFragment(); // <4>
+                .toPact(); // <4>
     }
 
     @Inject // <5>
@@ -166,7 +168,7 @@ Obviously no `@Deployment` method is required:
 public class ConsumerTest {
 
     @Pact(provider = "test_provider", consumer = "test_consumer")
-    public PactFragment createFragment(PactDslWithProvider builder) {
+    public RequestResponsePact createFragment(PactDslWithProvider builder) {
 
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
@@ -180,7 +182,7 @@ public class ConsumerTest {
                 .status(200)
                 .headers(header)
                 .body("{\"responsetest\": true, \"name\": \"harry\"}")
-                .toFragment();
+                .toPact();
     }
 
     @StubServer
