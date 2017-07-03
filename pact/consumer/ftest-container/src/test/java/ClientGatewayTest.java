@@ -1,5 +1,6 @@
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.PactFragment;
+import au.com.dius.pact.model.RequestResponsePact;
 import org.arquillian.algeron.consumer.StubServer;
 import org.arquillian.algeron.pact.consumer.ftest.ClientGateway;
 import org.arquillian.algeron.pact.consumer.spi.Pact;
@@ -29,7 +30,7 @@ public class ClientGatewayTest {
         return ShrinkWrap.create(JavaArchive.class).addClasses(ClientGateway.class);
     }
 
-    public PactFragment createFragment(PactDslWithProvider builder) {
+    public RequestResponsePact createFragment(PactDslWithProvider builder) {
 
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
@@ -43,7 +44,7 @@ public class ClientGatewayTest {
             .status(200)
             .headers(header)
             .bodyWithSingleQuotes("{'responsetest': true, 'name': 'harry'}")
-            .toFragment();
+            .toPact();
     }
 
     @EJB
@@ -55,6 +56,6 @@ public class ClientGatewayTest {
     @Test
     @PactVerification("test_provider")
     public void should_return_message() throws IOException {
-        assertThat(clientGateway.getMessage(url), is("{\"responsetest\": true, \"name\": \"harry\"}"));
+        assertThat(clientGateway.getMessage(url), is("{\"responsetest\":true,\"name\":\"harry\"}"));
     }
 }

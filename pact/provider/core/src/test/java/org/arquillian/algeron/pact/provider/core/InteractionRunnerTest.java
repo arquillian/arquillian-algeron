@@ -45,9 +45,6 @@ public class InteractionRunnerTest {
     private RequestResponseInteraction requestResponseInteraction;
 
     @Mock
-    private ProviderState providerState;
-
-    @Mock
     private Instance algeronConfiguration;
 
     private Instance<Pacts> pactsInstance;
@@ -98,7 +95,8 @@ public class InteractionRunnerTest {
     @org.junit.Test
     public void should_execute_states_with_regular_expression_syntax_for_simple_types() {
 
-        when(providerState.getName()).thenReturn("I have 36 cukes in my belly");
+        ProviderState providerState = new ProviderState("I have 36 cukes in my belly");
+
         final List<ProviderState> providerStates = new ArrayList<>();
         providerStates.add(providerState);
         when(requestResponseInteraction.getProviderStates()).thenReturn(providerStates);
@@ -116,7 +114,8 @@ public class InteractionRunnerTest {
     @org.junit.Test
     public void should_execute_states_with_regular_expression_syntax_for_collection_types() {
 
-        when(providerState.getName()).thenReturn("The following animals: cow, pig, bug");
+        ProviderState providerState = new ProviderState("The following animals: cow, pig, bug");
+
         final List<ProviderState> providerStates = new ArrayList<>();
         providerStates.add(providerState);
         when(requestResponseInteraction.getProviderStates()).thenReturn(providerStates);

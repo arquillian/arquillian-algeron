@@ -15,9 +15,65 @@ image:https://travis-ci.org/arquillian/arquillian-algeron.svg?branch=master["Bui
 
 IMPORTANT: Using Arquillian Algeron Pact Provider requires at least Arquillian Core 1.1.12.Final or above.
 
+
+IMPORTANT: Arquillian Algeron Pact 1.X works with versions of Pact previous to 3.5.0. Arquillian Algeron Pact 2.X works with Pact 3.5.0.
+
 ifndef::generated-doc[]
 To read complete documentation visit http://arquillian.org/arquillian-algeron/
 endif::generated-doc[]
+
+== Migration from Arquillan Algeron Pact 1.X to 2.X
+
+With the release of Pact 3.5.0, `toFragment` method has been deprecated in favor of `toPact()`.
+Also this method instead of returning `PactFragment` now returns `RequestResponsePact`.
+
+Because of this change your contract definition should be adapted accordantly:
+
+[source, java]
+.Algeron Pact 1.X
+----
+@Pact(provider = "test_provider", consumer = "test_consumer")
+public PactFragment createFragment(PactDslWithProvider builder) {
+
+    Map<String, String> header = new HashMap<>();
+    header.put("Content-Type", "application/json");
+
+    return builder
+        .given("test state")
+        .uponReceiving("ConsumerTest test interaction")
+        .path("/")
+        .method("GET")
+        .willRespondWith()
+        .status(200)
+        .headers(header)
+        .bodyWithSingleQuotes(("{'responsetest': true, 'name': 'harry'}"))
+        .toFragment();
+}
+----
+
+to:
+
+[source, java]
+.Algeron Pact 2.X
+----
+@Pact(provider = "test_provider", consumer = "test_consumer")
+public RequestResponsePact createFragment(PactDslWithProvider builder) {
+
+    Map<String, String> header = new HashMap<>();
+    header.put("Content-Type", "application/json");
+
+    return builder
+        .given("test state")
+        .uponReceiving("ConsumerTest test interaction")
+        .path("/")
+        .method("GET")
+        .willRespondWith()
+        .status(200)
+        .headers(header)
+        .bodyWithSingleQuotes(("{'responsetest': true, 'name': 'harry'}"))
+        .toPact();
+}
+----
 
 == What is Arquillian Algeron?
 

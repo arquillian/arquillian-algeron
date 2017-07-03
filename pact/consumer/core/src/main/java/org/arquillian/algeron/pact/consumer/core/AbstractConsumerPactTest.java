@@ -1,14 +1,12 @@
 package org.arquillian.algeron.pact.consumer.core;
 
 import au.com.dius.pact.consumer.ConsumerPactBuilder;
-import au.com.dius.pact.consumer.PactError;
-import au.com.dius.pact.consumer.PactMismatch;
+import au.com.dius.pact.consumer.PactVerificationResult;
 import au.com.dius.pact.consumer.PactVerified$;
-import au.com.dius.pact.consumer.UserCodeFailed;
 import au.com.dius.pact.consumer.VerificationResult;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.MockProviderConfig;
-import au.com.dius.pact.model.PactFragment;
+import au.com.dius.pact.model.RequestResponsePact;
 import org.arquillian.algeron.pact.consumer.core.client.container.ConsumerProviderPair;
 import org.arquillian.algeron.pact.consumer.core.util.ResolveClassAnnotation;
 import org.arquillian.algeron.pact.consumer.spi.Pact;
@@ -27,10 +25,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static au.com.dius.pact.consumer.ConsumerPactRunnerKt.runConsumerTest;
+
 public abstract class AbstractConsumerPactTest {
 
     private static final Logger logger = Logger.getLogger(AbstractConsumerPactTest.class.getName());
-    private static final VerificationResult PACT_VERIFIED = PactVerified$.MODULE$;
 
     @Inject
     protected Instance<PactConsumerConfiguration> pactConsumerConfigurationInstance;
@@ -61,35 +60,37 @@ public abstract class AbstractConsumerPactTest {
         PactMethod pactMethod = possiblePactMethod.get();
         Pact pact = pactMethod.getPact();
         PactDslWithProvider dslBuilder = ConsumerPactBuilder.consumer(pact.consumer()).hasPactWith(currentProvider);
-        PactFragment pactFragment;
+        RequestResponsePact requestResponsePact;
 
         try {
-            pactFragment = (PactFragment) pactMethod.getMethod().invoke(testInstance, dslBuilder);
+            requestResponsePact = (RequestResponsePact) pactMethod.getMethod().invoke(testInstance, dslBuilder);
         } catch (Exception e) {
             throw new RuntimeException("Failed to invoke pact method", e);
         }
 
-        VerificationResult result = runPactTest(testEventContext, pactFragment);
+        PactVerificationResult result = runPactTest(testEventContext, requestResponsePact);
         validateResult(result, pactVerification);
 
         return new ConsumerProviderPair(pact.consumer(), currentProvider);
     }
 
-    private VerificationResult runPactTest(EventContext<Test> base, PactFragment pactFragment) {
-        return pactFragment.runConsumer(mockProviderConfigInstance.get(), mockProviderConfig -> base.proceed());
+    private PactVerificationResult runPactTest(EventContext<Test> base, RequestResponsePact requestResponsePact) {
+        return runConsumerTest(requestResponsePact, mockProviderConfigInstance.get(), mockServer -> base.proceed());
     }
 
-    private void validateResult(VerificationResult result, PactVerification pactVerification) throws Throwable {
-        if (!result.equals(PACT_VERIFIED)) {
-            if (result instanceof PactError) {
-                throw ((PactError) result).error();
-            }
-            if (result instanceof UserCodeFailed) {
-                throw ((UserCodeFailed<RuntimeException>) result).error();
-            }
-            if (result instanceof PactMismatch) {
-                PactMismatch mismatch = (PactMismatch) result;
-                throw new RuntimeException(mismatch.toString());
+    private void validateResult(PactVerificationResult result, PactVerification pactVerification) throws Throwable {
+        if (!result.equals(PactVerificationResult.Ok.INSTANCE)) {
+            if (result instanceof PactVerificationResult.Error) {
+                PactVerificationResult.Error error = (PactVerificationResult.Error) result;
+                if (error.getMockServerState() != PactVerificationResult.Ok.INSTANCE) {
+                    throw new AssertionError("Pact Test function failed with an exception, possibly due to " +
+                        error.getMockServerState(), ((PactVerificationResult.Error) result).getError());
+                } else {
+                    throw new AssertionError("Pact Test function failed with an exception: " +
+                        error.getError().getMessage(), error.getError());
+                }
+            } else {
+                throw new PactMismatchesException(result);
             }
         }
     }
@@ -149,7 +150,7 @@ public abstract class AbstractConsumerPactTest {
                 logger.log(Level.INFO, String.format(
                     "Method %s returns a %s type but it is not annotated at method nor at class level with %s",
                     method.getName(),
-                    PactFragment.class.getName(),
+                    RequestResponsePact.class.getName(),
                     Pact.class.getName()));
                 return null;
             }
@@ -160,7 +161,7 @@ public abstract class AbstractConsumerPactTest {
 
     private void validatePactSignature(Method method) {
         boolean hasValidPactSignature =
-            PactFragment.class.isAssignableFrom(method.getReturnType())
+            RequestResponsePact.class.isAssignableFrom(method.getReturnType())
                 && method.getParameterTypes().length == 1
                 && method.getParameterTypes()[0].isAssignableFrom(PactDslWithProvider.class);
 
@@ -174,7 +175,7 @@ public abstract class AbstractConsumerPactTest {
         final Method[] methods = testClass.getJavaClass().getMethods();
 
         return Arrays.stream(methods)
-            .filter(method -> method.getReturnType().isAssignableFrom(PactFragment.class))
+            .filter(method -> method.getReturnType().isAssignableFrom(RequestResponsePact.class))
             .collect(Collectors.toList());
     }
 
