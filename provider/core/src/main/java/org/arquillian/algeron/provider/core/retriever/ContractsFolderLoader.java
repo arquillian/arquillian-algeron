@@ -1,5 +1,6 @@
 package org.arquillian.algeron.provider.core.retriever;
 
+import org.arquillian.algeron.configuration.HomeResolver;
 import org.arquillian.algeron.configuration.RunnerExpressionParser;
 import org.arquillian.algeron.provider.spi.retriever.ContractsRetriever;
 
@@ -75,12 +76,23 @@ public class ContractsFolderLoader implements ContractsRetriever {
     }
 
     private File resolvePath() {
-        final String pathname = RunnerExpressionParser.parseExpressions(path);
+        final String pathname = resolveHomeDirectory(RunnerExpressionParser.parseExpressions(path));
+
         File file = new File(pathname);
+
         URL resourcePath = ContractsFolderLoader.class.getClassLoader().getResource(pathname);
         if (resourcePath != null) {
             file = new File(resourcePath.getPath());
         }
+
         return file;
+    }
+
+    private String resolveHomeDirectory(String path) {
+        if (path != null && path.startsWith("~")) {
+            return HomeResolver.resolveHomeDirectory(path);
+        }
+
+        return path;
     }
 }

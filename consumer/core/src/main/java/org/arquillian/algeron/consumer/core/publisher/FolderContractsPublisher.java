@@ -1,5 +1,6 @@
 package org.arquillian.algeron.consumer.core.publisher;
 
+import org.arquillian.algeron.configuration.HomeResolver;
 import org.arquillian.algeron.configuration.RunnerExpressionParser;
 import org.arquillian.algeron.consumer.spi.publisher.ContractsPublisher;
 
@@ -21,7 +22,7 @@ public class FolderContractsPublisher implements ContractsPublisher {
     @Override
     public void publish() throws IOException {
         final String path = (String) this.configuration.get(OUTPUT_FOLDER);
-        final Path outputPath = Paths.get(RunnerExpressionParser.parseExpressions(path));
+        final Path outputPath = resolveHomeDirectory(Paths.get(RunnerExpressionParser.parseExpressions(path)));
 
         if (Files.notExists(outputPath)) {
             Files.createDirectories(outputPath);
@@ -44,6 +45,14 @@ public class FolderContractsPublisher implements ContractsPublisher {
                 }
             });
         }
+    }
+
+    private Path resolveHomeDirectory(Path path) {
+        if (path.startsWith("~")) {
+            return Paths.get(HomeResolver.resolveHomeDirectory(path.toString()));
+        }
+
+        return path;
     }
 
     @Override
