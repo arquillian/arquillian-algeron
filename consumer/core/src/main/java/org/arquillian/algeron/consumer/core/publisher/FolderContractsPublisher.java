@@ -40,8 +40,8 @@ public class FolderContractsPublisher implements ContractsPublisher {
     }
 
     private boolean shouldDeleteFolderDirectory() {
-        return this.configuration.containsKey(DELETE_FOLDER) && Boolean.parseBoolean(
-            (String) this.configuration.get(DELETE_FOLDER));
+        return this.configuration.containsKey(DELETE_FOLDER) &&
+            (Boolean) this.configuration.get(DELETE_FOLDER);
     }
 
     protected void copyPactFiles(Path pactsLocation, Path outputPath) throws IOException {
