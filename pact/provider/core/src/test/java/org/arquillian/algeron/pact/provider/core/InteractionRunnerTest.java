@@ -4,39 +4,40 @@ import au.com.dius.pact.model.Consumer;
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.ProviderState;
 import au.com.dius.pact.model.RequestResponseInteraction;
-import org.arquillian.algeron.pact.provider.spi.Target;
+import java.util.ArrayList;
+import java.util.List;
 import org.arquillian.algeron.pact.provider.api.Pacts;
 import org.arquillian.algeron.pact.provider.spi.CurrentConsumer;
 import org.arquillian.algeron.pact.provider.spi.CurrentInteraction;
 import org.arquillian.algeron.pact.provider.spi.Provider;
 import org.arquillian.algeron.pact.provider.spi.State;
+import org.arquillian.algeron.pact.provider.spi.Target;
 import org.arquillian.algeron.provider.core.retriever.ContractsFolder;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.spi.EventContext;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
-import org.jboss.arquillian.test.spi.event.suite.Test;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InteractionRunnerTest {
 
     @Mock
-    private EventContext<Test> eventContext;
+    private EventContext<org.jboss.arquillian.test.spi.event.suite.Test> eventContext;
 
     @Mock
-    private Test test;
+    private org.jboss.arquillian.test.spi.event.suite.Test test;
 
     @Mock
     private Target target;
@@ -59,7 +60,7 @@ public class InteractionRunnerTest {
         when(eventContext.getEvent()).thenReturn(test);
     }
 
-    @org.junit.Test
+    @Test
     public void should_execute_test_for_each_interaction() {
         when(test.getTestClass()).thenReturn(new TestClass(PactProvider.class));
         PactProvider pactDefinition = new PactProvider();
@@ -76,11 +77,10 @@ public class InteractionRunnerTest {
         verify(eventContext, times(2)).proceed();
     }
 
-    @org.junit.Test
+    @Test
     public void should_throw_exception_when_no_target() {
         when(test.getTestClass()).thenReturn(new TestClass(PactProviderWithNoTarget.class));
         PactProviderWithNoTarget pactDefinition = new PactProviderWithNoTarget();
-        when(test.getTestInstance()).thenReturn(pactDefinition);
 
         InteractionRunner interactionRunner = new InteractionRunner();
         interactionRunner.pactsInstance = pactsInstance;
