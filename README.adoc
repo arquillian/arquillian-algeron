@@ -27,7 +27,7 @@ endif::generated-doc[]
 With the release of Pact 3.5.0, `toFragment` method has been deprecated in favor of `toPact()`.
 Also this method instead of returning `PactFragment` now returns `RequestResponsePact`.
 
-Because of this change your contract definition should be adapted accordantly:
+Because of this change your contract definition should be adapted accordingly:
 
 [source, java]
 .Algeron Pact 1.X

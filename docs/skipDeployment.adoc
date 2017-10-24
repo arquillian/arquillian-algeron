@@ -3,7 +3,7 @@
 In case of consumer driven contracts, there are two kinds of tests - consumer tests and provider tests.
 Usually in your CI environment you want to run provider tests against two different scenarios:
 
-against a master branch of provider:: to detect if provider team has already implemented all the functionalities defined in contracts.
+against a master branch of provider:: to detect if provider team has already implemented all the functionality defined in contracts.
 against (pre)production:: if you support deploying consumer independently of a provider, then you need to ensure that if you deploy new consumer with the new contracts to (pre)production everything will be still working and you haven't introduced any regressions.
 
 So before deploying a new consumer you need to verify that from provider side everything will continue working.
