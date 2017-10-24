@@ -2,21 +2,21 @@ package org.arquillian.algeron.pact.provider.core.recorder;
 
 import au.com.dius.pact.model.Interaction;
 import au.com.dius.pact.model.Pact;
+import au.com.dius.pact.model.PactSource;
+import au.com.dius.pact.model.UrlPactSource;
 import au.com.dius.pact.provider.ConsumerInfo;
 import au.com.dius.pact.provider.ProviderInfo;
 import au.com.dius.pact.provider.reporters.VerifierReporter;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.arquillian.recorder.reporter.PropertyEntry;
 import org.arquillian.recorder.reporter.event.PropertyReportEvent;
 import org.arquillian.recorder.reporter.model.entry.GroupEntry;
 import org.arquillian.recorder.reporter.model.entry.TextEntry;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.annotation.Inject;
-
-import java.io.File;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ArquillianVerifierReporter implements VerifierReporter {
 
@@ -38,6 +38,16 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     public void reportVerificationForConsumer(ConsumerInfo consumer, ProviderInfo provider) {
         verificationGroup.setName(
             String.format("Verifying a pact between %s and %s", consumer.getName(), provider.getName()));
+    }
+
+    @Override
+    public void verifyConsumerFromUrl(UrlPactSource urlPactSource, ConsumerInfo consumerInfo) {
+
+    }
+
+    @Override
+    public void verifyConsumerFromFile(PactSource pactSource, ConsumerInfo consumerInfo) {
+
     }
 
     @Override
@@ -226,14 +236,6 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     @Override
     public void initialise(ProviderInfo provider) {
 
-    }
-
-    @Override
-    public void verifyConsumerFromUrl(URL pactUrl, ConsumerInfo consumer) {
-    }
-
-    @Override
-    public void verifyConsumerFromFile(Object pactFile, ConsumerInfo consumer) {
     }
 
     @Override

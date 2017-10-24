@@ -1,18 +1,16 @@
 package org.arquillian.algeron.pact.provider.core.loader.pactbroker;
 
-import au.com.dius.pact.provider.ConsumerInfo;
+import au.com.dius.pact.pactbroker.PactBrokerConsumer;
 import au.com.dius.pact.provider.broker.PactBrokerClient;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.net.URISyntaxException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Collectors;
-import org.arquillian.algeron.provider.spi.retriever.ContractsRetriever;
-
-import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import org.arquillian.algeron.provider.spi.retriever.ContractsRetriever;
 
 /**
  * Out-of-the-box implementation of {@link org.arquillian.algeron.provider.spi.retriever.ContractsRetriever} that
@@ -53,7 +51,7 @@ public class PactBrokerLoader implements ContractsRetriever {
 
         if (this.pactBroker.tags().length == 0) {
 
-            final List<ConsumerInfo> consumerInfos = pactBrokerClient.fetchConsumers(this.providerName);
+            final List<PactBrokerConsumer> consumerInfos = pactBrokerClient.fetchConsumers(this.providerName);
             return toUri(consumerInfos);
         } else {
             final List<URI> contracts = new ArrayList<>();
@@ -66,16 +64,10 @@ public class PactBrokerLoader implements ContractsRetriever {
         }
     }
 
-    private List<URI> toUri(List<ConsumerInfo> consumerInfos) {
+    private List<URI> toUri(List<PactBrokerConsumer> consumerInfos) {
         return consumerInfos.stream()
-            .map(ConsumerInfo::getPactFile)
-            .map(u -> {
-                try {
-                    return ((java.net.URL) u).toURI();
-                } catch (URISyntaxException e) {
-                    throw new IllegalArgumentException(e);
-                }
-            })
+            .map(PactBrokerConsumer::getPactBrokerUrl)
+            .map(URI::create)
             .collect(Collectors.toList());
     }
 

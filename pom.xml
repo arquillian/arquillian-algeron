@@ -54,11 +54,8 @@
 
   <properties>
     <version.arquillian_core>1.1.13.Final</version.arquillian_core>
-    <version.junit>4.12</version.junit>
-    <version.mockito>1.10.19</version.mockito>
-    <version.assertj>3.6.2</version.assertj>
-    <version.shrinkwrap.resolvers>2.2.6</version.shrinkwrap.resolvers>
-    <version.pact>3.5.0</version.pact>
+    <version.pact>3.5.8</version.pact>
+
     <!-- Requirement from pact to run-->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
