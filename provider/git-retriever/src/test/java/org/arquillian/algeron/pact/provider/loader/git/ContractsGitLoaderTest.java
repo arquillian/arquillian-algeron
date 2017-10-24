@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,9 +46,6 @@ public class ContractsGitLoaderTest {
     @Test
     public void should_clone_repo() throws IOException {
         final Path path = Paths.get("/tmp");
-        when(gitOperations.isValidGitRepository(path)).thenReturn(true);
-        when(gitOperations.openGitRepository(path)).thenReturn(git);
-        when(gitOperations.hasAtLeastOneReference(repository)).thenReturn(true);
 
         when(gitOperations.cloneRepository(eq("myrepourl"), any(Path.class))).thenReturn(git);
         when(gitOperations.isLocalBranch(git, "master")).thenReturn(false);
@@ -134,7 +131,6 @@ public class ContractsGitLoaderTest {
         when(gitOperations.hasAtLeastOneReference(repository)).thenReturn(true);
 
         when(gitOperations.pullFromRepository(git, "origin", "mybranch")).thenReturn(pullResult);
-        when(gitOperations.isLocalBranch(git, "master")).thenReturn(false);
 
         ContractsGitLoader pactGitLoader =
             new ContractsGitLoader(TestWithPactRepositoryDirectoryAndTag.class.getAnnotation(ContractsGit.class));
