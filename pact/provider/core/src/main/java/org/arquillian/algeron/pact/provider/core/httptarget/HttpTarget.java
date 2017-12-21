@@ -2,24 +2,12 @@ package org.arquillian.algeron.pact.provider.core.httptarget;
 
 import au.com.dius.pact.model.RequestResponseInteraction;
 import au.com.dius.pact.provider.ConsumerInfo;
+import au.com.dius.pact.provider.HttpClientFactory;
+import au.com.dius.pact.provider.ProviderClient;
 import au.com.dius.pact.provider.ProviderInfo;
 import au.com.dius.pact.provider.ProviderVerifier;
 import au.com.dius.pact.provider.reporters.ReporterManager;
 import au.com.dius.pact.provider.reporters.VerifierReporter;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpRequest;
-import org.arquillian.algeron.configuration.SystemPropertyResolver;
-import org.arquillian.algeron.pact.provider.core.recorder.ArquillianVerifierReporter;
-import org.arquillian.algeron.pact.provider.spi.ArquillianTestClassAwareTarget;
-import org.arquillian.algeron.pact.provider.spi.PactProviderExecutionAwareTarget;
-import org.arquillian.algeron.pact.provider.spi.Provider;
-import org.arquillian.algeron.pact.provider.spi.Target;
-import org.arquillian.algeron.pact.provider.spi.TargetRequestFilter;
-import org.arquillian.algeron.pact.provider.spi.VerificationReports;
-
-import org.jboss.arquillian.core.api.Injector;
-import org.jboss.arquillian.test.spi.TestClass;
-
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -30,6 +18,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpRequest;
+import org.arquillian.algeron.configuration.SystemPropertyResolver;
+import org.arquillian.algeron.pact.provider.core.recorder.ArquillianVerifierReporter;
+import org.arquillian.algeron.pact.provider.spi.ArquillianTestClassAwareTarget;
+import org.arquillian.algeron.pact.provider.spi.PactProviderExecutionAwareTarget;
+import org.arquillian.algeron.pact.provider.spi.Provider;
+import org.arquillian.algeron.pact.provider.spi.Target;
+import org.arquillian.algeron.pact.provider.spi.TargetRequestFilter;
+import org.arquillian.algeron.pact.provider.spi.VerificationReports;
+import org.jboss.arquillian.core.api.Injector;
+import org.jboss.arquillian.test.spi.TestClass;
 
 public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactProviderExecutionAwareTarget {
 
@@ -111,8 +111,17 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
         this.host = host;
         this.port = port;
         this.protocol = protocol;
-        this.path = path;
+        this.path = removeFinalSlash(path);
         this.insecure = insecure;
+    }
+
+    // Due a bug in Pact we need to remove final slash character on path
+    private String removeFinalSlash(String path) {
+        if (path != null && !path.isEmpty() && path.endsWith("/")) {
+            return path.substring(0, path.length() -1);
+        }
+
+        return path;
     }
 
     /**
@@ -177,7 +186,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
         this.protocol = url.getProtocol() == null ? "http" : url.getProtocol();
         this.host = url.getHost();
         this.port = url.getPort() == -1 ? 8080 : url.getPort();
-        this.path = url.getPath() == null ? "/" : url.getPath();
+        this.path = removeFinalSlash(url.getPath() == null ? "/" : url.getPath());
 
         this.testInteraction(consumer, interaction);
     }
@@ -189,7 +198,8 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
         ProviderVerifier verifier = setupVerifier(interaction, provider, consumer);
 
         Map<String, Object> failures = new HashMap<>();
-        verifier.verifyResponseFromProvider(provider, interaction, interaction.getDescription(), failures);
+        ProviderClient client = new ProviderClient(provider, new HttpClientFactory());
+        verifier.verifyResponseFromProvider(provider, interaction, interaction.getDescription(), failures, client);
 
         try {
             if (!failures.isEmpty()) {

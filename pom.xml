@@ -54,7 +54,7 @@
 
   <properties>
     <version.arquillian_core>1.1.15.Final</version.arquillian_core>
-    <version.pact>3.5.8</version.pact>
+    <version.pact>3.5.10</version.pact>
 
     <!-- Requirement from pact to run-->
     <maven.compiler.source>1.8</maven.compiler.source>
