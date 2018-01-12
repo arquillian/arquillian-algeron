@@ -1,7 +1,5 @@
 package org.arquillian.algeron.pact.provider.core;
 
-import static java.util.stream.Collectors.toList;
-
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.PactReader;
 import org.arquillian.algeron.pact.provider.api.Pacts;
@@ -25,10 +23,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Reads provided Pacts from defined @ContractsSource or any annotation meta-annotated with @ContractsSource
@@ -47,7 +48,9 @@ public class PactsRetriever {
 
     public void retrievePacts(@Observes BeforeClass test) {
         List<Pact> pacts = getPacts(test);
-        pactsInstanceProducer.set(new Pacts(pacts));
+        if (!pacts.isEmpty()) {
+            pactsInstanceProducer.set(new Pacts(pacts));
+        }
     }
 
     protected List<Pact> getPacts(BeforeClass test) {
@@ -55,8 +58,7 @@ public class PactsRetriever {
 
         final Provider providerInfo = testClass.getAnnotation(Provider.class);
         if (providerInfo == null) {
-            throw new IllegalArgumentException(
-                String.format("Provider name should be set by using %s", Provider.class.getName()));
+            return Collections.emptyList();
         }
 
         final String serviceName = providerInfo.value();
@@ -64,7 +66,7 @@ public class PactsRetriever {
         final Consumer consumerInfo = testClass.getAnnotation(Consumer.class);
         final String consumerName = consumerInfo != null ? consumerInfo.value() : null;
 
-        List<Pact> pacts = new ArrayList<>();
+        List<Pact> pacts;
         try {
             final ContractsRetriever contractsSource =
                 getContractsSource(testClass, algeronProviderConfigurationInstance.get());

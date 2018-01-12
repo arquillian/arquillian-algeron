@@ -1,5 +1,4 @@
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
-import au.com.dius.pact.model.PactFragment;
 import au.com.dius.pact.model.RequestResponsePact;
 import org.arquillian.algeron.consumer.StubServer;
 import org.arquillian.algeron.pact.consumer.ftest.ClientGateway;
