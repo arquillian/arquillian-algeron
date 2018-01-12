@@ -1,8 +1,8 @@
 package org.arquillian.algeron.pact.provider.ftest;
 
-import org.arquillian.algeron.pact.provider.spi.Target;
 import org.arquillian.algeron.pact.provider.spi.Provider;
 import org.arquillian.algeron.pact.provider.spi.State;
+import org.arquillian.algeron.pact.provider.spi.Target;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;

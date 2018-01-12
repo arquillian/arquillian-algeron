@@ -49,6 +49,12 @@ public class InteractionRunner {
     Instance<Target> targetInstance;
 
     public void executePacts(@Observes EventContext<Test> test) {
+        final Pacts pacts = pactsInstance.get();
+        if (pacts == null) {
+            test.proceed();
+            return;
+        }
+
         TestClass testClass = test.getEvent().getTestClass();
 
         final List<Throwable> errors = new ArrayList<>();
@@ -62,17 +68,12 @@ public class InteractionRunner {
 
         if (errors.size() != 0) {
             String errorMessage = errors.stream()
-                .map(error -> error.getMessage())
+                .map(Throwable::getMessage)
                 .collect(Collectors.joining(" * "));
             throw new IllegalArgumentException(errorMessage);
         }
 
-        Pacts pacts = pactsInstance.get();
-        if (pacts != null) {
-            executePacts(test, pacts, interactionField, consumerField);
-        } else {
-            logger.log(Level.WARNING, "No pacts read for execution");
-        }
+        executePacts(test, pacts, interactionField, consumerField);
     }
 
     private void executePacts(EventContext<Test> test, final Pacts pacts, final Field interactionField,
@@ -126,13 +127,11 @@ public class InteractionRunner {
         }
     }
 
-    protected void validateState(final TestClass testClass, final List<Throwable> errors) {
-        Arrays.stream(testClass.getMethods(State.class)).forEach(method -> {
-            validatePublicVoidMethods(method, errors);
-        });
+    private void validateState(final TestClass testClass, final List<Throwable> errors) {
+        Arrays.stream(testClass.getMethods(State.class)).forEach(method -> validatePublicVoidMethods(method, errors));
     }
 
-    protected void validateTargetRequestFilters(final TestClass testClass, final List<Throwable> errors) {
+    private void validateTargetRequestFilters(final TestClass testClass, final List<Throwable> errors) {
         Method[] methods = testClass.getMethods(TargetRequestFilter.class);
         for (Method method : methods) {
             if (!isPublic(method)) {
@@ -156,7 +155,7 @@ public class InteractionRunner {
         }
     }
 
-    protected void validateTestTarget(TestClass testClass, final List<Throwable> errors) {
+    private void validateTestTarget(TestClass testClass, final List<Throwable> errors) {
         final List<Field> fieldsWithAnnotation =
             getFieldsWithAnnotation(testClass.getJavaClass(), ArquillianResource.class)
                 .stream()
@@ -176,14 +175,14 @@ public class InteractionRunner {
         }
     }
 
-    protected void validatePublicVoidMethods(Method method, final List<Throwable> errors) {
+    private void validatePublicVoidMethods(Method method, final List<Throwable> errors) {
         if (!isPublic(method)) {
             String publicError = String.format("Method %s should be public.", method.getName());
             logger.log(Level.SEVERE, publicError);
             errors.add(new IllegalArgumentException(publicError));
         }
         if (!returnsVoid(method)) {
-            String voidError = String.format("Method %s should return void");
+            String voidError = "Method %s should return void";
             logger.log(Level.SEVERE, voidError);
             errors.add(new IllegalArgumentException(voidError));
         }
@@ -279,23 +278,21 @@ public class InteractionRunner {
     private List<Field> getFieldsWithAnnotation(final Class<?> source,
         final Class<? extends Annotation> annotationClass) {
         List<Field> declaredAccessableFields = AccessController
-            .doPrivileged(new PrivilegedAction<List<Field>>() {
-                public List<Field> run() {
-                    List<Field> foundFields = new ArrayList<Field>();
-                    Class<?> nextSource = source;
-                    while (nextSource != Object.class) {
-                        for (Field field : nextSource.getDeclaredFields()) {
-                            if (field.isAnnotationPresent(annotationClass)) {
-                                if (!field.isAccessible()) {
-                                    field.setAccessible(true);
-                                }
-                                foundFields.add(field);
+            .doPrivileged((PrivilegedAction<List<Field>>) () -> {
+                List<Field> foundFields = new ArrayList<>();
+                Class<?> nextSource = source;
+                while (nextSource != Object.class) {
+                    for (Field field : nextSource.getDeclaredFields()) {
+                        if (field.isAnnotationPresent(annotationClass)) {
+                            if (!field.isAccessible()) {
+                                field.setAccessible(true);
                             }
+                            foundFields.add(field);
                         }
-                        nextSource = nextSource.getSuperclass();
                     }
-                    return foundFields;
+                    nextSource = nextSource.getSuperclass();
                 }
+                return foundFields;
             });
         return declaredAccessableFields;
     }

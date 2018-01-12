@@ -1,7 +1,6 @@
 package org.arquillian.algeron.pact.consumer.ftest;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
-import au.com.dius.pact.model.PactFragment;
 import au.com.dius.pact.model.RequestResponsePact;
 import org.arquillian.algeron.consumer.StubServer;
 import org.arquillian.algeron.pact.consumer.spi.Pact;
@@ -10,13 +9,10 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.restassured.RestAssured.get;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 @RunWith(Arquillian.class)
@@ -45,7 +41,7 @@ public class ConsumerTest {
 
     @Test
     @PactVerification("test_provider")
-    public void runTest() throws IOException {
+    public void runTest() {
         new ConsumerClient().get(url).body("name", equalTo("harry"));
     }
 }
