@@ -52,8 +52,8 @@
   </issueManagement>
 
   <properties>
-    <version.arquillian_core>1.1.15.Final</version.arquillian_core>
-    <version.pact>3.5.10</version.pact>
+    <version.arquillian_core>1.2.0.Final</version.arquillian_core>
+    <version.pact>3.5.11</version.pact>
 
     <!-- Requirement from pact to run-->
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -62,16 +62,16 @@
     <version.httpclient>4.5.2</version.httpclient>
     <version.minimal-json>0.9.5</version.minimal-json>
 
-    <version.jgit>4.9.2.201712150930-r</version.jgit>
+    <version.jgit>4.10.0.201712302008-r</version.jgit>
     <version.slf4j-api>1.7.21</version.slf4j-api>
     <version.snakeyaml>1.19</version.snakeyaml>
-    <version.wiremock>2.12.0</version.wiremock>
+    <version.wiremock>2.13.0</version.wiremock>
 
     <version.jcip-annotations>1.0</version.jcip-annotations>
 
     <version.junit>4.12</version.junit>
     <version.mockito>2.13.0</version.mockito>
-    <version.assertj>3.8.0</version.assertj>
+    <version.assertj>3.9.0</version.assertj>
     <version.shrinkwrap.resolvers>2.2.6</version.shrinkwrap.resolvers>
     <version.rest-assured>3.0.6</version.rest-assured>
     <version.arquillian.recorder>1.1.6.Final</version.arquillian.recorder>
