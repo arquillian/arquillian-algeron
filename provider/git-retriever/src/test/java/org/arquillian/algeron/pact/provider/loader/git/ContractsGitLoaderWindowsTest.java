@@ -1,5 +1,15 @@
 package org.arquillian.algeron.pact.provider.loader.git;
 
+import static io.netty.util.internal.PlatformDependent.isWindows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.arquillian.algeron.git.GitOperations;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
@@ -10,18 +20,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static io.netty.util.internal.PlatformDependent.isWindows;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(MockitoJUnitRunner.class)
-public class ContractsGitLoaderTest {
+public class ContractsGitLoaderWindowsTest {
 
     @Mock
     GitOperations gitOperations;
@@ -37,7 +37,7 @@ public class ContractsGitLoaderTest {
 
     @Before
     public void setup() {
-        org.junit.Assume.assumeFalse(isWindows());
+        org.junit.Assume.assumeTrue(isWindows());
         when(git.getRepository()).thenReturn(repository);
         when(pullResult.isSuccessful()).thenReturn(true);
         when(repository.getDirectory()).thenReturn(new File("/tmp/.git"));
@@ -61,7 +61,7 @@ public class ContractsGitLoaderTest {
 
         verify(gitOperations).pullFromRepository(git, "origin", "master");
         verify(gitOperations).checkoutBranch(git, "master");
-        assertThat(pactsFromGitRepo.toString()).isEqualTo("/tmp");
+        assertThat(pactsFromGitRepo.toString()).isEqualTo("\\tmp");
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ContractsGitLoaderTest {
 
         verify(gitOperations).pullFromRepository(git, "origin", "master");
         verify(gitOperations).checkoutBranch(git, "master", "origin");
-        assertThat(pactsFromGitRepo.toString()).isEqualTo("/tmp");
+        assertThat(pactsFromGitRepo.toString()).isEqualTo("\\tmp");
     }
 
     @Test
@@ -103,7 +103,7 @@ public class ContractsGitLoaderTest {
 
         verify(gitOperations).pullFromRepository(git, "origin", "master");
         verify(gitOperations).checkoutBranch(git, "master", "origin");
-        assertThat(pactsFromGitRepo.toString()).isEqualTo("/tmp/pacts");
+        assertThat(pactsFromGitRepo.toString()).isEqualTo("\\tmp\\pacts");
     }
 
     @Test
@@ -123,7 +123,7 @@ public class ContractsGitLoaderTest {
 
         verify(gitOperations).pullFromRepository(git, "origin", "mybranch");
         verify(gitOperations).checkoutTag(git, "mytag");
-        assertThat(pactsFromGitRepo.toString()).isEqualTo("/tmp");
+        assertThat(pactsFromGitRepo.toString()).isEqualTo("\\tmp");
     }
 
     @ContractsGit(value = "", repository = "/tmp")
