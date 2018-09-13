@@ -170,23 +170,23 @@ public class ContractsGitLoader implements ContractsRetriever {
         if (isSet(this.contractsGit.username()) && isSet(this.contractsGit.password())) {
 
             pullResult = this.gitOperations.pullFromRepository(git,
-                                                               getResolvedValue(this.contractsGit.remote()),
-                                                               getResolvedValue(this.contractsGit.branch()),
-                                                               getResolvedValue(this.contractsGit.username()),
-                                                               getResolvedValue(this.contractsGit.password()));
+                getResolvedValue(this.contractsGit.remote()),
+                getResolvedValue(this.contractsGit.branch()),
+                getResolvedValue(this.contractsGit.username()),
+                getResolvedValue(this.contractsGit.password()));
         } else {
             if (isSet(this.contractsGit.passphrase())) {
 
                 pullResult = this.gitOperations.pullFromRepository(git,
-                                                                   getResolvedValue(this.contractsGit.remote()),
-                                                                   getResolvedValue(this.contractsGit.branch()),
-                                                                   getResolvedValue(this.contractsGit.passphrase()),
-                                                                   getPrivateKey());
+                    getResolvedValue(this.contractsGit.remote()),
+                    getResolvedValue(this.contractsGit.branch()),
+                    getResolvedValue(this.contractsGit.passphrase()),
+                    getPrivateKey());
             } else {
 
                 pullResult = this.gitOperations.pullFromRepository(git,
-                                                                   getResolvedValue(this.contractsGit.remote()),
-                                                                   getResolvedValue(this.contractsGit.branch()));
+                    getResolvedValue(this.contractsGit.remote()),
+                    getResolvedValue(this.contractsGit.branch()));
             }
         }
         return pullResult;
