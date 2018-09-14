@@ -85,7 +85,7 @@ public class ContractsGitLoader implements ContractsRetriever {
                         }
                     } else {
                         throw new IllegalArgumentException(String.format("Git repository %s was not cloned correctly.",
-                            git.getRepository().getDirectory().getAbsolutePath()));
+                                                                         git.getRepository().getDirectory().getAbsolutePath()));
                     }
                 } else {
                     logger.log(Level.INFO, String.format(
@@ -111,6 +111,7 @@ public class ContractsGitLoader implements ContractsRetriever {
                 git.close();
             }
         }
+
         return location;
     }
 
@@ -131,10 +132,9 @@ public class ContractsGitLoader implements ContractsRetriever {
         }
 
         if (isSet(this.contractsGit.contractsDirectory())) {
-            return Paths.get(directory.getAbsolutePath(), getResolvedValue(this.contractsGit.contractsDirectory()));
+            return Paths.get(directory.toString(), getResolvedValue(this.contractsGit.contractsDirectory()));
         }
-
-        return Paths.get(directory.getAbsolutePath());
+        return Paths.get(directory.toString());
     }
 
     private Git executeClone(Path repository) {

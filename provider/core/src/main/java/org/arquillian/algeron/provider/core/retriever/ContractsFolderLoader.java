@@ -47,11 +47,10 @@ public class ContractsFolderLoader implements ContractsRetriever {
     }
 
     @Override
-    public List<URI> retrieve() throws IOException {
+    public List<URI> retrieve() {
         File rootDirectory = resolvePath();
         return Arrays.stream(rootDirectory.listFiles())
-            .map(file -> "file://" + file.getAbsolutePath())
-            .map(URI::create)
+            .map(File::toURI)
             .collect(Collectors.toList());
     }
 
