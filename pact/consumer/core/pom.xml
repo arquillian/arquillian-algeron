@@ -14,7 +14,7 @@
 
   <properties>
     <version.shrinkwrap-depchain>1.2.6</version.shrinkwrap-depchain>
-    <version.shrinkwrap-resolver-depchain>2.2.4</version.shrinkwrap-resolver-depchain>
+    <version.shrinkwrap-resolver-depchain>2.2.6</version.shrinkwrap-resolver-depchain>
   </properties>
 
   <!-- Artifact Configuration -->
