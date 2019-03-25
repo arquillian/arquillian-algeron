@@ -52,7 +52,7 @@
   </issueManagement>
 
   <properties>
-    <version.arquillian_core>1.2.0.Final</version.arquillian_core>
+    <version.arquillian_core>1.4.1.Final</version.arquillian_core>
     <version.pact>3.5.11</version.pact>
 
     <!-- Requirement from pact to run-->
