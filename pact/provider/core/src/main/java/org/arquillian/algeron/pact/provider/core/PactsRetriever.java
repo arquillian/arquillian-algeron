@@ -69,7 +69,7 @@ public class PactsRetriever {
             final List<URI> contractsDirectory = contractsSource.retrieve();
 
             Map<String, Object> options = new HashMap<>();
-            if ( algeronProviderConfigurationInstance.get() != null) {
+            if (algeronProviderConfigurationInstance.get() != null && algeronProviderConfigurationInstance.get().getRetrieverConfiguration() != null) {
                 Map<String, Object> config = algeronProviderConfigurationInstance.get().getRetrieverConfiguration();
                 // if pact retrieve specifies username, we need to create Pact options with authentication flag
                 if (config.containsKey("username")) {
@@ -105,7 +105,7 @@ public class PactsRetriever {
     }
 
     protected ContractsRetriever getContractsSource(final TestClass testClass,
-        AlgeronProviderConfiguration algeronProviderConfiguration) {
+                                                    AlgeronProviderConfiguration algeronProviderConfiguration) {
 
         // Gets a test annotated directly with PactSource annotation
         final ContractsSource pactSource = testClass.getAnnotation(ContractsSource.class);
