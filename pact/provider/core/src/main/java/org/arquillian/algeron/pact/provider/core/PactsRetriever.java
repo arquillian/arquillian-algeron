@@ -69,12 +69,13 @@ public class PactsRetriever {
             final List<URI> contractsDirectory = contractsSource.retrieve();
 
             Map<String, Object> options = new HashMap<>();
-            Map<String, Object> config = algeronProviderConfigurationInstance.get().getRetrieverConfiguration();
-            // if pact retrieve specifies username, we need to create Pact options with authentication flag
-            if (config.containsKey("username")) {
-                options.put("authentication", Arrays.asList("Basic",  config.get("username"), config.get("password")));
+            if ( algeronProviderConfigurationInstance.get() != null) {
+                Map<String, Object> config = algeronProviderConfigurationInstance.get().getRetrieverConfiguration();
+                // if pact retrieve specifies username, we need to create Pact options with authentication flag
+                if (config.containsKey("username")) {
+                    options.put("authentication", Arrays.asList("Basic", config.get("username"), config.get("password")));
+                }
             }
-
             pacts = loadContractFiles(contractsDirectory, serviceName, options).stream()
                 .filter(p -> consumerName == null || p.getConsumer().getName().equals(consumerName))
                 .collect(toList());
