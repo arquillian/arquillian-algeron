@@ -69,7 +69,7 @@
 
     <version.jcip-annotations>1.0</version.jcip-annotations>
 
-    <version.junit>4.12</version.junit>
+    <version.junit>4.13.1</version.junit>
     <version.mockito>2.25.1</version.mockito>
     <version.assertj>3.12.0</version.assertj>
     <version.shrinkwrap.resolvers>2.2.6</version.shrinkwrap.resolvers>
