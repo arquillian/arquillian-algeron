@@ -71,7 +71,7 @@
 
     <version.junit>4.12</version.junit>
     <version.mockito>2.25.1</version.mockito>
-    <version.assertj>3.12.0</version.assertj>
+    <version.assertj>3.20.1</version.assertj>
     <version.shrinkwrap.resolvers>2.2.6</version.shrinkwrap.resolvers>
     <version.rest-assured>3.0.6</version.rest-assured>
     <version.arquillian.recorder>1.1.6.Final</version.arquillian.recorder>
