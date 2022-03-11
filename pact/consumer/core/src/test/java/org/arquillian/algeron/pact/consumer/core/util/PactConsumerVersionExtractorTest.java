@@ -8,6 +8,6 @@ public class PactConsumerVersionExtractorTest {
 
     @Test
     public void should_extract_version_of_pact_from_manifest() {
-        assertThat(PactConsumerVersionExtractor.fromClassPath()).startsWith("3.5");
+        assertThat(PactConsumerVersionExtractor.fromClassPath()).startsWith("3.6");
     }
 }

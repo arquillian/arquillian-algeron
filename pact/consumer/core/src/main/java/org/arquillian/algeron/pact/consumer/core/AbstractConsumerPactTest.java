@@ -75,7 +75,7 @@ public abstract class AbstractConsumerPactTest {
     }
 
     private PactVerificationResult runPactTest(EventContext<Test> base, RequestResponsePact requestResponsePact) {
-        return runConsumerTest(requestResponsePact, mockProviderConfigInstance.get(), mockServer -> base.proceed());
+        return runConsumerTest(requestResponsePact, mockProviderConfigInstance.get(), (mockServer, executionContext) -> base.proceed());
     }
 
     private void validateResult(PactVerificationResult result, PactVerification pactVerification) throws Throwable {

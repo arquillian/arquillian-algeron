@@ -4,8 +4,8 @@ import au.com.dius.pact.model.Interaction;
 import au.com.dius.pact.model.Pact;
 import au.com.dius.pact.model.PactSource;
 import au.com.dius.pact.model.UrlPactSource;
-import au.com.dius.pact.provider.ConsumerInfo;
-import au.com.dius.pact.provider.ProviderInfo;
+import au.com.dius.pact.provider.IConsumerInfo;
+import au.com.dius.pact.provider.IProviderInfo;
 import au.com.dius.pact.provider.reporters.VerifierReporter;
 import java.io.File;
 import java.util.List;
@@ -27,6 +27,7 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     private GroupEntry interactionGroup;
     private GroupEntry responseGroup;
     private GroupEntry headersGroup;
+    private GroupEntry metadataGroup;
     private GroupEntry stateGroup;
 
     @Override
@@ -35,30 +36,30 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     }
 
     @Override
-    public void reportVerificationForConsumer(ConsumerInfo consumer, ProviderInfo provider) {
+    public void reportVerificationForConsumer(IConsumerInfo consumer, IProviderInfo provider) {
         verificationGroup.setName(
             String.format("Verifying a pact between %s and %s", consumer.getName(), provider.getName()));
     }
 
     @Override
-    public void verifyConsumerFromUrl(UrlPactSource urlPactSource, ConsumerInfo consumerInfo) {
+    public void verifyConsumerFromUrl(UrlPactSource urlPactSource, IConsumerInfo consumerInfo) {
 
     }
 
     @Override
-    public void verifyConsumerFromFile(PactSource pactSource, ConsumerInfo consumerInfo) {
+    public void verifyConsumerFromFile(PactSource pactSource, IConsumerInfo consumerInfo) {
 
     }
 
     @Override
-    public void warnProviderHasNoConsumers(ProviderInfo providerInfo) {
+    public void warnProviderHasNoConsumers(IProviderInfo providerInfo) {
         appendTextEntry(
             String.format("WARNING: There are no consumers to verify for provider %s", providerInfo.getName()),
             this.verificationGroup);
     }
 
     @Override
-    public void warnPactFileHasNoInteractions(Pact pact) {
+    public void warnPactFileHasNoInteractions(Pact<Interaction> pact) {
         appendTextEntry("WARNING: Pact file has no interactions", this.verificationGroup);
     }
 
@@ -69,39 +70,39 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     }
 
     @Override
-    public void stateForInteraction(String state, ProviderInfo provider, ConsumerInfo consumer, boolean isSetup) {
+    public void stateForInteraction(String state, IProviderInfo provider, IConsumerInfo consumer, boolean isSetup) {
         this.stateGroup = new GroupEntry("Given State");
         appendTextEntry(state, this.stateGroup);
         this.verificationGroup.getPropertyEntries().add(this.stateGroup);
     }
 
     @Override
-    public void warnStateChangeIgnored(String state, ProviderInfo providerInfo, ConsumerInfo consumerInfo) {
+    public void warnStateChangeIgnored(String state, IProviderInfo providerInfo, IConsumerInfo consumerInfo) {
         appendTextEntry("WARNING: State Change ignored as there is no stateChange URL", this.stateGroup);
     }
 
     @Override
-    public void stateChangeRequestFailedWithException(String state, ProviderInfo providerInfo, ConsumerInfo consumerInfo,
-        boolean isSetup, Exception e, boolean printStackTrace) {
+    public void stateChangeRequestFailedWithException(String state, IProviderInfo providerInfo, IConsumerInfo consumerInfo,
+                                                      boolean isSetup, Exception e, boolean printStackTrace) {
         appendTextEntry(String.format("State %s Change Request Failed - %s", state, e.getMessage()), this.stateGroup);
     }
 
     @Override
-    public void stateChangeRequestFailed(String state, ProviderInfo providerInfo, boolean isSetup, String httpStatus) {
+    public void stateChangeRequestFailed(String state, IProviderInfo providerInfo, boolean isSetup, String httpStatus) {
         appendTextEntry(String.format("State %s Change Request Failed - %s", state, httpStatus), this.stateGroup);
     }
 
     @Override
-    public void warnStateChangeIgnoredDueToInvalidUrl(String state, ProviderInfo providerInfo, boolean isSetup,
-        Object stateChangeHandler) {
+    public void warnStateChangeIgnoredDueToInvalidUrl(String state, IProviderInfo providerInfo, boolean isSetup,
+                                                      Object stateChangeHandler) {
         appendTextEntry(String.format("WARNING: State Change ignored as there is no stateChange URL, received %s",
             stateChangeHandler.toString()), this.stateGroup);
     }
 
     @Override
-    public void requestFailed(ProviderInfo providerInfo, Interaction interaction, String interactionMessage, Exception e,
-        boolean printStackTrace) {
-        appendTextEntry(String.format("Request Failed on %s - %s", e.getMessage()), this.interactionGroup);
+    public void requestFailed(IProviderInfo providerInfo, Interaction interaction, String interactionMessage, Exception e,
+                              boolean printStackTrace) {
+        appendTextEntry(String.format("Request Failed on %s - %s", interactionMessage, e.getMessage()), this.interactionGroup);
     }
 
     @Override
@@ -127,13 +128,13 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     }
 
     @Override
-    public void headerComparisonOk(String key, String value) {
-        appendTextEntry(String.format("%s with value %s (OK)", key, value), this.headersGroup);
+    public void headerComparisonOk(String key, List<String> values) {
+        values.forEach(value -> appendTextEntry(String.format("%s with value %s (OK)", key, value), this.headersGroup));
     }
 
     @Override
-    public void headerComparisonFailed(String key, String value, Object comparison) {
-        appendTextEntry(String.format("%s with value %s (FAILED)", key, value), this.headersGroup);
+    public void headerComparisonFailed(String key, List<String> values, Object comparison) {
+        values.forEach(value -> appendTextEntry(String.format("%s with value %s (FAILED)", key, value), this.headersGroup));
     }
 
     @Override
@@ -234,12 +235,12 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     }
 
     @Override
-    public void initialise(ProviderInfo provider) {
+    public void initialise(IProviderInfo provider) {
 
     }
 
     @Override
-    public void pactLoadFailureForConsumer(ConsumerInfo consumerInfo, String message) {
+    public void pactLoadFailureForConsumer(IConsumerInfo consumerInfo, String message) {
 
     }
 
@@ -254,7 +255,26 @@ public class ArquillianVerifierReporter implements VerifierReporter {
     }
 
     @Override
-    public void setExt(String ext) {
+    public void includesMetadata() {
+        this.metadataGroup = new GroupEntry("include metadata");
+        this.responseGroup.getPropertyEntries().add(this.metadataGroup);
+    }
+
+    @Override
+    public void metadataComparisonFailed(String key, Object value, Object comparision) {
+        appendTextEntry(String.format("%s with value %s (FAILED)", key, value), this.metadataGroup);
+    }
+
+    @Override
+    public void metadataComparisonOk() {
+        appendTextEntry("has a matching metadata (OK)", this.metadataGroup);
+
+    }
+
+    @Override
+    public void metadataComparisonOk(String key, Object value) {
+        appendTextEntry(String.format("%s with value %s (OK)", key, value), this.metadataGroup);
+
 
     }
 }

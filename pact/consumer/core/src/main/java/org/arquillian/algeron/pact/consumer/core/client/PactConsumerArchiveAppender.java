@@ -61,7 +61,7 @@ public class PactConsumerArchiveAppender implements AuxiliaryArchiveAppender {
         arquillianPactConsumer.add(new StringAsset(configuration), "/pact-consumer-configuration.properties");
 
         final JavaArchive[] pactConsumerDeps = Maven.resolver()
-            .resolve("au.com.dius:pact-jvm-consumer_2.11:" + getVersion())
+            .resolve("au.com.dius:pact-jvm-consumer_2.12:" + getVersion())
             .withTransitivity().as(JavaArchive.class);
 
         final JavaArchive merge = merge(arquillianPactConsumer, pactConsumerDeps);
@@ -79,6 +79,8 @@ public class PactConsumerArchiveAppender implements AuxiliaryArchiveAppender {
                 .addClass(Class.forName("sun.net.httpserver.TimeSource"))
                 .addClass(Class.forName("sun.net.httpserver.ServerImpl$ServerTimerTask"))
                 .addClass(Class.forName("sun.net.httpserver.ServerImpl$ServerTimerTask1"))
+                .addClass(Class.forName("sun.net.httpserver.ServerImpl$1"))
+                .addClass(Class.forName("sun.net.httpserver.ServerImpl$2"))
                 .addClass(Class.forName("sun.net.httpserver.ServerConfig"))
                 .addClass(Class.forName("sun.net.httpserver.ServerConfig$1"))
                 .addClass(Class.forName("sun.net.httpserver.ServerConfig$2"))

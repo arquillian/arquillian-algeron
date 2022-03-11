@@ -207,7 +207,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
                 throw getAssertionError(failures);
             }
         } finally {
-            verifier.finialiseReports();
+            verifier.finaliseReports();
         }
     }
 
@@ -220,9 +220,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
         verifier.initialiseReporters(provider);
         verifier.reportVerificationForConsumer(consumer, provider);
 
-        if (interaction.getProviderState() != null) {
-            verifier.reportStateForInteraction(interaction.getProviderState(), provider, consumer, true);
-        }
+        verifier.reportStateForInteraction(interaction.displayState(), provider, consumer, true);
 
         verifier.reportInteractionDescription(interaction);
 

@@ -53,7 +53,7 @@
 
   <properties>
     <version.arquillian_core>1.2.0.Final</version.arquillian_core>
-    <version.pact>3.5.11</version.pact>
+    <version.pact>3.6.15</version.pact>
 
     <!-- Requirement from pact to run-->
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -73,7 +73,7 @@
     <version.mockito>2.25.1</version.mockito>
     <version.assertj>3.12.0</version.assertj>
     <version.shrinkwrap.resolvers>2.2.6</version.shrinkwrap.resolvers>
-    <version.rest-assured>3.0.6</version.rest-assured>
+    <version.rest-assured>4.1.1</version.rest-assured>
     <version.arquillian.recorder>1.1.6.Final</version.arquillian.recorder>
   </properties>
 
@@ -98,12 +98,12 @@
       </dependency>
       <dependency>
         <groupId>au.com.dius</groupId>
-        <artifactId>pact-jvm-provider_2.11</artifactId>
+        <artifactId>pact-jvm-provider_2.12</artifactId>
         <version>${version.pact}</version>
       </dependency>
       <dependency>
         <groupId>au.com.dius</groupId>
-        <artifactId>pact-jvm-consumer_2.11</artifactId>
+        <artifactId>pact-jvm-consumer_2.12</artifactId>
         <version>${version.pact}</version>
       </dependency>
       <dependency>
