@@ -6,13 +6,14 @@ import au.com.dius.pact.model.ProviderState;
 import au.com.dius.pact.model.RequestResponseInteraction;
 import au.com.dius.pact.model.RequestResponsePact;
 import org.apache.http.HttpRequest;
-import org.arquillian.algeron.pact.provider.spi.Target;
 import org.arquillian.algeron.pact.provider.api.Pacts;
 import org.arquillian.algeron.pact.provider.spi.ArquillianTestClassAwareTarget;
 import org.arquillian.algeron.pact.provider.spi.CurrentConsumer;
 import org.arquillian.algeron.pact.provider.spi.CurrentInteraction;
 import org.arquillian.algeron.pact.provider.spi.PactProviderExecutionAwareTarget;
+import org.arquillian.algeron.pact.provider.spi.ProviderContextAwareTarget;
 import org.arquillian.algeron.pact.provider.spi.State;
+import org.arquillian.algeron.pact.provider.spi.Target;
 import org.arquillian.algeron.pact.provider.spi.TargetRequestFilter;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -90,7 +91,7 @@ public class InteractionRunner {
             }
 
             for (final RequestResponseInteraction interaction : requestResponsePact.getInteractions()) {
-                executeStateChanges(interaction, testClass, testInstance);
+                Map<String, ?> stateParams = executeStateChanges(interaction, testClass, testInstance);
 
                 Target target = targetInstance.get();
 
@@ -105,6 +106,10 @@ public class InteractionRunner {
                         (PactProviderExecutionAwareTarget) target;
                     pactProviderExecutionAwareTarget.setConsumer(pact.getConsumer());
                     pactProviderExecutionAwareTarget.setRequestResponseInteraction(interaction);
+                }
+                if (target instanceof ProviderContextAwareTarget) {
+                    ProviderContextAwareTarget providerContextAwareTarget = (ProviderContextAwareTarget) target;
+                    providerContextAwareTarget.setStateParams(stateParams);
                 }
 
                 // Inject current interaction to test
@@ -181,8 +186,8 @@ public class InteractionRunner {
             logger.log(Level.SEVERE, publicError);
             errors.add(new IllegalArgumentException(publicError));
         }
-        if (!returnsVoid(method)) {
-            String voidError = "Method %s should return void";
+        if (!(returnsVoid(method) || returnsMap(method))) {
+            String voidError = "Method %s should return void or Map";
             logger.log(Level.SEVERE, voidError);
             errors.add(new IllegalArgumentException(voidError));
         }
@@ -213,30 +218,36 @@ public class InteractionRunner {
         return null;
     }
 
-    protected void executeStateChanges(final RequestResponseInteraction interaction, final TestClass testClass,
+    protected Map<String, ?> executeStateChanges(final RequestResponseInteraction interaction, final TestClass testClass,
         final Object target) {
+        Map<String, ?> statesParams = new HashMap<>();
         if (!interaction.getProviderStates().isEmpty()) {
             for (final ProviderState state : interaction.getProviderStates()) {
                 Arrays.stream(testClass.getMethods(State.class))
                     .filter(method -> ArrayMatcher.matches(
                         method.getAnnotation(State.class).value(), state.getName()))
                     .forEach(method -> {
+                        Object stateParams;
                         if (isStateMethodWithMapParameter(method)) {
-                            executeMethod(method, target, state.getParams());
+                            stateParams = executeMethod(method, target, state.getParams());
                         } else {
                             if (method.getParameterCount() > 0) {
                                 // Use regular expressions to pass parameters.
-                                executeStateMethodWithRegExp(method, state, target);
+                                stateParams = executeStateMethodWithRegExp(method, state, target);
                             } else {
-                                executeMethod(method, target);
+                                stateParams = executeMethod(method, target);
                             }
+                        }
+                        if (stateParams instanceof Map) {
+                            statesParams.putAll((Map)stateParams);
                         }
                     });
             }
         }
+        return statesParams;
     }
 
-    private void executeStateMethodWithRegExp(Method stateMethod, ProviderState state, Object target) {
+    private Object executeStateMethodWithRegExp(Method stateMethod, ProviderState state, Object target) {
         final Optional<String> matchingStateOptional = ArrayMatcher.firstMatch(
             stateMethod.getAnnotation(State.class).value(), state.getName());
         // We are sure that at this point, an state is present
@@ -259,7 +270,7 @@ public class InteractionRunner {
             instances[i] = StateTypeConverter.convert(arguments.get(i), parameter);
         }
 
-        executeMethod(stateMethod, target, instances);
+        return executeMethod(stateMethod, target, instances);
     }
 
     private boolean isStateMethodWithMapParameter(Method method) {
@@ -267,9 +278,9 @@ public class InteractionRunner {
             Map.class.isAssignableFrom(method.getParameterTypes()[0]);
     }
 
-    private void executeMethod(Method method, Object target, Object... params) {
+    private Object executeMethod(Method method, Object target, Object... params) {
         try {
-            method.invoke(target, params);
+            return method.invoke(target, params);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new IllegalArgumentException(e);
         }
@@ -303,5 +314,9 @@ public class InteractionRunner {
 
     private boolean returnsVoid(Method method) {
         return Void.TYPE.equals(method.getReturnType());
+    }
+
+    private boolean returnsMap(Method method) {
+        return Map.class.equals(method.getReturnType());
     }
 }

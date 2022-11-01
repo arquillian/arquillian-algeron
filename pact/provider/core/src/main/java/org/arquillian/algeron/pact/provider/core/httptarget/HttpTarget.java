@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +26,15 @@ import org.arquillian.algeron.pact.provider.core.recorder.ArquillianVerifierRepo
 import org.arquillian.algeron.pact.provider.spi.ArquillianTestClassAwareTarget;
 import org.arquillian.algeron.pact.provider.spi.PactProviderExecutionAwareTarget;
 import org.arquillian.algeron.pact.provider.spi.Provider;
+import org.arquillian.algeron.pact.provider.spi.ProviderContextAwareTarget;
 import org.arquillian.algeron.pact.provider.spi.Target;
 import org.arquillian.algeron.pact.provider.spi.TargetRequestFilter;
 import org.arquillian.algeron.pact.provider.spi.VerificationReports;
 import org.jboss.arquillian.core.api.Injector;
 import org.jboss.arquillian.test.spi.TestClass;
 
-public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactProviderExecutionAwareTarget {
+public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactProviderExecutionAwareTarget,
+    ProviderContextAwareTarget {
 
     private String path;
     private String host;
@@ -47,6 +50,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     private au.com.dius.pact.model.Consumer currentConsumer;
     private RequestResponseInteraction currentRequestResponseInteraction;
     private Injector injector;
+    private Map<String, ?> currentStateParams;
 
     /**
      * @param host
@@ -179,6 +183,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     private void resetCurrentFields() {
         this.currentConsumer = null;
         this.currentRequestResponseInteraction = null;
+        this.currentStateParams = null;
     }
 
     @Override
@@ -199,7 +204,8 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
 
         Map<String, Object> failures = new HashMap<>();
         ProviderClient client = new ProviderClient(provider, new HttpClientFactory());
-        verifier.verifyResponseFromProvider(provider, interaction, interaction.getDescription(), failures, client);
+        verifier.verifyResponseFromProvider(provider, interaction, interaction.getDescription(), failures, client,
+            currentStateParams == null ? Collections.emptyMap() : currentStateParams);
 
         try {
             if (!failures.isEmpty()) {
@@ -207,7 +213,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
                 throw getAssertionError(failures);
             }
         } finally {
-            verifier.finialiseReports();
+            verifier.finaliseReports();
         }
     }
 
@@ -220,9 +226,7 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
         verifier.initialiseReporters(provider);
         verifier.reportVerificationForConsumer(consumer, provider);
 
-        if (interaction.getProviderState() != null) {
-            verifier.reportStateForInteraction(interaction.getProviderState(), provider, consumer, true);
-        }
+        verifier.reportStateForInteraction(interaction.displayState(), provider, consumer, true);
 
         verifier.reportInteractionDescription(interaction);
 
@@ -392,5 +396,10 @@ public class HttpTarget implements Target, ArquillianTestClassAwareTarget, PactP
     @Override
     public void setRequestResponseInteraction(RequestResponseInteraction requestResponseInteraction) {
         this.currentRequestResponseInteraction = requestResponseInteraction;
+    }
+
+    @Override
+    public void setStateParams(Map<String, ?> params) {
+        this.currentStateParams = Collections.singletonMap("providerState", params);
     }
 }

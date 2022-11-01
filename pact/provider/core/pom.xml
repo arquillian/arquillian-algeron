@@ -57,7 +57,7 @@
     </dependency>
     <dependency>
       <groupId>au.com.dius</groupId>
-      <artifactId>pact-jvm-provider_2.11</artifactId>
+      <artifactId>pact-jvm-provider_2.12</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -90,6 +90,11 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.jcip</groupId>
+      <artifactId>jcip-annotations</artifactId>
+      <version>1.0</version>
     </dependency>
   </dependencies>
 
